@@ -225,7 +225,7 @@ class CoursesController extends Controller
                 $video_id = array_last(explode('/', $request->video));
                 $media = Media::where('url', $video_id)
                     ->where('type', '=', $request->media_type)
-                    ->where('model_type', '=', 'App\Models\Course')
+                    ->where('model_type', '=', \App\Models\Course::class)
                     ->where('model_id', '=', $course->id)
                     ->first();
                 $size = 0;
@@ -250,7 +250,7 @@ class CoursesController extends Controller
                 $url = asset('storage/uploads/'.$video_id);
                 $media = Media::where('url', $video_id)
                     ->where('type', '=', $request->media_type)
-                    ->where('model_type', '=', 'App\Models\Course')
+                    ->where('model_type', '=', \App\Models\Course::class)
                     ->where('model_id', '=', $course->id)
                     ->first();
 
@@ -260,7 +260,7 @@ class CoursesController extends Controller
 
                     $subtitle = Media::where('url', $subtitle_id)
                         ->where('type', '=', 'subtitle')
-                        ->where('model_type', '=', 'App\Models\Course')
+                        ->where('model_type', '=', \App\Models\Course::class)
                         ->where('model_id', '=', $course->id)
                         ->first();
                     if ($subtitle == null) {
@@ -392,7 +392,7 @@ class CoursesController extends Controller
             if ($request->media_type == 'upload') {
                 if ($request->video_file != null) {
                     $media = Media::where('type', '=', $request->media_type)
-                        ->where('model_type', '=', 'App\Models\Course')
+                        ->where('model_type', '=', \App\Models\Course::class)
                         ->where('model_id', '=', $course->id)
                         ->first();
 

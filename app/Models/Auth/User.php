@@ -192,7 +192,7 @@ class User extends Authenticatable
             ->where('user_id', '=', $this->id)
             ->pluck('id');
         $courses_id = OrderItem::whereIn('order_id', $orders)
-            ->where('item_type', '=', "App\Models\Course")
+            ->where('item_type', '=', \App\Models\Course::class)
             ->pluck('item_id');
         $courses = Course::whereIn('id', $courses_id)
             ->get();
@@ -207,7 +207,7 @@ class User extends Authenticatable
             ->where('user_id', '=', $this->id)
             ->pluck('id');
         $bundles_id = OrderItem::whereIn('order_id', $orders)
-            ->where('item_type', '=', "App\Models\Bundle")
+            ->where('item_type', '=', \App\Models\Bundle::class)
             ->pluck('item_id');
         $bundles = Bundle::whereIn('id', $bundles_id)
             ->get();

@@ -89,7 +89,7 @@ class Bundle extends Model
 
     public function reviews()
     {
-        return $this->morphMany('App\Models\Review', 'reviewable');
+        return $this->morphMany(\App\Models\Review::class, 'reviewable');
     }
 
     public function item()

@@ -107,7 +107,7 @@ class ReportController extends Controller
         if ($request->get('course')) {
             $course_orders->whereHasMorph(
                 'item',
-                'App\Models\Course',
+                \App\Models\Course::class,
                 function (Builder $query) use ($request) {
                     $query->where('id', $request->get('course'));
                 }
@@ -115,7 +115,7 @@ class ReportController extends Controller
         } else {
             $course_orders->whereHasMorph(
                 'item',
-                'App\Models\Course',
+                \App\Models\Course::class,
                 function (Builder $query) use ($courses) {
                     $query->whereIn('id', $courses);
                 }
@@ -173,7 +173,7 @@ class ReportController extends Controller
         if ($request->get('bundle')) {
             $bundle_orders->whereHasMorph(
                 'item',
-                'App\Models\Bundle',
+                \App\Models\Bundle::class,
                 function (Builder $query) use ($request) {
                     $query->where('id', $request->get('bundle'));
                 }
@@ -181,7 +181,7 @@ class ReportController extends Controller
         } else {
             $bundle_orders->whereHasMorph(
                 'item',
-                'App\Models\Bundle',
+                \App\Models\Bundle::class,
                 function (Builder $query) use ($bundles) {
                     $query->whereIn('id', $bundles);
                 }

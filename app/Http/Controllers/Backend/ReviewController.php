@@ -28,7 +28,7 @@ class ReviewController extends Controller
     {
         $reviews = '';
         $courses_id = auth()->user()->courses()->has('reviews')->pluck('id')->toArray();
-        $reviews = Review::where('reviewable_type', '=', 'App\Models\Course')
+        $reviews = Review::where('reviewable_type', '=', \App\Models\Course::class)
             ->whereIn('reviewable_id', $courses_id)
             ->orderBy('created_at', 'desc')
             ->get();

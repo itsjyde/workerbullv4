@@ -53,7 +53,7 @@ class CourseSeed extends Seeder
             $lesson_id = $course->courseTimeline->where('sequence', '=', 1)->first()->model_id;
             $lesson = Lesson::find($lesson_id);
             $media = \App\Models\Media::where('type', '=', 'upload')
-                ->where('model_type', '=', 'App\Models\Lesson')
+                ->where('model_type', '=', \App\Models\Lesson::class)
                 ->where('model_id', '=', $lesson->id)
                 ->first();
             $filename = 'placeholder-video.mp4';

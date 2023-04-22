@@ -109,12 +109,12 @@ class Lesson extends Model
 
     public function test()
     {
-        return $this->hasOne('App\Models\Test');
+        return $this->hasOne(\App\Models\Test::class);
     }
 
     public function students()
     {
-        return $this->belongsToMany('App\Models\Auth\User', 'lesson_student')->withTimestamps();
+        return $this->belongsToMany(\App\Models\Auth\User::class, 'lesson_student')->withTimestamps();
     }
 
     public function media()

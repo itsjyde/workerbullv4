@@ -97,7 +97,7 @@ class LessonsController extends Controller
         $purchased_course = $lesson->course->students()->where('user_id', \Auth::id())->count() > 0;
         $test_exists = false;
 
-        if (get_class($lesson) == 'App\Models\Test') {
+        if (get_class($lesson) == \App\Models\Test::class) {
             $test_exists = true;
         }
 

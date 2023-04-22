@@ -22,7 +22,7 @@ class EarningHelper
     {
         $orderItems = $order->items;
         foreach ($orderItems as $items) {
-            if ($items->item_type == 'App\Models\Bundle') {
+            if ($items->item_type == \App\Models\Bundle::class) {
                 $coursesPrice = $items->item->courses->sum('price');
                 foreach ($items->item->courses as $courses) {
                     $commissionForTeacher = (($items->item->price / $coursesPrice) * config('commission_rate') * $courses->price) / 100;
@@ -42,7 +42,7 @@ class EarningHelper
                     }
                 }
             }
-            if ($items->item_type == 'App\Models\Course') {
+            if ($items->item_type == \App\Models\Course::class) {
                 $commissionForTeacher = (config('commission_rate') * $items->item->price) / 100;
                 $teacherIds = $items->item->teachers->pluck('id')->toArray();
                 if ($teacherIds) {

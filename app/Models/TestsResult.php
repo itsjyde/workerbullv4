@@ -10,7 +10,7 @@ class TestsResult extends Model
 
     public function answers()
     {
-        return $this->hasMany('App\Models\TestsResultsAnswer');
+        return $this->hasMany(\App\Models\TestsResultsAnswer::class);
     }
 
     public function test()

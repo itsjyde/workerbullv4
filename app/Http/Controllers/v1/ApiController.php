@@ -517,7 +517,7 @@ class ApiController extends Controller
                     }
                 }
                 $description = '';
-                if ($item->model_type == 'App\Models\Test') {
+                if ($item->model_type == \App\Models\Test::class) {
                     $type = 'test';
                     $description = $item->model->description;
                 } else {

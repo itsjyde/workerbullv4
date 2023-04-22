@@ -181,7 +181,7 @@ class LessonsController extends Controller
                 $video_id = array_last(explode('/', $request->video));
                 $media = Media::where('url', $video_id)
                     ->where('type', '=', $request->media_type)
-                    ->where('model_type', '=', 'App\Models\Lesson')
+                    ->where('model_type', '=', \App\Models\Lesson::class)
                     ->where('model_id', '=', $lesson->id)
                     ->first();
                 $size = 0;
@@ -197,7 +197,7 @@ class LessonsController extends Controller
                     $url = asset('storage/uploads/'.$filename);
 
                     $media = Media::where('type', '=', $request->media_type)
-                        ->where('model_type', '=', 'App\Models\Lesson')
+                        ->where('model_type', '=', \App\Models\Lesson::class)
                         ->where('model_id', '=', $lesson->id)
                         ->first();
                 }
@@ -346,7 +346,7 @@ class LessonsController extends Controller
                     $url = asset('storage/uploads/'.$filename);
 
                     $media = Media::where('type', '=', $request->media_type)
-                        ->where('model_type', '=', 'App\Models\Lesson')
+                        ->where('model_type', '=', \App\Models\Lesson::class)
                         ->where('model_id', '=', $lesson->id)
                         ->first();
 

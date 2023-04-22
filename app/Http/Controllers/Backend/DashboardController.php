@@ -46,7 +46,7 @@ class DashboardController extends Controller
                     ->sum('students_count');
 
                 $courses_id = auth()->user()->courses()->has('reviews')->pluck('id')->toArray();
-                $recent_reviews = Review::where('reviewable_type', '=', 'App\Models\Course')
+                $recent_reviews = Review::where('reviewable_type', '=', \App\Models\Course::class)
                     ->whereIn('reviewable_id', $courses_id)
                     ->orderBy('created_at', 'desc')
                     ->take(10)

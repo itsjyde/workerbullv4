@@ -161,7 +161,7 @@ class Course extends Model
 
     public function tests()
     {
-        return $this->hasMany('App\Models\Test');
+        return $this->hasMany(\App\Models\Test::class);
     }
 
     public function courseTimeline()
@@ -180,7 +180,7 @@ class Course extends Model
 
     public function reviews()
     {
-        return $this->morphMany('App\Models\Review', 'reviewable');
+        return $this->morphMany(\App\Models\Review::class, 'reviewable');
     }
 
     public function progress()

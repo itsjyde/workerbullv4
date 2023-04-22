@@ -68,6 +68,6 @@ class V2Seeder extends Seeder
 
         //=========Order fix ===================//
 
-        \App\Models\OrderItem::where('item_type', '=', null)->update(['item_type' => "\App\Models\Course"]);
+        \App\Models\OrderItem::where('item_type', '=', null)->update(['item_type' => \App\Models\Course::class]);
     }
 }

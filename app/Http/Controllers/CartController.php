@@ -531,7 +531,7 @@ class CartController extends Controller
         $order_items = OrderItem::whereIn('order_id', $orders)->get(['item_id', 'item_type']);
         foreach (Cart::session(auth()->user()->id)->getContent() as $cartItem) {
             if ($cartItem->attributes->type == 'course') {
-                foreach ($order_items->where('item_type', 'App\Models\Course') as $item) {
+                foreach ($order_items->where('item_type', \App\Models\Course::class) as $item) {
                     if ($item->item_id == $cartItem->id) {
                         $is_duplicate = true;
                         $message .= $cartItem->name.' '.__('alerts.frontend.duplicate_course').'</br>';
@@ -539,7 +539,7 @@ class CartController extends Controller
                 }
             }
             if ($cartItem->attributes->type == 'bundle') {
-                foreach ($order_items->where('item_type', 'App\Models\Bundle') as $item) {
+                foreach ($order_items->where('item_type', \App\Models\Bundle::class) as $item) {
                     if ($item->item_id == $cartItem->id) {
                         $is_duplicate = true;
                         $message .= $cartItem->name.''.__('alerts.frontend.duplicate_bundle').'</br>';

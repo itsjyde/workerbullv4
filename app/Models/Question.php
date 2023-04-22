@@ -57,7 +57,7 @@ class Question extends Model
 
     public function options()
     {
-        return $this->hasMany('App\Models\QuestionsOption');
+        return $this->hasMany(\App\Models\QuestionsOption::class);
     }
 
     public function isAttempted($result_id)
