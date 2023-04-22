@@ -3,7 +3,6 @@
 namespace App\Mail\Frontend\Auth;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -11,9 +10,6 @@ class AdminRegistered extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * @var
-     */
     public $user;
 
     /**
@@ -35,6 +31,6 @@ class AdminRegistered extends Mailable
     {
         return $this->markdown('emails.adminRegisteredMail')
             ->subject('New User Registered '.env('APP_NAME'))
-            ->with('user',$this->user);
+            ->with('user', $this->user);
     }
 }

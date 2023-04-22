@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Frontend\Auth\UserRepository;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use App\Repositories\Frontend\Auth\UserRepository;
 
 /**
  * Class ConfirmAccountController.
@@ -18,8 +18,6 @@ class ConfirmAccountController extends Controller
 
     /**
      * ConfirmAccountController constructor.
-     *
-     * @param UserRepository $user
      */
     public function __construct(UserRepository $user)
     {
@@ -27,9 +25,8 @@ class ConfirmAccountController extends Controller
     }
 
     /**
-     * @param $token
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function confirm($token)
@@ -40,9 +37,8 @@ class ConfirmAccountController extends Controller
     }
 
     /**
-     * @param $uuid
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function sendConfirmationEmail($uuid)

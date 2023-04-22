@@ -1,7 +1,7 @@
 <?php
 
-return array (
-  'colvis' => 'رؤية العمود',
-  'csv' => 'CSV',
-  'pdf' => 'PDF',
-);
+return [
+    'colvis' => 'رؤية العمود',
+    'csv' => 'CSV',
+    'pdf' => 'PDF',
+];

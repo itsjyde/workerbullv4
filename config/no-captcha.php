@@ -5,9 +5,8 @@ return [
      |  Credentials
      | ------------------------------------------------------------------------------------------------
      */
-    'secret'  => getenv('NOCAPTCHA_SECRET') ?: 'no-captcha-secret',
+    'secret' => getenv('NOCAPTCHA_SECRET') ?: 'no-captcha-secret',
     'sitekey' => getenv('NOCAPTCHA_SITEKEY') ?: 'no-captcha-sitekey',
-
 
     /* -----------------------------------------------------------------
      |  Version
@@ -21,7 +20,7 @@ return [
      |  Localization
      | ------------------------------------------------------------------------------------------------
      */
-    'lang'    => app()->getLocale(),
+    'lang' => app()->getLocale(),
 
     /* -----------------------------------------------------------------
      |  Skip IPs

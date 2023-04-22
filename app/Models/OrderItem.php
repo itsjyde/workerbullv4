@@ -18,8 +18,9 @@ class OrderItem extends Model
 //    }
 //
 
-    public function course(){
-        return $this->hasManyThrough(Course::class,User::class);
+    public function course()
+    {
+        return $this->hasManyThrough(Course::class, User::class);
     }
 
     public function item()
@@ -27,7 +28,8 @@ class OrderItem extends Model
         return $this->morphTo();
     }
 
-    public function order(){
+    public function order()
+    {
         return $this->belongsTo(Order::class);
     }
 }

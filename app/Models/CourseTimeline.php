@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseTimeline extends Model
 {
-    protected $table = "course_timeline";
+    protected $table = 'course_timeline';
+
     protected $guarded = [];
 
     public function model()
@@ -14,11 +15,8 @@ class CourseTimeline extends Model
         return $this->morphTo();
     }
 
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo(Course::class);
     }
-
-
-
-
 }

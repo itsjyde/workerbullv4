@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddForeignKeyToFaqs extends Migration
 {
@@ -28,7 +28,6 @@ class AddForeignKeyToFaqs extends Migration
     {
         Schema::table('faqs', function (Blueprint $table) {
             $table->dropForeign('faqs_category_id_foreign');
-
         });
     }
 }

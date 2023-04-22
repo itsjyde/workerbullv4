@@ -2,7 +2,6 @@
 
 namespace App\Resolvers;
 
-use App\Models\Auth\SocialAccount;
 use App\Models\Auth\User;
 use App\Repositories\Frontend\Auth\UserRepository;
 use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
@@ -19,8 +18,6 @@ class SocialUserResolver implements SocialUserResolverInterface
 
     /**
      * SocialLoginController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -29,11 +26,6 @@ class SocialUserResolver implements SocialUserResolverInterface
 
     /**
      * Resolve user by provider credentials.
-     *
-     * @param string $provider
-     * @param string $accessToken
-     *
-     * @return Authenticatable|null
      */
     public function resolveUserByProviderCredentials(string $provider, string $accessToken, string $secret = null): ?Authenticatable
     {
@@ -42,23 +34,18 @@ class SocialUserResolver implements SocialUserResolverInterface
         $providerUser = null;
 
         try {
-            if($provider == 'twitter'){
-                $providerUser = Socialite::driver($provider)->userFromTokenAndSecret($accessToken,$secret);
-
-            }else{
+            if ($provider == 'twitter') {
+                $providerUser = Socialite::driver($provider)->userFromTokenAndSecret($accessToken, $secret);
+            } else {
                 $providerUser = Socialite::driver($provider)->userFromToken($accessToken);
-
             }
         } catch (Exception $exception) {
         }
 
         if ($providerUser) {
-
             return $this->userRepository->findOrCreateProvider($providerUser, $provider);
-
         }
 
         return null;
-
     }
 }

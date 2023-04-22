@@ -11,7 +11,6 @@ use Yajra\DataTables\DataTables;
 
 class TestimonialController extends Controller
 {
-
     /**
      * Display a listing of Testimonial.
      *
@@ -21,7 +20,6 @@ class TestimonialController extends Controller
     {
         return view('backend.testimonials.index');
     }
-
 
     /**
      * Display a listing of Testimonials via ajax DataTable.
@@ -35,13 +33,12 @@ class TestimonialController extends Controller
         $has_edit = false;
         $testimonials = Testimonial::orderBy('created_at', 'desc')->get();
 
-
         return DataTables::of($testimonials)
             ->addIndexColumn()
-            ->addColumn('actions', function ($q) use ($request) {
-                $view = "";
-                $edit = "";
-                $delete = "";
+            ->addColumn('actions', function ($q) {
+                $view = '';
+                $edit = '';
+                $delete = '';
 
                 $edit = view('backend.datatable.action-edit')
                     ->with(['route' => route('admin.testimonials.edit', ['testimonial' => $q->id])])
@@ -52,15 +49,16 @@ class TestimonialController extends Controller
                     ->with(['route' => route('admin.testimonials.destroy', ['testimonial' => $q->id])])
                     ->render();
                 $view .= $delete;
-                return $view;
 
+                return $view;
             })
             ->editColumn('status', function ($q) {
                 $html = html()->label(html()->checkbox('')->id($q->id)
                 ->checked(($q->status == 1) ? true : false)->class('switch-input')->attribute('data-id', $q->id)->value(($q->status == 1) ? 1 : 0).'<span class="switch-label"></span><span class="switch-handle"></span>')->class('switch switch-lg switch-3d switch-primary');
+
                 return $html;
             })
-            ->rawColumns( ['actions','status'])
+            ->rawColumns(['actions', 'status'])
             ->make();
     }
 
@@ -77,7 +75,7 @@ class TestimonialController extends Controller
     /**
      * Store a newly created Testimonial in storage.
      *
-     * @param  \App\Http\Requests\StoreTestimonialsRequest $request
+     * @param  \App\Http\Requests\StoreTestimonialsRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreTestimonialsRequest $request)
@@ -87,16 +85,14 @@ class TestimonialController extends Controller
         return redirect()->route('admin.testimonials.index')->withFlashSuccess(trans('alerts.backend.general.created'));
     }
 
-
     /**
      * Show the form for editing Testimonial.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-
         $testimonial = Testimonial::findOrFail($id);
 
         return view('backend.testimonials.edit', compact('testimonial'));
@@ -105,8 +101,8 @@ class TestimonialController extends Controller
     /**
      * Update Testimonial in storage.
      *
-     * @param  \App\Http\Requests\UpdateTestimonialsRequest $request
-     * @param  int $id
+     * @param  \App\Http\Requests\UpdateTestimonialsRequest  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateTestimonialsRequest $request, $id)
@@ -117,17 +113,14 @@ class TestimonialController extends Controller
         return redirect()->route('admin.testimonials.index')->withFlashSuccess(trans('alerts.backend.general.updated'));
     }
 
-
-
     /**
      * Remove Testimonial from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-
         $testimonial = Testimonial::findOrFail($id);
         $testimonial->delete();
 
@@ -136,12 +129,9 @@ class TestimonialController extends Controller
 
     /**
      * Delete all selected Testimonial at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
-
         if ($request->input('ids')) {
             $entries = Testimonial::whereIn('id', $request->input('ids'))->get();
 
@@ -167,13 +157,13 @@ class TestimonialController extends Controller
     /**
      * Update testimonial status
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      **/
     public function updateStatus()
     {
         $testimonial = Testimonial::findOrFail(request('id'));
-        $testimonial->status = $testimonial->status == 1? 0 : 1;
+        $testimonial->status = $testimonial->status == 1 ? 0 : 1;
         $testimonial->save();
     }
 }

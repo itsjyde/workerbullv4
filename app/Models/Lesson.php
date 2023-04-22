@@ -4,24 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 //use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 //use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Support\Facades\File;
 use Mtownsend\ReadTime\ReadTime;
 
-
 /**
  * Class Lesson
  *
- * @package App
 // * @property string $course
  * @property string $title
  * @property string $slug
  * @property string $lesson_image
  * @property text $short_text
  * @property text $full_text
- * @property integer $position
+ * @property int $position
  * @property string $downloadable_files
  * @property tinyInteger $free_lesson
  * @property tinyInteger $published
@@ -32,8 +29,7 @@ class Lesson extends Model
 
     protected $fillable = ['title', 'slug', 'lesson_image', 'short_text', 'full_text', 'position', 'downloadable_files', 'free_lesson', 'published', 'course_id'];
 
-    protected $appends = ['image','lesson_readtime'];
-
+    protected $appends = ['image', 'lesson_readtime'];
 
     /**
      * Perform any actions required after the model boots.
@@ -42,25 +38,21 @@ class Lesson extends Model
      */
     protected static function booted()
     {
-
         static::deleting(function ($lesson) { // before delete() method call this
-            if ($lesson->isForceDeleting()) {
-                $media = $lesson->media;
-                foreach ($media as $item) {
-                    if (File::exists(public_path('/storage/uploads/' . $item->name))) {
-                        File::delete(public_path('/storage/uploads/' . $item->name));
-                    }
+        if ($lesson->isForceDeleting()) {
+            $media = $lesson->media;
+            foreach ($media as $item) {
+                if (File::exists(public_path('/storage/uploads/'.$item->name))) {
+                    File::delete(public_path('/storage/uploads/'.$item->name));
                 }
-                $lesson->media()->delete();
             }
-
+            $lesson->media()->delete();
+        }
         });
     }
 
-
     /**
      * Set to null if empty
-     * @param $input
      */
     public function setCourseIdAttribute($input)
     {
@@ -69,42 +61,44 @@ class Lesson extends Model
 
     public function getImageAttribute()
     {
-        if ($this->attributes['lesson_image'] != NULL) {
+        if ($this->attributes['lesson_image'] != null) {
             return url('storage/uploads/'.$this->lesson_image);
         }
-        return NULL;
+
+        return null;
     }
 
-    public function getLessonReadtimeAttribute(){
-
-        if($this->full_text != null){
+    public function getLessonReadtimeAttribute()
+    {
+        if ($this->full_text != null) {
             $readTime = (new ReadTime($this->full_text))->toArray();
+
             return $readTime['minutes'];
         }
+
         return 0;
     }
 
-    public function lessonMediaAttribute(){
-
+    public function lessonMediaAttribute()
+    {
     }
-
 
     /**
      * Set attribute to money format
-     * @param $input
      */
     public function setPositionAttribute($input)
     {
         $this->attributes['position'] = $input ? $input : null;
     }
 
-
     public function readTime()
     {
-        if($this->full_text != null){
+        if ($this->full_text != null) {
             $readTime = (new ReadTime($this->full_text))->toArray();
+
             return $readTime['minutes'];
         }
+
         return 0;
     }
 
@@ -141,13 +135,12 @@ class Lesson extends Model
             ->whereNotIn('type', $types);
     }
 
-
     public function mediaVideo()
     {
         $types = ['youtube', 'vimeo', 'upload', 'embed'];
+
         return $this->morphOne(Media::class, 'model')
             ->whereIn('type', $types);
-
     }
 
     public function mediaPDF()
@@ -173,17 +166,18 @@ class Lesson extends Model
         if ($isCompleted > 0) {
             return true;
         }
-        return false;
 
+        return false;
     }
 
     public function scopeOfTeacher($query)
     {
-        if (!auth()->user()->isAdmin()) {
+        if (! auth()->user()->isAdmin()) {
             return $query->whereHas('course.teachers', function ($q) {
                 $q->where('course_user.user_id', '=', auth()->user()->id);
             });
         }
+
         return $query;
     }
 
@@ -196,5 +190,4 @@ class Lesson extends Model
     {
         return $this->hasOne(LessonSlotBooking::class);
     }
-
 }

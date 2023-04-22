@@ -1,27 +1,25 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Mtownsend\ReadTime\ReadTime;
 
 /**
  * Class Test
  *
- * @package App
  * @property string $course
  * @property string $lesson
  * @property string $title
  * @property text $description
  * @property tinyInteger $published
-*/
+ */
 class Test extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description','slug','passing_score', 'published', 'course_id', 'lesson_id'];
-
+    protected $fillable = ['title', 'description', 'slug', 'passing_score', 'published', 'course_id', 'lesson_id'];
 
     /**
      * Perform any actions required after the model boots.
@@ -30,7 +28,7 @@ class Test extends Model
      */
     protected static function booted()
     {
-        if(auth()->check()) {
+        if (auth()->check()) {
             if (auth()->user()->hasRole('teacher')) {
                 static::addGlobalScope('filter', function (Builder $builder) {
                     $builder->whereHas('course', function ($q) {
@@ -41,23 +39,18 @@ class Test extends Model
                 });
             }
         }
-
     }
-
 
     /**
      * Set to null if empty
-     * @param $input
      */
     public function setCourseIdAttribute($input)
     {
         $this->attributes['course_id'] = $input ? $input : null;
     }
 
-
     /**
      * Set to null if empty
-     * @param $input
      */
     public function setLessonIdAttribute($input)
     {
@@ -81,22 +74,21 @@ class Test extends Model
 
     public function chapterStudents()
     {
-        return $this->morphMany(ChapterStudent::class,'model');
+        return $this->morphMany(ChapterStudent::class, 'model');
     }
 
     public function courseTimeline()
     {
-        return $this->morphOne(CourseTimeline::class,'model');
+        return $this->morphOne(CourseTimeline::class, 'model');
     }
 
-    public function isCompleted(){
+    public function isCompleted()
+    {
         $isCompleted = $this->chapterStudents()->where('user_id', \Auth::id())->count();
-        if($isCompleted > 0){
+        if ($isCompleted > 0) {
             return true;
         }
+
         return false;
-
     }
-
-
 }

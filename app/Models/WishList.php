@@ -10,7 +10,7 @@ class WishList extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'course_id','price'];
+    protected $fillable = ['user_id', 'course_id', 'price'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -7,16 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    protected  $guarded = [];
-
-
+    protected $guarded = [];
 
     public function reviewable()
     {
         return $this->morphTo();
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

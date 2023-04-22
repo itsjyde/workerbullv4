@@ -25,12 +25,12 @@ class SubscribedResource extends JsonResource
 
     private function courseQuantity($course)
     {
-        switch ($course){
+        switch ($course) {
             case 0:
-                return "Unlimited";
+                return 'Unlimited';
                 break;
             case 99:
-                return "Not Access";
+                return 'Not Access';
                 break;
             default:
                 return $course;
@@ -45,10 +45,10 @@ class SubscribedResource extends JsonResource
     {
         switch ($bundle) {
             case 0:
-                return "Unlimited";
+                return 'Unlimited';
                 break;
             case 99:
-                return "Not Access";
+                return 'Not Access';
                 break;
             default:
                 return $bundle;

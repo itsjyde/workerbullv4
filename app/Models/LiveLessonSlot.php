@@ -25,7 +25,6 @@ class LiveLessonSlot extends Model
      */
     protected $fillable = ['lesson_id', 'meeting_id', 'topic', 'description', 'start_at', 'duration', 'password', 'student_limit', 'start_url', 'join_url'];
 
-
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);

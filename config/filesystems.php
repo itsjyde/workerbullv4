@@ -53,7 +53,6 @@ return [
             'root' => base_path('resources/lang'),
         ],
 
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -61,7 +60,7 @@ return [
             'visibility' => 'public',
         ],
         'media' => [
-            'driver'     => 'local',
+            'driver' => 'local',
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
@@ -79,8 +78,7 @@ return [
             'driver' => 'dropbox',
             'token' => env('DROPBOX_ACCESS_TOKEN'),
             'app_secret' => env('DROPBOX_SECRET'),
-        ]
-
+        ],
 
     ],
 

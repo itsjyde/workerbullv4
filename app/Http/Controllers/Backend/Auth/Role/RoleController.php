@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Backend\Auth\Role;
 
-use App\Models\Auth\Role;
-use App\Http\Controllers\Controller;
 use App\Events\Backend\Auth\Role\RoleDeleted;
-use App\Repositories\Backend\Auth\RoleRepository;
-use App\Repositories\Backend\Auth\PermissionRepository;
-use App\Http\Requests\Backend\Auth\Role\StoreRoleRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Auth\Role\ManageRoleRequest;
+use App\Http\Requests\Backend\Auth\Role\StoreRoleRequest;
 use App\Http\Requests\Backend\Auth\Role\UpdateRoleRequest;
+use App\Models\Auth\Role;
+use App\Repositories\Backend\Auth\PermissionRepository;
+use App\Repositories\Backend\Auth\RoleRepository;
 
 /**
  * Class RoleController.
@@ -26,10 +26,6 @@ class RoleController extends Controller
      */
     protected $permissionRepository;
 
-    /**
-     * @param RoleRepository       $roleRepository
-     * @param PermissionRepository $permissionRepository
-     */
     public function __construct(RoleRepository $roleRepository, PermissionRepository $permissionRepository)
     {
         $this->roleRepository = $roleRepository;
@@ -37,8 +33,6 @@ class RoleController extends Controller
     }
 
     /**
-     * @param ManageRoleRequest $request
-     *
      * @return mixed
      */
     public function index(ManageRoleRequest $request)
@@ -51,8 +45,6 @@ class RoleController extends Controller
     }
 
     /**
-     * @param ManageRoleRequest $request
-     *
      * @return mixed
      */
     public function create(ManageRoleRequest $request)
@@ -62,9 +54,8 @@ class RoleController extends Controller
     }
 
     /**
-     * @param StoreRoleRequest $request
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function store(StoreRoleRequest $request)
@@ -75,9 +66,6 @@ class RoleController extends Controller
     }
 
     /**
-     * @param ManageRoleRequest $request
-     * @param Role              $role
-     *
      * @return mixed
      */
     public function edit(ManageRoleRequest $request, Role $role)
@@ -93,10 +81,8 @@ class RoleController extends Controller
     }
 
     /**
-     * @param UpdateRoleRequest $request
-     * @param Role              $role
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function update(UpdateRoleRequest $request, Role $role)
@@ -107,10 +93,8 @@ class RoleController extends Controller
     }
 
     /**
-     * @param ManageRoleRequest $request
-     * @param Role              $role
-     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function destroy(ManageRoleRequest $request, Role $role)

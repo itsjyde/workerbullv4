@@ -44,7 +44,6 @@ class RouteServiceProvider extends ServiceProvider
         });
         $this->configureRateLimiting();
 
-
         parent::boot();
     }
 

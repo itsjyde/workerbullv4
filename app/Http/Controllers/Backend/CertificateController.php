@@ -14,7 +14,6 @@ class CertificateController extends Controller
 {
     public function __construct()
     {
-
         $path = 'frontend';
         if (session()->has('display_type')) {
             if (session('display_type') == 'rtl') {
@@ -22,7 +21,7 @@ class CertificateController extends Controller
             } else {
                 $path = 'frontend';
             }
-        } else if (config('app.display_type') == 'rtl') {
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
@@ -34,9 +33,9 @@ class CertificateController extends Controller
     public function getCertificates()
     {
         $certificates = auth()->user()->certificates;
+
         return view('backend.certificates.index', compact('certificates'));
     }
-
 
     /**
      * Generate certificate for completed course
@@ -50,7 +49,7 @@ class CertificateController extends Controller
         if (($course != null) && ($course->progress() == 100)) {
             $certificate = Certificate::firstOrCreate([
                 'user_id' => auth()->user()->id,
-                'course_id' => $request->course_id
+                'course_id' => $request->course_id,
             ]);
 
             $data = [
@@ -58,17 +57,18 @@ class CertificateController extends Controller
                 'course_name' => $course->title,
                 'date' => Carbon::now()->format('d M, Y'),
             ];
-            $certificate_name = 'Certificate-' . $course->id . '-' . auth()->user()->id . '.pdf';
+            $certificate_name = 'Certificate-'.$course->id.'-'.auth()->user()->id.'.pdf';
             $certificate->name = auth()->user()->name;
             $certificate->url = $certificate_name;
             $certificate->save();
 
             $pdf = \PDF::loadView('certificate.index', compact('data'))->setPaper('', 'landscape');
 
-            $pdf->save(public_path('storage/certificates/' . $certificate_name));
+            $pdf->save(public_path('storage/certificates/'.$certificate_name));
 
             return back()->withFlashSuccess(trans('alerts.frontend.course.completed'));
         }
+
         return abort(404);
     }
 
@@ -78,15 +78,14 @@ class CertificateController extends Controller
     public function download(Request $request)
     {
         $certificate = Certificate::findOrFail($request->certificate_id);
-        if($certificate != null){
-            $file = public_path() . "/storage/certificates/" . $certificate->url;
+        if ($certificate != null) {
+            $file = public_path().'/storage/certificates/'.$certificate->url;
+
             return Response::download($file);
         }
+
         return back()->withFlashDanger('No Certificate found');
-
-
     }
-
 
     /**
      * Get Verify Certificate form
@@ -96,7 +95,6 @@ class CertificateController extends Controller
         return view($this->path.'.certificate-verification');
     }
 
-
     /**
      * Verify Certificate
      */
@@ -104,17 +102,17 @@ class CertificateController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'date' => 'required'
+            'date' => 'required',
         ]);
 
         $certificates = Certificate::where('name', '=', $request->name)
-            ->where(DB::raw("(DATE_FORMAT(created_at,'%Y-%m-%d'))"), "=", $request->date)
+            ->where(DB::raw("(DATE_FORMAT(created_at,'%Y-%m-%d'))"), '=', $request->date)
             ->get();
         $data['certificates'] = $certificates;
         $data['name'] = $request->name;
         $data['date'] = $request->date;
         session()->forget('certificates');
-        return back()->with(['data' => $data]);
 
+        return back()->with(['data' => $data]);
     }
 }

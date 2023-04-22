@@ -40,8 +40,8 @@ class SliderSeeder extends Seeder
             'overlay' => 0,
         ];
 
-      \App\Models\Slider::firstOrCreate($slide_1);
-      \App\Models\Slider::firstOrCreate($slide_2);
-      \App\Models\Slider::firstOrCreate($slide_3);
+        \App\Models\Slider::firstOrCreate($slide_1);
+        \App\Models\Slider::firstOrCreate($slide_2);
+        \App\Models\Slider::firstOrCreate($slide_3);
     }
 }

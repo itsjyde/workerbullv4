@@ -52,8 +52,5 @@ class LocaleSeeder extends Seeder
                 'display_type' => $item['display_type'],
                 'is_default' => $item['is_default']]);
         }
-
-
-
     }
 }

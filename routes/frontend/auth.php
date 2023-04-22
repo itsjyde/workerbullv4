@@ -1,27 +1,25 @@
 <?php
 
-use App\Http\Controllers\Frontend\Auth\LoginController;
-use App\Http\Controllers\Frontend\Auth\RegisterController;
-use App\Http\Controllers\Frontend\Auth\SocialLoginController;
-use App\Http\Controllers\Frontend\Auth\ResetPasswordController;
 use App\Http\Controllers\Frontend\Auth\ConfirmAccountController;
 use App\Http\Controllers\Frontend\Auth\ForgotPasswordController;
-use App\Http\Controllers\Frontend\Auth\UpdatePasswordController;
+use App\Http\Controllers\Frontend\Auth\LoginController;
 use App\Http\Controllers\Frontend\Auth\PasswordExpiredController;
+use App\Http\Controllers\Frontend\Auth\RegisterController;
+use App\Http\Controllers\Frontend\Auth\ResetPasswordController;
+use App\Http\Controllers\Frontend\Auth\SocialLoginController;
 use App\Http\Controllers\Frontend\Auth\TeacherRegisterController;
+use App\Http\Controllers\Frontend\Auth\UpdatePasswordController;
 
 /*
  * Frontend Access Controllers
  * All route names are prefixed with 'frontend.auth'.
  */
 Route::group(['namespace' => 'Auth', 'as' => 'auth.'], function () {
-
     /*
     * These routes require the user to be logged in
     */
     Route::group(['middleware' => 'auth'], function () {
         Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-
 
         //For when admin is logged in as user from backend
         Route::get('logout-as', [LoginController::class, 'logoutAs'])->name('logout-as');
@@ -69,8 +67,7 @@ Route::group(['namespace' => 'Auth', 'as' => 'auth.'], function () {
         Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.reset');
 
         // New Register Teacher Routes
-        Route::get('teacher/register',[TeacherRegisterController::class, 'showTeacherRegistrationForm'])->name('teacher.register');
+        Route::get('teacher/register', [TeacherRegisterController::class, 'showTeacherRegistrationForm'])->name('teacher.register');
         Route::post('teacher/register', [TeacherRegisterController::class, 'register'])->name('teacher.register.post');
-
     });
 });

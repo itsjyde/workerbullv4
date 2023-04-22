@@ -2,36 +2,29 @@
 
 namespace App\Providers;
 
-use App\Helpers\Frontend\Auth\Socialite;
-use App\Models\Locale;
 use App\Models\Blog;
 use App\Models\Config;
 use App\Models\Course;
+use App\Models\Locale;
 use App\Models\Slider;
-use Barryvdh\TranslationManager\Manager;
-use Barryvdh\TranslationManager\Models\Translation;
+use App\Resolvers\SocialUserResolver;
 use Carbon\Carbon;
-use Harimayco\Menu\Facades\Menu;
+use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
 use Harimayco\Menu\Models\MenuItems;
 use Harimayco\Menu\Models\Menus;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Resolvers\SocialUserResolver;
-use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Class AppServiceProvider.
  */
 class AppServiceProvider extends ServiceProvider
 {
-
     public $bindings = [
         SocialUserResolverInterface::class => SocialUserResolver::class,
     ];
-
 
     /**
      * Bootstrap any application services.
@@ -50,7 +43,6 @@ class AppServiceProvider extends ServiceProvider
          * setLocale for php. Enables ->formatLocalized() with localized values for dates
          */
         setlocale(LC_TIME, config('app.locale_php'));
-
 
         /*
          * Set the session variable for whether or not the app is using RTL support
@@ -76,13 +68,12 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Pagination\AbstractPaginator::defaultView('pagination::bootstrap-4');
         \Illuminate\Pagination\AbstractPaginator::defaultSimpleView('pagination::simple-bootstrap-4');
 
-
         if (Schema::hasTable('configs')) {
             foreach (Config::all() as $setting) {
                 \Illuminate\Support\Facades\Config::set($setting->key, $setting->value);
             }
             \Illuminate\Support\Facades\Config::set('cashier.key', config('services.stripe.key'));
-            \Illuminate\Support\Facades\Config::set('cashier.secret',config('services.stripe.secret'));
+            \Illuminate\Support\Facades\Config::set('cashier.secret', config('services.stripe.secret'));
         }
 
         /*
@@ -93,46 +84,38 @@ class AppServiceProvider extends ServiceProvider
         App::setLocale(config('app.locale'));
         config()->set('invoices.currency', config('app.currency'));
 
-
         if (Schema::hasTable('sliders')) {
             $slides = Slider::where('status', 1)->orderBy('sequence', 'asc')->get();
             View::share('slides', $slides);
-
         }
 
         if (Schema::hasTable('admin_menu_items')) {
-
-            $menu_name = NULL;
+            $menu_name = null;
             $custom_menus = MenuItems::where('menu', '=', config('nav_menu'))
                 ->orderBy('sort')
                 ->get();
-            $menu_name = Menus::find((int)config('nav_menu'));
-            $menu_name = ($menu_name != NULL) ? $menu_name->name : NULL;
+            $menu_name = Menus::find((int) config('nav_menu'));
+            $menu_name = ($menu_name != null) ? $menu_name->name : null;
             $custom_menus = menuList($custom_menus);
             $max_depth = MenuItems::max('depth');
             View::share('custom_menus', $custom_menus);
             View::share('max_depth', $max_depth);
             View::share('menu_name', $menu_name);
-
         }
 
 //        view()->composer(['frontend.layouts.partials.right-sidebar', 'frontend-rtl.layouts.partials.right-sidebar'], function ($view) {
 
         if (Schema::hasTable('blogs')) {
-
             $recent_news = Blog::orderBy('created_at', 'desc')->whereHas('category')->take(2)->get();
             View::share('recent_news', $recent_news);
-
         }
 //
 //            $view->with(compact('recent_news'));
 //        });
 
-
 //        view()->composer(['frontend.*', 'frontend-rtl.*'], function ($view) {
 
         if (Schema::hasTable('courses')) {
-
             $global_featured_course = Course::withoutGlobalScope('filter')->canDisableCourse()
                 ->whereHas('category')
                 ->where('published', '=', 1)
@@ -149,7 +132,6 @@ class AppServiceProvider extends ServiceProvider
         }
 //        view()->composer(['frontend.*', 'backend.*', 'frontend-rtl.*', 'vendor.invoices.*'], function ($view) {
         if (Schema::hasTable('locales')) {
-
             $locales = [];
             $appCurrency = getCurrency(config('app.currency'));
 
@@ -161,9 +143,6 @@ class AppServiceProvider extends ServiceProvider
 //        });
             View::share('locales', $locales);
             View::share('appCurrency', $appCurrency);
-
-
-
 
 //        view()->composer(['backend.*'], function ($view) {
 
@@ -178,19 +157,18 @@ class AppServiceProvider extends ServiceProvider
 //            $view->with(compact('locale_full_name'));
 //        });
         }
-
-
     }
 
-    function menuList($array)
+    public function menuList($array)
     {
-        $temp_array = array();
+        $temp_array = [];
         foreach ($array as $item) {
             if ($item->getsons($item->id)->except($item->id)) {
                 $item->subs = $this->menuList($item->getsons($item->id)->except($item->id)); // here is the recursion
                 $temp_array[] = $item;
             }
         }
+
         return $temp_array;
     }
 

@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class OfflineOrderMail extends Mailable
 {
@@ -28,9 +27,8 @@ class OfflineOrderMail extends Mailable
      */
     public function build()
     {
-
         return $this->markdown('emails.offlineOrderMail')
             ->subject('Regarding your order on '.env('APP_NAME'))
-            ->with('content',$this->content);
+            ->with('content', $this->content);
     }
 }

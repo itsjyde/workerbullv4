@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Helpers\General\EarningHelper;
+use App\Http\Controllers\Controller;
 use App\Models\Bundle;
-use App\Models\Course;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Response;
-
 
 class OrderController extends Controller
 {
-
     /**
      * Display a listing of Orders.
      *
@@ -24,6 +20,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::get();
+
         return view('backend.orders.index', compact('orders'));
     }
 
@@ -35,7 +32,6 @@ class OrderController extends Controller
     public function getData(Request $request)
     {
         if (request('offline_requests') == 1) {
-
             $orders = Order::query()->where('payment_type', '=', 3)->orderBy('updated_at', 'desc');
         } else {
             $orders = Order::query()->orderBy('updated_at', 'desc');
@@ -43,8 +39,8 @@ class OrderController extends Controller
 
         return DataTables::of($orders)
             ->addIndexColumn()
-            ->addColumn('actions', function ($q) use ($request) {
-                $view = "";
+            ->addColumn('actions', function ($q) {
+                $view = '';
 
                 $view = view('backend.datatable.action-view')
                     ->with(['route' => route('admin.orders.show', ['order' => $q->id])])->render();
@@ -65,17 +61,16 @@ class OrderController extends Controller
                 }
 
                 return $view;
-
             })
             ->addColumn('items', function ($q) {
-                $items = "";
+                $items = '';
                 foreach ($q->items as $key => $item) {
-                    if($item->item != null){
+                    if ($item->item != null) {
                         $key++;
-                        $items .= $key . '. ' . $item->item->title . "<br>";
+                        $items .= $key.'. '.$item->item->title.'<br>';
                     }
-
                 }
+
                 return $items;
             })
             ->addColumn('user_email', function ($q) {
@@ -92,10 +87,11 @@ class OrderController extends Controller
                 } else {
                     $payment_status = trans('labels.backend.orders.fields.payment_status.failed');
                 }
+
                 return $payment_status;
             })
             ->editColumn('price', function ($q) {
-                return '$' . floatval($q->price);
+                return '$'.floatval($q->price);
             })
             ->rawColumns(['items', 'actions'])
             ->make();
@@ -104,7 +100,6 @@ class OrderController extends Controller
     /**
      * Complete Order manually once payment received.
      *
-     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function complete(Request $request)
@@ -120,51 +115,51 @@ class OrderController extends Controller
 
         foreach ($order->items as $orderItem) {
             //Bundle Entries
-            if($orderItem->item_type == Bundle::class){
-               foreach ($orderItem->item->courses as $course){
-                   $course->students()->attach($order->user_id);
-               }
+            if ($orderItem->item_type == Bundle::class) {
+                foreach ($orderItem->item->courses as $course) {
+                    $course->students()->attach($order->user_id);
+                }
             }
             $orderItem->item->students()->attach($order->user_id);
         }
+
         return back()->withFlashSuccess(trans('alerts.backend.general.updated'));
     }
 
     /**
      * Show Order from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $order = Order::findOrFail($id);
+
         return view('backend.orders.show', compact('order'));
     }
 
     /**
      * Remove Order from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-
         $order = Order::findOrFail($id);
         $order->items()->delete();
         $order->delete();
+
         return redirect()->route('admin.orders.index')->withFlashSuccess(trans('alerts.backend.general.deleted'));
     }
 
     /**
      * Delete all selected Orders at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
-        if (!Gate::allows('course_delete')) {
+        if (! Gate::allows('course_delete')) {
             return abort(401);
         }
         if ($request->input('ids')) {
@@ -180,6 +175,4 @@ class OrderController extends Controller
             }
         }
     }
-
-
 }

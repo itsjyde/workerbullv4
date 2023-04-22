@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend\User;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Frontend\Auth\UserRepository;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
+use App\Repositories\Frontend\Auth\UserRepository;
 
 /**
  * Class ProfileController.
@@ -18,8 +18,6 @@ class ProfileController extends Controller
 
     /**
      * ProfileController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -27,9 +25,8 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param UpdateProfileRequest $request
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function update(UpdateProfileRequest $request)

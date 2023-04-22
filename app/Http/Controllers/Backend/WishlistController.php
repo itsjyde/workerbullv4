@@ -26,12 +26,11 @@ class WishlistController extends Controller
      */
     public function getData(Request $request)
     {
-        $wishlists = WishList::query()->with(['course'])->where('user_id',auth()->user()->id);
-
+        $wishlists = WishList::query()->with(['course'])->where('user_id', auth()->user()->id);
 
         return DataTables::of($wishlists)
             ->addIndexColumn()
-            ->addColumn('actions', function ($q){
+            ->addColumn('actions', function ($q) {
                 $view = '';
                 $view .= view('backend.datatable.action-delete')
                     ->with(['route' => route('admin.wishlist.destroy', ['wishlist' => $q->id])])
@@ -48,32 +47,32 @@ class WishlistController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
     {
-        if(!WishList::where('course_id',$request->course)->where('user_id',auth()->user()->id)->first()){
+        if (! WishList::where('course_id', $request->course)->where('user_id', auth()->user()->id)->first()) {
             WishList::create([
                 'user_id' => auth()->user()->id,
                 'course_id' => $request->course,
-                'price' => $request->price
+                'price' => $request->price,
             ]);
-            return response()->json(['status' => true,'message' => trans('alerts.frontend.wishlist.added')]);
-        }else{
-            return response()->json(['status' => false,'message' => trans('alerts.frontend.wishlist.exist')]);
+
+            return response()->json(['status' => true, 'message' => trans('alerts.frontend.wishlist.added')]);
+        } else {
+            return response()->json(['status' => false, 'message' => trans('alerts.frontend.wishlist.exist')]);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\WishList  $wishlist
      * @return \Illuminate\Http\Response
      */
     public function destroy(WishList $wishlist)
     {
         $wishlist->delete();
+
         return redirect()->route('admin.wishlist.index')->withFlashSuccess(__('alerts.backend.general.deleted'));
     }
 }

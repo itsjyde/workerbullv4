@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class CreateBlogModule extends Migration {
-
+class CreateBlogModule extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,8 +12,7 @@ class CreateBlogModule extends Migration {
      */
     public function up()
     {
-        Schema::create('blogs', function(Blueprint $table)
-        {
+        Schema::create('blogs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('category_id');
             $table->unsignedInteger('user_id');
@@ -29,8 +28,7 @@ class CreateBlogModule extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('blog_comments', function(Blueprint $table)
-        {
+        Schema::create('blog_comments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('blog_id');
             $table->unsignedInteger('user_id');
@@ -41,8 +39,7 @@ class CreateBlogModule extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('tags', function(Blueprint $table)
-        {
+        Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('slug');
@@ -50,15 +47,13 @@ class CreateBlogModule extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('taggables', function(Blueprint $table)
-        {
+        Schema::create('taggables', function (Blueprint $table) {
             $table->integer('tag_id');
             $table->integer('taggable_id');
             $table->string('taggable_type');
             $table->timestamps();
             $table->softDeletes();
         });
-
     }
 
     /**
@@ -77,5 +72,4 @@ class CreateBlogModule extends Migration {
 
         Schema::drop('taggables');
     }
-
 }

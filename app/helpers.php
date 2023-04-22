@@ -1,13 +1,13 @@
 <?php
 
-use App\Helpers\General\Timezone;
 use App\Helpers\General\HtmlHelper;
+use App\Helpers\General\Timezone;
 use Carbon\Carbon;
 
 /*
  * Global helpers file with misc functions.
  */
-if (!function_exists('app_name')) {
+if (! function_exists('app_name')) {
     /**
      * Helper to grab the application name.
      *
@@ -19,7 +19,7 @@ if (!function_exists('app_name')) {
     }
 }
 
-if (!function_exists('gravatar')) {
+if (! function_exists('gravatar')) {
     /**
      * Access the gravatar helper.
      */
@@ -29,7 +29,7 @@ if (!function_exists('gravatar')) {
     }
 }
 
-if (!function_exists('timezone')) {
+if (! function_exists('timezone')) {
     /**
      * Access the timezone helper.
      */
@@ -39,13 +39,10 @@ if (!function_exists('timezone')) {
     }
 }
 
-if (!function_exists('include_route_files')) {
-
+if (! function_exists('include_route_files')) {
     /**
      * Loops through a folder and requires all PHP files
      * Searches sub-directories as well.
-     *
-     * @param $folder
      */
     function include_route_files($folder)
     {
@@ -54,7 +51,7 @@ if (!function_exists('include_route_files')) {
             $it = new recursiveIteratorIterator($rdi);
 
             while ($it->valid()) {
-                if (!$it->isDot() && $it->isFile() && $it->isReadable() && $it->current()->getExtension() === 'php') {
+                if (! $it->isDot() && $it->isFile() && $it->isReadable() && $it->current()->getExtension() === 'php') {
                     require $it->key();
                 }
 
@@ -66,8 +63,7 @@ if (!function_exists('include_route_files')) {
     }
 }
 
-if (!function_exists('home_route')) {
-
+if (! function_exists('home_route')) {
     /**
      * Return the route to the "home" page depending on authentication/authorization status.
      *
@@ -87,13 +83,10 @@ if (!function_exists('home_route')) {
     }
 }
 
-if (!function_exists('style')) {
-
+if (! function_exists('style')) {
     /**
-     * @param       $url
-     * @param array $attributes
-     * @param null $secure
-     *
+     * @param  array  $attributes
+     * @param  null  $secure
      * @return mixed
      */
     function style($url, $attributes = [], $secure = null)
@@ -102,13 +95,10 @@ if (!function_exists('style')) {
     }
 }
 
-if (!function_exists('script')) {
-
+if (! function_exists('script')) {
     /**
-     * @param       $url
-     * @param array $attributes
-     * @param null $secure
-     *
+     * @param  array  $attributes
+     * @param  null  $secure
      * @return mixed
      */
     function script($url, $attributes = [], $secure = null)
@@ -117,13 +107,9 @@ if (!function_exists('script')) {
     }
 }
 
-if (!function_exists('form_cancel')) {
-
+if (! function_exists('form_cancel')) {
     /**
-     * @param        $cancel_to
-     * @param        $title
-     * @param string $classes
-     *
+     * @param  string  $classes
      * @return mixed
      */
     function form_cancel($cancel_to, $title, $classes = 'btn btn-danger ')
@@ -132,12 +118,9 @@ if (!function_exists('form_cancel')) {
     }
 }
 
-if (!function_exists('form_submit')) {
-
+if (! function_exists('form_submit')) {
     /**
-     * @param        $title
-     * @param string $classes
-     *
+     * @param  string  $classes
      * @return mixed
      */
     function form_submit($title, $classes = 'btn btn-success pull-right')
@@ -146,11 +129,8 @@ if (!function_exists('form_submit')) {
     }
 }
 
-if (!function_exists('camelcase_to_word')) {
-
+if (! function_exists('camelcase_to_word')) {
     /**
-     * @param $str
-     *
      * @return string
      */
     function camelcase_to_word($str)
@@ -164,11 +144,8 @@ if (!function_exists('camelcase_to_word')) {
     }
 }
 
-if (!function_exists('contact_data')) {
-
+if (! function_exists('contact_data')) {
     /**
-     * @param $str
-     *
      * @return array
      */
     function contact_data($str)
@@ -178,12 +155,12 @@ if (!function_exists('contact_data')) {
         foreach ($elements as $key => $item) {
             $newElements[$item->name] = ['value' => $item->value, 'status' => $item->status];
         }
+
         return $newElements;
     }
 }
 
-if (!function_exists('section_filter')) {
-
+if (! function_exists('section_filter')) {
     /**
      * @param $str
      * Filter according to type selected.
@@ -197,8 +174,8 @@ if (!function_exists('section_filter')) {
     function section_filter($section)
     {
         $type = $section->type;
-        $section_data = "";
-        $section_title = "";
+        $section_data = '';
+        $section_title = '';
         $content = [];
 
         if ($type == 1) {
@@ -208,11 +185,11 @@ if (!function_exists('section_filter')) {
             foreach ($section_content as $item) {
                 $single_item = [
                     'label' => $item->name,
-                    'link' => route('courses.category', ['category' => $item->slug])
+                    'link' => route('courses.category', ['category' => $item->slug]),
                 ];
                 $content[] = $single_item;
             }
-        } else if ($type == 2) {
+        } elseif ($type == 2) {
             $section_content = \App\Models\Course::canDisableCourse()->where('featured', '=', 1)
                 ->has('category')
                 ->where('published', '=', 1)
@@ -223,12 +200,11 @@ if (!function_exists('section_filter')) {
             foreach ($section_content as $item) {
                 $single_item = [
                     'label' => $item->title,
-                    'link' => route('courses.show', [$item->slug])
+                    'link' => route('courses.show', [$item->slug]),
                 ];
                 $content[] = $single_item;
             }
-
-        } else if ($type == 3) {
+        } elseif ($type == 3) {
             $section_content = \App\Models\Course::canDisableCourse()->where('trending', '=', 1)
                 ->has('category')
                 ->where('published', '=', 1)
@@ -239,12 +215,11 @@ if (!function_exists('section_filter')) {
             foreach ($section_content as $item) {
                 $single_item = [
                     'label' => $item->title,
-                    'link' => route('courses.show', [$item->slug])
+                    'link' => route('courses.show', [$item->slug]),
                 ];
                 $content[] = $single_item;
             }
-
-        } else if ($type == 4) {
+        } elseif ($type == 4) {
             $section_content = \App\Models\Course::canDisableCourse()->where('popular', '=', 1)
                 ->has('category')
                 ->where('published', '=', 1)
@@ -255,18 +230,17 @@ if (!function_exists('section_filter')) {
             foreach ($section_content as $item) {
                 $single_item = [
                     'label' => $item->title,
-                    'link' => route('courses.show', [$item->slug])
+                    'link' => route('courses.show', [$item->slug]),
                 ];
                 $content[] = $single_item;
             }
-
-        } else if ($type == 5) {
+        } elseif ($type == 5) {
             $section_title = trans('labels.frontend.footer.useful_links');
             $section_content = $section->links;
             foreach ($section_content as $item) {
                 $single_item = [
                     'label' => $item->label,
-                    'link' => $item->link
+                    'link' => $item->link,
                 ];
                 $content[] = $single_item;
             }
@@ -276,9 +250,7 @@ if (!function_exists('section_filter')) {
     }
 }
 
-
-if (!function_exists('generateInvoice')) {
-
+if (! function_exists('generateInvoice')) {
     function generateInvoice($order)
     {
         $invoice = new \App\Http\Controllers\Traits\InvoiceGenerator();
@@ -294,36 +266,35 @@ if (!function_exists('generateInvoice')) {
 //        $invoice->number($order->id);
         $total = $order->items->sum('price');
         $coupon = \App\Models\Coupon::find($order->coupon_id);
-        if($coupon != null){
-            $discount =  $order->items->sum('price') * $coupon->amount/100;
+        if ($coupon != null) {
+            $discount = $order->items->sum('price') * $coupon->amount / 100;
             $invoice->addDiscountData($discount);
             $total = $total - $discount;
         }
-        $taxes = \App\Models\Tax::where('status','=',1)->get();
-        $rateSum = \App\Models\Tax::where('status','=',1)->sum('rate');
-        if($taxes != null){
+        $taxes = \App\Models\Tax::where('status', '=', 1)->get();
+        $rateSum = \App\Models\Tax::where('status', '=', 1)->sum('rate');
+        if ($taxes != null) {
             $taxData = [];
-            foreach ($taxes as $tax){
-
-                $taxData [] = ['name'=>$tax->name,'amount' => $total * $tax->rate/100];
+            foreach ($taxes as $tax) {
+                $taxData[] = ['name' => $tax->name, 'amount' => $total * $tax->rate / 100];
             }
             $invoice->addTaxData($taxData);
-            $total =  $total + ($total * $rateSum/100);
+            $total = $total + ($total * $rateSum / 100);
         }
         $invoice->addTotal($total);
         $user = \App\Models\Auth\User::find($order->user_id);
 
         $invoice->customer([
-                'name' => $user->full_name,
-                'id' => $user->id,
-                'email' => $user->email
-            ])
+            'name' => $user->full_name,
+            'id' => $user->id,
+            'email' => $user->email,
+        ])
             ->save('public/invoices/invoice-'.$order->id.'.pdf');
 //                ->download('invoice-'.$order->id.'.pdf');
 //                ->show('invoice-'.$order->id.'.pdf');
 
-        $invoiceEntry = \App\Models\Invoice::where('order_id','=',$order->id)->first();
-        if($invoiceEntry == ""){
+        $invoiceEntry = \App\Models\Invoice::where('order_id', '=', $order->id)->first();
+        if ($invoiceEntry == '') {
             $invoiceEntry = new \App\Models\Invoice();
             $invoiceEntry->user_id = $order->user_id;
             $invoiceEntry->order_id = $order->id;
@@ -333,65 +304,60 @@ if (!function_exists('generateInvoice')) {
     }
 }
 
-if (!function_exists('trashUrl')) {
-
+if (! function_exists('trashUrl')) {
     /**
      * @param $str
-     *
      * @return array
      */
     function trashUrl($request)
     {
         $currentQueries = $request->query();
 
-//Declare new queries you want to append to string:
+        //Declare new queries you want to append to string:
         $newQueries = ['show_deleted' => 1];
 
-//Merge together current and new query strings:
+        //Merge together current and new query strings:
         $allQueries = array_merge($currentQueries, $newQueries);
 
-//Generate the URL with all the queries:
+        //Generate the URL with all the queries:
         return $request->fullUrlWithQuery($allQueries);
-
     }
 }
 
-if (!function_exists('getCurrency')) {
-
+if (! function_exists('getCurrency')) {
     /**
      * @param $str
-     *
      * @return array
      */
     function getCurrency($short_code)
     {
         $currencies = config('currencies');
-        $currency = "";
-            foreach ($currencies as $key => $val) {
-                if ($val['short_code'] == $short_code) {
-                    $currency = $val;
-                }
+        $currency = '';
+        foreach ($currencies as $key => $val) {
+            if ($val['short_code'] == $short_code) {
+                $currency = $val;
             }
-       return $currency;
+        }
+
+        return $currency;
     }
 }
 
-if (!function_exists('menuList')) {
-
-
+if (! function_exists('menuList')) {
     function menuList($array)
     {
-        $temp_array = array();
+        $temp_array = [];
         foreach ($array as $item) {
             if ($item->getsons($item->id)->except($item->id)) {
                 $item->subs = menuList($item->getsons($item->id)->except($item->id)); // here is the recursion
                 $temp_array[] = $item;
             }
         }
+
         return $temp_array;
     }
 }
-if (!function_exists('checkCourseSubscribeOrNot')) {
+if (! function_exists('checkCourseSubscribeOrNot')) {
     function checkCourseSubscribeOrNot($courseArr, $courseId)
     {
         $matched = false;
@@ -406,9 +372,8 @@ if (!function_exists('checkCourseSubscribeOrNot')) {
                     }
                     //bundle check course
                     foreach ($subPlan->subcribeBundle as $planDetail) {
-                        $bundleCourse = App\Models\BundleCourses::where('bundle_id','=',$planDetail->bundle->id)->where('course_id','=',$courseId)->first();
-                        if($bundleCourse && $bundleCourse!=null)
-                        {
+                        $bundleCourse = App\Models\BundleCourses::where('bundle_id', '=', $planDetail->bundle->id)->where('course_id', '=', $courseId)->first();
+                        if ($bundleCourse && $bundleCourse != null) {
                             $matchedBundle = true;
                         }
                     }
@@ -417,13 +382,13 @@ if (!function_exists('checkCourseSubscribeOrNot')) {
             if (in_array($courseId, $matcheCoursedArr)) {
                 $matched = true;
             }
-
         }
-        $checkArr = ["matched" => $matched,"matchedBundle"=>$matchedBundle];
+        $checkArr = ['matched' => $matched, 'matchedBundle' => $matchedBundle];
+
         return $checkArr;
     }
 }
-if (!function_exists('checkBundleSubscribeOrNot')) {
+if (! function_exists('checkBundleSubscribeOrNot')) {
     function checkBundleSubscribeOrNot($bundleArr, $bundleId)
     {
         $matched = false;
@@ -440,97 +405,78 @@ if (!function_exists('checkBundleSubscribeOrNot')) {
                 $matched = true;
             }
         }
+
         return $matched;
     }
 }
 
-if (!function_exists('checkExistingUserSubcribtionDate'))
-{
-    function checkExistingUserSubcribtionDate($Interval,$expireDays,$ExpireDateExits)
+if (! function_exists('checkExistingUserSubcribtionDate')) {
+    function checkExistingUserSubcribtionDate($Interval, $expireDays, $ExpireDateExits)
     {
-        if($Interval=='day' && !empty($ExpireDateExits)) {
-
+        if ($Interval == 'day' && ! empty($ExpireDateExits)) {
             $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' day', strtotime($ExpireDateExits)));
-
-        } else if($Interval=='day' && empty($ExpireDateExits) && !empty($expireDays)){
-
-            $returnDate = date("Y-m-d H:i:s", strtotime('+'.$expireDays.' day'));
-
-        } else if($Interval=='week' && !empty($ExpireDateExits)){
-
+        } elseif ($Interval == 'day' && empty($ExpireDateExits) && ! empty($expireDays)) {
+            $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' day'));
+        } elseif ($Interval == 'week' && ! empty($ExpireDateExits)) {
             $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.'week', strtotime($ExpireDateExits)));
-
-        } else if($Interval=='week' && empty($ExpireDateExits) && !empty($expireDays)){
-
-            $returnDate = date("Y-m-d H:i:s", strtotime('+'.$expireDays.' week'));
-
-        } else if($Interval=='month' && !empty($ExpireDateExits)){
-
+        } elseif ($Interval == 'week' && empty($ExpireDateExits) && ! empty($expireDays)) {
+            $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' week'));
+        } elseif ($Interval == 'month' && ! empty($ExpireDateExits)) {
             $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' month', strtotime($ExpireDateExits)));
-
-        } else if($Interval=='month' && empty($ExpireDateExits) && !empty($expireDays)){
-
-            $returnDate = date("Y-m-d H:i:s", strtotime('+'.$expireDays.' month'));
-
-        } else if($Interval=='year' && !empty($ExpireDateExits)){
-
+        } elseif ($Interval == 'month' && empty($ExpireDateExits) && ! empty($expireDays)) {
+            $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' month'));
+        } elseif ($Interval == 'year' && ! empty($ExpireDateExits)) {
             $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' year', strtotime($ExpireDateExits)));
-
-        } else if($Interval=='year' && empty($ExpireDateExits) && !empty($expireDays)){
-
-            $returnDate = date("Y-m-d H:i:s", strtotime('+'.$expireDays.' year'));
-
+        } elseif ($Interval == 'year' && empty($ExpireDateExits) && ! empty($expireDays)) {
+            $returnDate = date('Y-m-d H:i:s', strtotime('+'.$expireDays.' year'));
         } else {
-            $returnDate='';
+            $returnDate = '';
         }
+
         return $returnDate;
     }
 }
 
 /** check courses and bundle on plan existed **/
-if(!function_exists('courseOrBundlePlanExits')){
-    function courseOrBundlePlanExits($courseId=null,$bundleId=null)
+if (! function_exists('courseOrBundlePlanExits')) {
+    function courseOrBundlePlanExits($courseId = null, $bundleId = null)
     {
         $result = false;
-        if($courseId){
-            $Course = App\Models\Stripe\SubscribeCourse::where('course_id','=',$courseId)->first();
-            if($Course){
+        if ($courseId) {
+            $Course = App\Models\Stripe\SubscribeCourse::where('course_id', '=', $courseId)->first();
+            if ($Course) {
                 $result = true;
             }
         }
-        if($bundleId){
-            $bundleCourse = App\Models\Stripe\SubscribeBundle::where('bundle_id','=',$bundleId)->first();
-            if($bundleCourse){
+        if ($bundleId) {
+            $bundleCourse = App\Models\Stripe\SubscribeBundle::where('bundle_id', '=', $bundleId)->first();
+            if ($bundleCourse) {
                 $result = true;
             }
+        }
 
-        }
         return $result;
     }
 }
-
 
 /** check courses and bundle expire**/
-if(!function_exists('courseOrBundleExpire')){
-    function courseOrBundleExpire($courseId=null,$bundleId=null)
+if (! function_exists('courseOrBundleExpire')) {
+    function courseOrBundleExpire($courseId = null, $bundleId = null)
     {
-
         $result = true;
-        if($courseId){
-            $courseEx = App\Models\Stripe\UserCourses::where('user_id',Auth::id())->where('course_id','=',$courseId)->whereDate('expire_at','>=',Carbon::now())->first();
-            if($courseEx==null){
+        if ($courseId) {
+            $courseEx = App\Models\Stripe\UserCourses::where('user_id', Auth::id())->where('course_id', '=', $courseId)->whereDate('expire_at', '>=', Carbon::now())->first();
+            if ($courseEx == null) {
                 $result = false;
             }
         }
-        if($bundleId){
-            $bundleEx = App\Models\Stripe\UserCourses::where('user_id',Auth::id())->where('bundle_id','=',$bundleId)->whereDate('expire_at','>=',Carbon::now())->first();
-            if($bundleEx==null){
+        if ($bundleId) {
+            $bundleEx = App\Models\Stripe\UserCourses::where('user_id', Auth::id())->where('bundle_id', '=', $bundleId)->whereDate('expire_at', '>=', Carbon::now())->first();
+            if ($bundleEx == null) {
                 $result = false;
             }
+        }
 
-        }
         return $result;
     }
 }
-
-

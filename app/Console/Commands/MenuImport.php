@@ -3,20 +3,18 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Traits\MyImportManager;
-use Barryvdh\TranslationManager\Manager;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
-
 class MenuImport extends Command
 {
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'menu:import';
+
     /**
      * The console command description.
      *

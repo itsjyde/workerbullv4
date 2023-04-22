@@ -10,8 +10,6 @@ use App\Models\Auth\User;
 class UserSessionRepository
 {
     /**
-     * @param User $user
-     *
      * @return mixed
      */
     public function clearSessionExceptCurrent(User $user)

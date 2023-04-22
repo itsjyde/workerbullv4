@@ -1,10 +1,10 @@
 <?php
 
-
 $path = 'frontend';
 if (config('app.display_type') == 'rtl') {
     $path = 'frontend-rtl';
 }
+
 return [
 
     /*
@@ -18,19 +18,19 @@ return [
     */
 
     'routes' => [
-        'home'       => 'forums',
+        'home' => 'forums',
         'discussion' => 'discussion',
-        'category'   => 'category',
-        'post'       => 'posts',
-        'register'   => 'register',
-        'login'      => 'login',
+        'category' => 'category',
+        'post' => 'posts',
+        'register' => 'register',
+        'login' => 'login',
     ],
 
     'controllers' => [
-        'default'    => \SkyRaptor\Chatter\Controllers\ChatterController::class,
+        'default' => \SkyRaptor\Chatter\Controllers\ChatterController::class,
         'discussion' => \SkyRaptor\Chatter\Controllers\ChatterDiscussionController::class,
-        'post'       => \SkyRaptor\Chatter\Controllers\ChatterPostController::class,
-        'atom'       => \SkyRaptor\Chatter\Controllers\ChatterAtomController::class,
+        'post' => \SkyRaptor\Chatter\Controllers\ChatterPostController::class,
+        'atom' => \SkyRaptor\Chatter\Controllers\ChatterAtomController::class,
     ],
 
     'models' => [
@@ -38,7 +38,6 @@ return [
         'discussion' => \SkyRaptor\Chatter\Models\Discussion::class,
         'post' => \SkyRaptor\Chatter\Models\Post::class,
     ],
-
 
     /*
      |--------------------------------------------------------------------------
@@ -74,7 +73,7 @@ return [
     */
 
     'yields' => [
-        'head'   => 'css',
+        'head' => 'css',
         'footer' => 'js',
     ],
 
@@ -141,11 +140,11 @@ return [
     */
 
     'user' => [
-        'namespace'                     => 'App\Models\Auth\User',
+        'namespace' => 'App\Models\Auth\User',
         'database_field_with_user_name' => 'name',
-        'relative_url_to_profile'       => '',
-        'relative_url_to_image_assets'  => '',
-        'avatar_image_database_field'   => '',
+        'relative_url_to_profile' => '',
+        'relative_url_to_image_assets' => '',
+        'avatar_image_database_field' => '',
     ],
 
     /*
@@ -167,7 +166,7 @@ return [
 
     'security' => [
         'limit_time_between_posts' => true, //
-        'time_between_posts'       => 1, // In minutes
+        'time_between_posts' => 1, // In minutes
     ],
 
     /*
@@ -221,12 +220,12 @@ return [
     'order_by' => [
         'posts' => [
             'order' => 'created_at',
-            'by' => 'ASC'
+            'by' => 'ASC',
         ],
         'discussions' => [
             'order' => 'last_reply_at',
-            'by' => 'DESC'
-        ]
+            'by' => 'DESC',
+        ],
     ],
 
     /*
@@ -243,7 +242,7 @@ return [
 
     'email' => [
         'enabled' => false,
-        'view'    => 'chatter::email',
+        'view' => 'chatter::email',
     ],
 
     /*
@@ -300,25 +299,25 @@ return [
     */
 
     'middleware' => [
-        'global'     => ['web'],
-        'home'       => [],
+        'global' => ['web'],
+        'home' => [],
         'discussion' => [
-            'index'   => [],
-            'show'    => [],
-            'create'  => [],
-            'store'   => [],
+            'index' => [],
+            'show' => [],
+            'create' => [],
+            'store' => [],
             'destroy' => [],
-            'edit'    => [],
-            'update'  => [],
+            'edit' => [],
+            'update' => [],
         ],
         'post' => [
-            'index'   => [],
-            'show'    => [],
-            'create'  => [],
-            'store'   => [],
+            'index' => [],
+            'show' => [],
+            'create' => [],
+            'store' => [],
             'destroy' => [],
-            'edit'    => [],
-            'update'  => [],
+            'edit' => [],
+            'update' => [],
         ],
         'category' => [
             'show' => [],

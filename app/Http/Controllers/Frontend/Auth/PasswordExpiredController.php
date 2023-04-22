@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Frontend\Auth\UserRepository;
 use App\Http\Requests\Frontend\User\UpdatePasswordRequest;
+use App\Repositories\Frontend\Auth\UserRepository;
 
 /**
  * Class PasswordExpiredController.
@@ -20,10 +20,8 @@ class PasswordExpiredController extends Controller
     }
 
     /**
-     * @param UpdatePasswordRequest $request
-     * @param UserRepository        $userRepository
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function update(UpdatePasswordRequest $request, UserRepository $userRepository)

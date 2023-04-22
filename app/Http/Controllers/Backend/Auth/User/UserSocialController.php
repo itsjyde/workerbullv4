@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Backend\Auth\User;
 
-use App\Models\Auth\User;
-use App\Models\Auth\SocialAccount;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
+use App\Models\Auth\SocialAccount;
+use App\Models\Auth\User;
 use App\Repositories\Backend\Access\User\SocialRepository;
 
 /**
@@ -14,12 +14,8 @@ use App\Repositories\Backend\Access\User\SocialRepository;
 class UserSocialController extends Controller
 {
     /**
-     * @param ManageUserRequest $request
-     * @param SocialRepository  $socialRepository
-     * @param User              $user
-     * @param SocialAccount     $social
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function unlink(ManageUserRequest $request, SocialRepository $socialRepository, User $user, SocialAccount $social)

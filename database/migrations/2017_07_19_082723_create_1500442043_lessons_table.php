@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class Create1500442043LessonsTable extends Migration
 {
@@ -12,7 +12,7 @@ class Create1500442043LessonsTable extends Migration
      */
     public function up()
     {
-        if(! Schema::hasTable('lessons')) {
+        if (! Schema::hasTable('lessons')) {
             Schema::create('lessons', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('course_id')->unsigned()->nullable();
@@ -25,7 +25,7 @@ class Create1500442043LessonsTable extends Migration
                 $table->integer('position')->nullable()->unsigned();
                 $table->tinyInteger('free_lesson')->nullable()->default(1);
                 $table->tinyInteger('published')->nullable()->default(0);
-                
+
                 $table->timestamps();
                 $table->softDeletes();
 

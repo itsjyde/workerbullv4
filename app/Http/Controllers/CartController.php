@@ -27,8 +27,8 @@ use Omnipay\Omnipay;
 
 class CartController extends Controller
 {
-
     private $path;
+
     private $currency;
 
     public function __construct()
@@ -40,13 +40,11 @@ class CartController extends Controller
             } else {
                 $path = 'frontend';
             }
-        } else if (config('app.display_type') == 'rtl') {
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
         $this->currency = getCurrency(config('app.currency'));
-
-
     }
 
     public function index(Request $request)
@@ -69,20 +67,18 @@ class CartController extends Controller
         //Apply Tax
         $taxData = $this->applyTax('total');
 
-
-        return view($this->path . '.cart.checkout', compact('courses', 'bundles', 'total', 'taxData'));
+        return view($this->path.'.cart.checkout', compact('courses', 'bundles', 'total', 'taxData'));
     }
 
     public function addToCart(Request $request)
     {
-        $product = "";
-        $teachers = "";
-        $type = "";
+        $product = '';
+        $teachers = '';
+        $type = '';
         if ($request->has('course_id')) {
             $product = Course::findOrFail($request->get('course_id'));
             $teachers = $product->teachers->pluck('id', 'name');
             $type = 'course';
-
         } elseif ($request->has('bundle_id')) {
             $product = Bundle::findOrFail($request->get('bundle_id'));
             $teachers = $product->user->name;
@@ -90,7 +86,7 @@ class CartController extends Controller
         }
 
         $cart_items = Cart::session(auth()->user()->id)->getContent()->keys()->toArray();
-        if (!in_array($product->id, $cart_items)) {
+        if (! in_array($product->id, $cart_items)) {
             Cart::session(auth()->user()->id)
                 ->add($product->id, $product->title, $product->price, 1,
                     [
@@ -98,27 +94,26 @@ class CartController extends Controller
                         'description' => $product->description,
                         'image' => $product->course_image,
                         'type' => $type,
-                        'teachers' => $teachers
+                        'teachers' => $teachers,
                     ]);
         }
 
-
         Session::flash('success', trans('labels.frontend.cart.product_added'));
+
         return back();
     }
 
     public function checkout(Request $request)
     {
-        $product = "";
-        $teachers = "";
-        $type = "";
+        $product = '';
+        $teachers = '';
+        $type = '';
         $bundle_ids = [];
         $course_ids = [];
         if ($request->has('course_id')) {
             $product = Course::findOrFail($request->get('course_id'));
             $teachers = $product->teachers->pluck('id', 'name');
             $type = 'course';
-
         } elseif ($request->has('bundle_id')) {
             $product = Bundle::findOrFail($request->get('bundle_id'));
             $teachers = $product->user->name;
@@ -126,8 +121,7 @@ class CartController extends Controller
         }
 
         $cart_items = Cart::session(auth()->user()->id)->getContent()->keys()->toArray();
-        if (!in_array($product->id, $cart_items)) {
-
+        if (! in_array($product->id, $cart_items)) {
             Cart::session(auth()->user()->id)
                 ->add($product->id, $product->title, $product->price, 1,
                     [
@@ -135,7 +129,7 @@ class CartController extends Controller
                         'description' => $product->description,
                         'image' => $product->course_image,
                         'type' => $type,
-                        'teachers' => $teachers
+                        'teachers' => $teachers,
                     ]);
         }
         foreach (Cart::session(auth()->user()->id)->getContent() as $item) {
@@ -161,13 +155,13 @@ class CartController extends Controller
     public function clear(Request $request)
     {
         Cart::session(auth()->user()->id)->clear();
+
         return back();
     }
 
     public function remove(Request $request)
     {
         Cart::session(auth()->user()->id)->removeConditionsByType('coupon');
-
 
         if (Cart::session(auth()->user()->id)->getContent()->count() < 2) {
             Cart::session(auth()->user()->id)->clearCartConditions();
@@ -176,6 +170,7 @@ class CartController extends Controller
             Cart::session(auth()->user()->id)->clear();
         }
         Cart::session(auth()->user()->id)->remove($request->course);
+
         return redirect(route('cart.index'));
     }
 
@@ -198,7 +193,7 @@ class CartController extends Controller
             'currency' => $currency,
             'token' => $token,
             'confirm' => true,
-            'description' => auth()->user()->name
+            'description' => auth()->user()->name,
         ])->send();
 
         if ($response->isSuccessful()) {
@@ -222,13 +217,14 @@ class CartController extends Controller
 
             Cart::session(auth()->user()->id)->clear();
             Session::flash('success', trans('labels.frontend.cart.payment_done'));
-            return redirect()->route('status');
 
+            return redirect()->route('status');
         } else {
             $order->status = 2;
             $order->save();
-            \Log::info($response->getMessage() . ' for id = ' . auth()->user()->id);
+            \Log::info($response->getMessage().' for id = '.auth()->user()->id);
             Session::flash('failure', trans('labels.frontend.cart.try_again'));
+
             return redirect()->route('cart.index');
         }
     }
@@ -261,10 +257,12 @@ class CartController extends Controller
             }
         } catch (\Exception $e) {
             \Session::put('failure', trans('labels.frontend.cart.unknown_error'));
+
             return Redirect::route('cart.paypal.status');
         }
 
         \Session::put('failure', trans('labels.frontend.cart.unknown_error'));
+
         return Redirect::route('cart.paypal.status');
     }
 
@@ -287,18 +285,19 @@ class CartController extends Controller
         }
 
         $content['items'] = $items;
-        $content['total'] =  number_format(Cart::session(auth()->user()->id)->getTotal(),2);
+        $content['total'] = number_format(Cart::session(auth()->user()->id)->getTotal(), 2);
         $content['reference_no'] = $order->reference_no;
 
         try {
             \Mail::to(auth()->user()->email)->send(new OfflineOrderMail($content));
             $this->adminOrderMail($order);
         } catch (\Exception $e) {
-            \Log::info($e->getMessage() . ' for order ' . $order->id);
+            \Log::info($e->getMessage().' for order '.$order->id);
         }
 
         Cart::session(auth()->user()->id)->clear();
         \Session::flash('success', trans('labels.frontend.cart.offline_request'));
+
         return redirect()->route('courses.all');
     }
 
@@ -308,6 +307,7 @@ class CartController extends Controller
         if (request()->get('status')) {
             if (empty(request()->get('PayerID')) || empty(request()->get('token'))) {
                 \Session::put('failure', trans('labels.frontend.cart.payment_failed'));
+
                 return Redirect::route('status');
             }
             $order = $this->makeOrder();
@@ -332,13 +332,13 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
-            return Redirect::route('status');
-        }
-        else {
-            \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
-            return Redirect::route('status');
-        }
 
+            return Redirect::route('status');
+        } else {
+            \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
+            return Redirect::route('status');
+        }
     }
 
     public function getNow(Request $request)
@@ -357,12 +357,11 @@ class CartController extends Controller
         } else {
             $type = Bundle::class;
             $id = $request->bundle_id;
-
         }
         $order->items()->create([
             'item_id' => $id,
             'item_type' => $type,
-            'price' => 0
+            'price' => 0,
         ]);
 
         foreach ($order->items as $orderItem) {
@@ -375,13 +374,14 @@ class CartController extends Controller
             $orderItem->item->students()->attach($order->user_id);
         }
         Session::flash('success', trans('labels.frontend.cart.purchase_successful'));
-        return back();
 
+        return back();
     }
 
     public function getOffers()
     {
         $coupons = Coupon::where('status', '=', 1)->get();
+
         return view('frontend.cart.offers', compact('coupons'));
     }
 
@@ -431,41 +431,39 @@ class CartController extends Controller
                         $isCouponValid = false;
                     }
                 }
-
             }
 
             if ($isCouponValid == true) {
                 $type = null;
                 if ($coupon->type == 1) {
-                    $type = '-' . $coupon->amount . '%';
+                    $type = '-'.$coupon->amount.'%';
                 } else {
-                    $type = '-' . $coupon->amount;
+                    $type = '-'.$coupon->amount;
                 }
 
-                $condition = new \Darryldecode\Cart\CartCondition(array(
+                $condition = new \Darryldecode\Cart\CartCondition([
                     'name' => $coupon->code,
                     'type' => 'coupon',
                     'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
                     'value' => $type,
-                    'order' => 1
-                ));
+                    'order' => 1,
+                ]);
 
                 Cart::session(auth()->user()->id)->condition($condition);
                 //Apply Tax
                 $taxData = $this->applyTax('subtotal');
 
                 $html = view('frontend.cart.partials.order-stats', compact('total', 'taxData'))->render();
+
                 return ['status' => 'success', 'html' => $html];
             }
-
-
         }
+
         return ['status' => 'fail', 'message' => trans('labels.frontend.cart.invalid_coupon')];
     }
 
     public function removeCoupon(Request $request)
     {
-
         Cart::session(auth()->user()->id)->clearCartConditions();
         Cart::session(auth()->user()->id)->removeConditionsByType('coupon');
         Cart::session(auth()->user()->id)->removeConditionsByType('tax');
@@ -489,8 +487,8 @@ class CartController extends Controller
         $taxData = $this->applyTax('subtotal');
 
         $html = view('frontend.cart.partials.order-stats', compact('total', 'taxData'))->render();
-        return ['status' => 'success', 'html' => $html];
 
+        return ['status' => 'success', 'html' => $html];
     }
 
     private function makeOrder()
@@ -518,7 +516,7 @@ class CartController extends Controller
             $order->items()->create([
                 'item_id' => $cartItem->id,
                 'item_type' => $type,
-                'price' => $cartItem->price
+                'price' => $cartItem->price,
             ]);
         }
 //        Cart::session(auth()->user()->id)->removeConditionsByType('coupon');
@@ -536,7 +534,7 @@ class CartController extends Controller
                 foreach ($order_items->where('item_type', 'App\Models\Course') as $item) {
                     if ($item->item_id == $cartItem->id) {
                         $is_duplicate = true;
-                        $message .= $cartItem->name . ' ' . __('alerts.frontend.duplicate_course') . '</br>';
+                        $message .= $cartItem->name.' '.__('alerts.frontend.duplicate_course').'</br>';
                     }
                 }
             }
@@ -544,7 +542,7 @@ class CartController extends Controller
                 foreach ($order_items->where('item_type', 'App\Models\Bundle') as $item) {
                     if ($item->item_id == $cartItem->id) {
                         $is_duplicate = true;
-                        $message .= $cartItem->name . '' . __('alerts.frontend.duplicate_bundle') . '</br>';
+                        $message .= $cartItem->name.''.__('alerts.frontend.duplicate_bundle').'</br>';
                     }
                 }
             }
@@ -553,8 +551,8 @@ class CartController extends Controller
         if ($is_duplicate) {
             return redirect()->back()->withdanger($message);
         }
-        return false;
 
+        return false;
     }
 
     private function applyTax($target)
@@ -566,24 +564,25 @@ class CartController extends Controller
             $taxData = [];
             foreach ($taxes as $tax) {
                 $total = Cart::session(auth()->user()->id)->getTotal();
-                $taxData[] = ['name' => '+' . $tax->rate . '% ' . $tax->name, 'amount' =>  number_format(($total * $tax->rate / 100),2)];
+                $taxData[] = ['name' => '+'.$tax->rate.'% '.$tax->name, 'amount' => number_format(($total * $tax->rate / 100), 2)];
             }
 
-            $condition = new \Darryldecode\Cart\CartCondition(array(
+            $condition = new \Darryldecode\Cart\CartCondition([
                 'name' => 'Tax',
                 'type' => 'tax',
                 'target' => 'total', // this condition will be applied to cart's subtotal when getSubTotal() is called.
-                'value' => $taxes->sum('rate') . '%',
-                'order' => 2
-            ));
+                'value' => $taxes->sum('rate').'%',
+                'order' => 2,
+            ]);
             Cart::session(auth()->user()->id)->condition($condition);
+
             return $taxData;
         }
     }
 
     private function adminOrderMail($order)
     {
-        if(config('access.users.order_mail')) {
+        if (config('access.users.order_mail')) {
             $content = [];
             $items = [];
             $counter = 0;
@@ -593,7 +592,7 @@ class CartController extends Controller
             }
 
             $content['items'] = $items;
-            $content['total'] =  number_format(Cart::session(auth()->user()->id)->getTotal(),2);
+            $content['total'] = number_format(Cart::session(auth()->user()->id)->getTotal(), 2);
             $content['reference_no'] = $order->reference_no;
 
             $admins = User::role('administrator')->get();
@@ -611,16 +610,17 @@ class CartController extends Controller
 
         $cartTotal = number_format(Cart::session(auth()->user()->id)->getTotal(), 2);
         $cartdata = [
-            "purpose" => "Buy Course/Bundle",
-            "amount" => $cartTotal,
-            "buyer_name" => auth()->user()->name,
-            "send_email" => false,
-            "send_sms" => false,
-            "phone" => $request->user_phone,
-            "email" => auth()->user()->email,
-            "redirect_url" => route('cart.instamojo.status'),
+            'purpose' => 'Buy Course/Bundle',
+            'amount' => $cartTotal,
+            'buyer_name' => auth()->user()->name,
+            'send_email' => false,
+            'send_sms' => false,
+            'phone' => $request->user_phone,
+            'email' => auth()->user()->email,
+            'redirect_url' => route('cart.instamojo.status'),
         ];
-        $instamojoWrapper =  new InstamojoWrapper();
+        $instamojoWrapper = new InstamojoWrapper();
+
         return $instamojoWrapper->pay($cartdata);
     }
 
@@ -650,13 +650,15 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
+
             return Redirect::route('status');
-        }else if (request()->get('payment_status') == 'Failed') {
+        } elseif (request()->get('payment_status') == 'Failed') {
             \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
             return Redirect::route('status');
-        }
-        else {
+        } else {
             \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
             return Redirect::route('status');
         }
     }
@@ -669,12 +671,13 @@ class CartController extends Controller
         $orderId = $razorWrapper->order($currency, $amount);
         $cart = [
             'order_id' => $orderId,
-            'amount' =>  $amount,
+            'amount' => $amount,
             'currency' => $currency,
             'description' => auth()->user()->name,
             'name' => auth()->user()->name,
             'email' => auth()->user()->email,
         ];
+
         return redirect()->route('cart.index')->with(['razorpay' => $cart]);
     }
 
@@ -705,9 +708,11 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
+
             return Redirect::route('status');
         } else {
             \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
             return Redirect::route('status');
         }
     }
@@ -726,6 +731,7 @@ class CartController extends Controller
         ];
 
         $cashFreeWrapper = new CashFreeWrapper();
+
         return $cashFreeWrapper->request($parameter);
     }
 
@@ -733,7 +739,7 @@ class CartController extends Controller
     {
         $cashFreeWrapper = new CashFreeWrapper();
         $response = $cashFreeWrapper->signatureVerification($request->except('signature'), $request->signature);
-        if($response && $request->txStatus == "SUCCESS"){
+        if ($response && $request->txStatus == 'SUCCESS') {
             $order = $this->makeOrder();
             $order->payment_type = 6;
             $order->transaction_id = request()->get('payment_id');
@@ -756,12 +762,13 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
-            \Log::info('Gateway:CaseFree,Message:'.$request->txMsg.'txStatus:'.$request->txStatus. ' for id = ' . auth()->user()->id);
-            return Redirect::route('status');
+            \Log::info('Gateway:CaseFree,Message:'.$request->txMsg.'txStatus:'.$request->txStatus.' for id = '.auth()->user()->id);
 
+            return Redirect::route('status');
         }
-        \Log::info('Gateway:CaseFree,Message:'.$request->txMsg.'txStatus:'.$request->txStatus. ' for id = ' . auth()->user()->id);
+        \Log::info('Gateway:CaseFree,Message:'.$request->txMsg.'txStatus:'.$request->txStatus.' for id = '.auth()->user()->id);
         \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
         return Redirect::route('status');
     }
 
@@ -777,6 +784,7 @@ class CartController extends Controller
             'email' => auth()->user()->email,
             'phone' => $request->user_phone,
         ];
+
         return $payumoneyWrapper->request($parameter);
     }
 
@@ -785,7 +793,7 @@ class CartController extends Controller
         \Session::forget('failure');
         $payumoneyWrapper = new PayuMoneyWrapper();
         $response = $payumoneyWrapper->response($request);
-        if(is_array($response) && $response['status'] == 'success'){
+        if (is_array($response) && $response['status'] == 'success') {
             $order = $this->makeOrder();
             $order->payment_type = 7;
             $order->transaction_id = $response['payuMoneyId'];
@@ -808,11 +816,13 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
-            \Log::info('Gateway:PayUMoney,Message:'.$response['error_Message'].',txStatus:'.$response['status']. ' for id = ' . auth()->user()->id);
+            \Log::info('Gateway:PayUMoney,Message:'.$response['error_Message'].',txStatus:'.$response['status'].' for id = '.auth()->user()->id);
+
             return Redirect::route('status');
         }
-        \Log::info('Gateway:PayUMoney,Message:'.$response['error_Message'].',txStatus:'.$response['status']. ' for id = ' . auth()->user()->id);
+        \Log::info('Gateway:PayUMoney,Message:'.$response['error_Message'].',txStatus:'.$response['status'].' for id = '.auth()->user()->id);
         \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
         return Redirect::route('status');
     }
 
@@ -829,22 +839,23 @@ class CartController extends Controller
             'lastname' => auth()->user()->last_name,
             'metadata' => '',
             'phonenumber' => $request->user_phone,
-//            'logo' => 'https://demo.neonlms.com/storage/logos/popup-logo.png',
+            //            'logo' => 'https://demo.neonlms.com/storage/logos/popup-logo.png',
             'logo' => asset('storage/logos/'.config('logo_popup')),
-            'title' =>  config('app.name'),
+            'title' => config('app.name'),
         ]);
-        if($request->method() == "POST") {
+        if ($request->method() == 'POST') {
             Rave::initialize(route('cart.flutter.status'));
-        }else{
+        } else {
             \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
+
             return Redirect::route('status');
         }
     }
 
     public function getFlatterStatus(Request $request)
     {
-        $response = json_decode($request->resp,true);
-        if($response['respcode'] == '00' || $response['respcode'] == "0") {
+        $response = json_decode($request->resp, true);
+        if ($response['respcode'] == '00' || $response['respcode'] == '0') {
             $data = Rave::verifyTransaction($response['data']['transactionobject']['txRef']);
             $order = $this->makeOrder();
             $order->payment_type = 7;
@@ -865,12 +876,13 @@ class CartController extends Controller
             generateInvoice($order);
             $this->adminOrderMail($order);
             Cart::session(auth()->user()->id)->clear();
-            \Log::info('Gateway:Flutter,Message:'.$response['respmsg'].',txStatus:'.$response['data']['data']['status']. ' for id = ' . auth()->user()->id);
+            \Log::info('Gateway:Flutter,Message:'.$response['respmsg'].',txStatus:'.$response['data']['data']['status'].' for id = '.auth()->user()->id);
             \Session::flash('success', trans('labels.frontend.cart.payment_done'));
-        }else{
-            \Log::info('Gateway:Flutter,Message:'.json_encode($response). ' for id = ' . auth()->user()->id);
+        } else {
+            \Log::info('Gateway:Flutter,Message:'.json_encode($response).' for id = '.auth()->user()->id);
             \Session::flash('failure', trans('labels.frontend.cart.payment_failed'));
         }
+
         return Redirect::route('status');
     }
 }

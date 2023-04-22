@@ -12,22 +12,22 @@ use Auth;
  */
 class EarningHelper
 {
-
     /**
      *  Earning for teacher
-     * @param App\Models\Order $order
+     *
+     * @param  App\Models\Order  $order
      * @return null
      **/
     public function insert($order)
     {
         $orderItems = $order->items;
         foreach ($orderItems as $items) {
-            if($items->item_type == 'App\Models\Bundle'){
+            if ($items->item_type == 'App\Models\Bundle') {
                 $coursesPrice = $items->item->courses->sum('price');
                 foreach ($items->item->courses as $courses) {
-                    $commissionForTeacher = (($items->item->price/$coursesPrice) * config('commission_rate') * $courses->price)/100;
+                    $commissionForTeacher = (($items->item->price / $coursesPrice) * config('commission_rate') * $courses->price) / 100;
                     $teacherIds = $courses->teachers->pluck('id')->toArray();
-                    if($teacherIds) {
+                    if ($teacherIds) {
                         foreach ($teacherIds as $teacherId) {
                             $data = [
                                 'user_id' => $teacherId,
@@ -42,10 +42,10 @@ class EarningHelper
                     }
                 }
             }
-            if($items->item_type == 'App\Models\Course'){
-                $commissionForTeacher = (config('commission_rate') * $items->item->price)/100;
+            if ($items->item_type == 'App\Models\Course') {
+                $commissionForTeacher = (config('commission_rate') * $items->item->price) / 100;
                 $teacherIds = $items->item->teachers->pluck('id')->toArray();
-                if($teacherIds) {
+                if ($teacherIds) {
                     foreach ($teacherIds as $teacherId) {
                         $data = [
                             'user_id' => $teacherId,
@@ -64,14 +64,15 @@ class EarningHelper
 
     /**
      * Remove earning for teacher
-     * @param App\Models\Order $order
+     *
+     * @param  App\Models\Order  $order
      * @return null
      **/
-
-    public function remove($order){
-        if($order->status == 1){
+    public function remove($order)
+    {
+        if ($order->status == 1) {
             $earnings = Earning::where('order_id', $order->id)->get();
-            if($earnings->count() > 0){
+            if ($earnings->count() > 0) {
                 foreach ($earnings as $withdraw) {
                     $data = [
                         'user_id' => $withdraw->teacher_id,
@@ -87,49 +88,59 @@ class EarningHelper
 
     /**
      * Total earning for teacher
+     *
      * @return number
      **/
-
-    public function totalEarning($id = null){
-        if($id){
+    public function totalEarning($id = null)
+    {
+        if ($id) {
             $user = User::find($id);
+
             return $user->earnings->sum('amount');
         }
+
         return Auth::user()->earnings->sum('amount');
     }
 
     /**
      * Total earning for teacher
+     *
      * @return number
      **/
-
-    public function totalWithdrawal($id = null){
-        if($id){
+    public function totalWithdrawal($id = null)
+    {
+        if ($id) {
             $user = User::find($id);
+
             return $user->withdraws->where('status', '=', 1)->sum('amount');
         }
+
         return Auth::user()->withdraws->where('status', '=', 1)->sum('amount');
     }
 
     /**
      * Total withdrawal pending for teacher
+     *
      * @return number
      **/
-
-    public function totalWithdrawalPending($id = null){
-        if($id){
+    public function totalWithdrawalPending($id = null)
+    {
+        if ($id) {
             $user = User::find($id);
+
             return $user->withdraws->where('status', '=', 0)->sum('amount');
         }
+
         return Auth::user()->withdraws->where('status', '=', 0)->sum('amount');
     }
 
     /**
      * Total balance teacher
+     *
      * @return number
      **/
-
-    public function totalBalance($id= null){
+    public function totalBalance($id = null)
+    {
         return $this->totalEarning($id) - ($this->totalWithdrawal($id) + $this->totalWithdrawalPending($id));
     }
 }

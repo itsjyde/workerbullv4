@@ -4,8 +4,8 @@ namespace Tests;
 
 use App\Models\Auth\Role;
 use App\Models\Auth\User;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\Models\Permission;
 
 /**
  * Class TestCase.
@@ -34,7 +34,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * Create an administrator.
      *
-     * @param array $attributes
      *
      * @return mixed
      */
@@ -50,8 +49,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Login the given administrator or create the first if none supplied.
      *
-     * @param bool $admin
-     *
+     * @param  bool  $admin
      * @return bool|mixed
      */
     protected function loginAsAdmin($admin = false)

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Backend\Auth\User;
 
-use App\Models\Auth\User;
 use App\Http\Controllers\Controller;
-use App\Repositories\Backend\Auth\UserRepository;
 use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
+use App\Models\Auth\User;
+use App\Repositories\Backend\Auth\UserRepository;
 
 /**
  * Class UserStatusController.
@@ -17,17 +17,12 @@ class UserStatusController extends Controller
      */
     protected $userRepository;
 
-    /**
-     * @param UserRepository $userRepository
-     */
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
     /**
-     * @param ManageUserRequest $request
-     *
      * @return mixed
      */
     public function getDeactivated(ManageUserRequest $request)
@@ -37,8 +32,6 @@ class UserStatusController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     *
      * @return mixed
      */
     public function getDeleted(ManageUserRequest $request)
@@ -48,11 +41,8 @@ class UserStatusController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     * @param                   $status
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function mark(ManageUserRequest $request, User $user, $status)
@@ -67,10 +57,8 @@ class UserStatusController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $deletedUser
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      * @throws \Throwable
      */
@@ -82,10 +70,8 @@ class UserStatusController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $deletedUser
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function restore(ManageUserRequest $request, User $deletedUser)

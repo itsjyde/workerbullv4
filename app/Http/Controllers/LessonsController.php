@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Auth\Auth;
 use App\Mail\Frontend\LiveLesson\StudentMeetingSlotMail;
 use App\Models\Lesson;
 use App\Models\LessonSlotBooking;
@@ -17,7 +16,6 @@ use Illuminate\Http\Request;
 
 class LessonsController extends Controller
 {
-
     private $path;
 
     public function __construct()
@@ -29,7 +27,7 @@ class LessonsController extends Controller
             } else {
                 $path = 'frontend';
             }
-        } else if (config('app.display_type') == 'rtl') {
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
@@ -37,15 +35,15 @@ class LessonsController extends Controller
 
     public function show($course_id, $lesson_slug)
     {
-        $test_result = "";
-        $completed_lessons = "";
+        $test_result = '';
+        $completed_lessons = '';
 
-        $test_pass = "";
-        $total_questions = "";
-        $percentage = "";
+        $test_pass = '';
+        $total_questions = '';
+        $percentage = '';
         $lesson = Lesson::where('slug', $lesson_slug)->where('course_id', $course_id)->where('published', '=', 1)->first();
 
-        if ($lesson == "") {
+        if ($lesson == '') {
             $lesson = Test::where('slug', $lesson_slug)->where('course_id', $course_id)->where('published', '=', 1)->firstOrFail();
             $lesson->full_text = $lesson->description;
 
@@ -54,56 +52,53 @@ class LessonsController extends Controller
                 ->where('user_id', \Auth::id())
                 ->first();
             if ($lesson && $test_result) {
-
                 // get the tes't score
 
                 $total_questions = $lesson->questions->count();
                 $percentage = $test_result->test_result / $total_questions * 100;
-                $test_pass = ($percentage < $lesson->passing_score) ? "Failed" : "Pass";
+                $test_pass = ($percentage < $lesson->passing_score) ? 'Failed' : 'Pass';
             }
         }
 
-        if ((int)config('lesson_timer') == 0) {
-            if(!$lesson->live_lesson){
+        if ((int) config('lesson_timer') == 0) {
+            if (! $lesson->live_lesson) {
                 if ($lesson->chapterStudents()->where('user_id', \Auth::id())->count() == 0) {
                     $lesson->chapterStudents()->create([
                         'model_type' => get_class($lesson),
                         'model_id' => $lesson->id,
                         'user_id' => auth()->user()->id,
-                        'course_id' => $lesson->course->id
+                        'course_id' => $lesson->course->id,
                     ]);
                 }
             }
         }
 
         $course_lessons = $lesson->course->lessons->pluck('id')->toArray();
-        $course_tests = ($lesson->course->tests ) ? $lesson->course->tests->pluck('id')->toArray() : [];
-        $course_lessons = array_merge($course_lessons,$course_tests);
+        $course_tests = ($lesson->course->tests) ? $lesson->course->tests->pluck('id')->toArray() : [];
+        $course_lessons = array_merge($course_lessons, $course_tests);
 
         $previous_lesson = $lesson->course->courseTimeline()
             ->where('sequence', '<', $lesson->courseTimeline->sequence)
-            ->whereIn('model_id',$course_lessons)
+            ->whereIn('model_id', $course_lessons)
             ->orderBy('sequence', 'desc')
             ->first();
 
         $next_lesson = $lesson->course->courseTimeline()
-            ->whereIn('model_id',$course_lessons)
+            ->whereIn('model_id', $course_lessons)
             ->where('sequence', '>', $lesson->courseTimeline->sequence)
             ->orderBy('sequence', 'asc')
             ->first();
 
         $lessons = $lesson->course->courseTimeline()
-            ->whereIn('model_id',$course_lessons)
+            ->whereIn('model_id', $course_lessons)
             ->orderby('sequence', 'asc')
             ->get();
 
-
-
         $purchased_course = $lesson->course->students()->where('user_id', \Auth::id())->count() > 0;
-        $test_exists = FALSE;
+        $test_exists = false;
 
         if (get_class($lesson) == 'App\Models\Test') {
-            $test_exists = TRUE;
+            $test_exists = true;
         }
 
         $completed_lessons = \Auth::user()->chapters()
@@ -112,8 +107,8 @@ class LessonsController extends Controller
             ->pluck('model_id')
             ->toArray();
 
-        return view($this->path . '.courses.lesson', compact('lesson', 'previous_lesson', 'next_lesson', 'test_result',
-            'purchased_course', 'test_exists', 'lessons', 'completed_lessons','test_pass','percentage','total_questions'));
+        return view($this->path.'.courses.lesson', compact('lesson', 'previous_lesson', 'next_lesson', 'test_result',
+            'purchased_course', 'test_exists', 'lessons', 'completed_lessons', 'test_pass', 'percentage', 'total_questions'));
     }
 
     public function test($lesson_slug, Request $request)
@@ -122,9 +117,8 @@ class LessonsController extends Controller
         $answers = [];
         $test_score = 0;
         $total_score = 0;
-        if(!$request->get('questions')){
-
-            return back()->with(['flash_warning'=>'No options selected']);
+        if (! $request->get('questions')) {
+            return back()->with(['flash_warning' => 'No options selected']);
         }
         foreach ($request->get('questions') as $question_id => $answer_id) {
             $question = Question::find($question_id);
@@ -134,10 +128,10 @@ class LessonsController extends Controller
             $answers[] = [
                 'question_id' => $question_id,
                 'option_id' => $answer_id,
-                'correct' => $correct
+                'correct' => $correct,
             ];
             if ($correct) {
-                if($question->score) {
+                if ($question->score) {
                     $test_score += $question->score;
                 }
             }
@@ -151,7 +145,7 @@ class LessonsController extends Controller
             'test_id' => $test->id,
             'user_id' => \Auth::id(),
             'test_result' => $test_score,
-            'test_score' =>$total_score,
+            'test_score' => $total_score,
             'course_id' => $test->course_id,
         ]);
         $test_result->answers()->createMany($answers);
@@ -160,19 +154,19 @@ class LessonsController extends Controller
 
         $total_questions = count($request->get('questions'));
         $percentage = $test_score / $total_questions * 100;
-        $test_pass = ($percentage < $test->passing_score) ? "Failed" : "Pass";
+        $test_pass = ($percentage < $test->passing_score) ? 'Failed' : 'Pass';
 
         if ($test->chapterStudents()->where('user_id', \Auth::id())->get()->count() == 0) {
             $test->chapterStudents()->create([
                 'model_type' => $test->model_type,
                 'model_id' => $test->id,
                 'user_id' => auth()->user()->id,
-                'course_id' => $test->course->id
+                'course_id' => $test->course->id,
             ]);
         }
 
-        return back()->with(['message'=>'Test score: ' . $test_score,'result'=>$test_result,'test_percentage' => $percentage,
-            'test_pass' => $test_pass , 'total_score' => $total_score]);
+        return back()->with(['message' => 'Test score: '.$test_score, 'result' => $test_result, 'test_percentage' => $percentage,
+            'test_pass' => $test_pass, 'total_score' => $total_score]);
     }
 
     public function retest(Request $request)
@@ -181,6 +175,7 @@ class LessonsController extends Controller
             ->where('user_id', '=', auth()->user()->id)
             ->first();
         $test->delete();
+
         return back();
     }
 
@@ -199,9 +194,9 @@ class LessonsController extends Controller
             $video_progress->complete = 1;
         }
         $video_progress->save();
+
         return $video_progress->progress;
     }
-
 
     public function courseProgress(Request $request)
     {
@@ -213,12 +208,14 @@ class LessonsController extends Controller
                         'model_type' => $request->model_type,
                         'model_id' => $request->model_id,
                         'user_id' => auth()->user()->id,
-                        'course_id' => $lesson->course->id
+                        'course_id' => $lesson->course->id,
                     ]);
+
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -227,24 +224,24 @@ class LessonsController extends Controller
         $lesson_slot = LiveLessonSlot::find($request->live_lesson_slot_id);
         $lesson = $lesson_slot->lesson;
 
-        if ((int)config('lesson_timer') == 0) {
+        if ((int) config('lesson_timer') == 0) {
             if ($lesson->chapterStudents()->where('user_id', \Auth::id())->count() == 0) {
                 $lesson->chapterStudents()->create([
                     'model_type' => get_class($lesson),
                     'model_id' => $lesson->id,
                     'user_id' => auth()->user()->id,
-                    'course_id' => $lesson->course->id
+                    'course_id' => $lesson->course->id,
                 ]);
             }
         }
 
-        if(LessonSlotBooking::where('lesson_id', $request->lesson_id)->where('user_id', auth()->user()->id)->count() == 0){
+        if (LessonSlotBooking::where('lesson_id', $request->lesson_id)->where('user_id', auth()->user()->id)->count() == 0) {
             LessonSlotBooking::create(
                 ['lesson_id' => $request->lesson_id, 'live_lesson_slot_id' => $request->live_lesson_slot_id, 'user_id' => auth()->user()->id]
             );
             \Mail::to(auth()->user()->email)->send(new StudentMeetingSlotMail($lesson_slot));
         }
-        return back()->with(['success'=> __('alerts.frontend.course.slot_booking')]);
-    }
 
+        return back()->with(['success' => __('alerts.frontend.course.slot_booking')]);
+    }
 }

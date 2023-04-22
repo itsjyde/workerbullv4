@@ -8,9 +8,7 @@ namespace App\Models\Auth\Traits\Scope;
 trait UserScope
 {
     /**
-     * @param $query
-     * @param bool $confirmed
-     *
+     * @param  bool  $confirmed
      * @return mixed
      */
     public function scopeConfirmed($query, $confirmed = true)
@@ -19,9 +17,7 @@ trait UserScope
     }
 
     /**
-     * @param $query
-     * @param bool $status
-     *
+     * @param  bool  $status
      * @return mixed
      */
     public function scopeActive($query, $status = true)

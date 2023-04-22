@@ -16,6 +16,7 @@ class AccountController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        return view('backend.account.index',compact('user'));
+
+        return view('backend.account.index', compact('user'));
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Mail\Backend\LiveLesson;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -32,6 +31,6 @@ class TeacherMeetingSlotMail extends Mailable
     {
         return $this->markdown('emails/teacherMeetingSlotMail')
             ->subject('Live Lesson Meeting Details '.env('APP_NAME'))
-            ->with('content',$this->content);
+            ->with('content', $this->content);
     }
 }

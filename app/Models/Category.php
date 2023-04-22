@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -17,17 +16,17 @@ class Category extends Model
      */
     protected static function booted()
     {
-        Static::deleted(function($category){
-            if($category->courses->count()){
+        static::deleted(function ($category) {
+            if ($category->courses->count()) {
                 $category->courses()->delete();
             }
-            if($category->bundles->count()){
+            if ($category->bundles->count()) {
                 $category->bundles()->delete();
             }
-            if($category->blogs->count()){
+            if ($category->blogs->count()) {
                 $category->blogs()->delete();
             }
-            if($category->faqs->count()){
+            if ($category->faqs->count()) {
                 $category->faqs()->delete();
             }
         });
@@ -35,21 +34,23 @@ class Category extends Model
 
     protected $guarded = [];
 
-    public function courses(){
+    public function courses()
+    {
         return $this->hasMany(Course::class);
     }
 
-    public function bundles(){
+    public function bundles()
+    {
         return $this->hasMany(Bundle::class);
     }
 
-    public function blogs(){
+    public function blogs()
+    {
         return $this->hasMany(Blog::class);
     }
 
-    public function faqs(){
+    public function faqs()
+    {
         return $this->hasMany(Faq::class);
     }
-
-
 }

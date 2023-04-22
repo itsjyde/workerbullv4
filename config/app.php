@@ -15,7 +15,6 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Application Version
@@ -27,7 +26,6 @@ return [
     |
     */
     'version' => '5.4.1',
-
 
     /*
     |--------------------------------------------------------------------------
@@ -207,12 +205,11 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-//        Gerardojbaez\Messenger\MessengerServiceProvider::class,
+        //        Gerardojbaez\Messenger\MessengerServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
         ConsoleTVs\Invoices\InvoicesServiceProvider::class,
         Harimayco\Menu\MenuServiceProvider::class,
-
 
         Barryvdh\TranslationManager\ManagerServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
@@ -220,7 +217,6 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
         BC\Laravel\DropboxDriver\ServiceProvider::class,
         Mtownsend\ReadTime\Providers\ReadTimeServiceProvider::class,
-
 
         /*
          * Application Service Providers...
@@ -233,8 +229,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\ObserverServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-
 
     ],
 
@@ -285,7 +279,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-
         /*
          * Package Aliases
          */
@@ -296,13 +289,11 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-//        'Messenger' => Gerardojbaez\Messenger\Facades\Messenger::class,
+        //        'Messenger' => Gerardojbaez\Messenger\Facades\Messenger::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
         'Menu' => Harimayco\Menu\Facades\Menu::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-
-
 
     ],
 
@@ -361,7 +352,6 @@ return [
     */
     'contact_data' => '{[]}',
 
-
     'debug_blacklist' => [
         '_ENV' => [
             'APP_KEY',
@@ -370,7 +360,7 @@ return [
             'MAIL_USERNAME',
             'MAIL_PASSWORD',
             'PUSHER_APP_KEY',
-            'PUSHER_APP_SECRET'
+            'PUSHER_APP_SECRET',
         ],
         '_SERVER' => [
             'APP_KEY',
@@ -379,12 +369,11 @@ return [
             'MAIL_USERNAME',
             'MAIL_PASSWORD',
             'PUSHER_APP_KEY',
-            'PUSHER_APP_SECRET'
+            'PUSHER_APP_SECRET',
         ],
         '_POST' => [
             'password',
         ],
     ],
-
 
 ];

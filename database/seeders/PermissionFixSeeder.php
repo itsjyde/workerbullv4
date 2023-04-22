@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Auth\Role;
-
+use Illuminate\Database\Seeder;
 
 class PermissionFixSeeder extends Seeder
 {
@@ -16,7 +15,7 @@ class PermissionFixSeeder extends Seeder
     public function run()
     {
         $permissions = [47];
-        $role = Role::where('name','=','student')->first();
+        $role = Role::where('name', '=', 'student')->first();
         $role->syncPermissions($permissions);
     }
 }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
-use \App\Models\ChatterCategory;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
+use App\Models\ChatterCategory;
+use Illuminate\Http\Request;
 
 class ForumController extends Controller
 {
@@ -18,6 +17,7 @@ class ForumController extends Controller
     {
         $forum_categories = ChatterCategory::orderBy('created_at', 'desc')
             ->get();
+
         return view('backend.forum-categories.index', compact('forum_categories'));
     }
 
@@ -30,13 +30,13 @@ class ForumController extends Controller
     {
         $forum_categories = ChatterCategory::orderBy('created_at', 'desc')
             ->get()->pluck('name', 'id')->prepend('Please select', '');
+
         return view('backend.forum-categories.create', compact('forum_categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -64,7 +64,7 @@ class ForumController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -75,7 +75,7 @@ class ForumController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -83,19 +83,18 @@ class ForumController extends Controller
         $forum_categories = ChatterCategory::orderBy('created_at', 'desc')
             ->get()->pluck('name', 'id')->prepend('Please select', '');
         $forum_category = ChatterCategory::findOrFail($id);
+
         return view('backend.forum-categories.edit', compact('forum_category', 'forum_categories'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $forums_category)
     {
-
         $this->validate($request, [
             'name' => 'required',
             'color' => 'required',
@@ -117,17 +116,16 @@ class ForumController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $tax = ChatterCategory::findOrFail($id);
         $tax->delete();
+
         return back()->withFlashSuccess(trans('alerts.backend.general.deleted'));
-
     }
-
 
     public function status($id)
     {

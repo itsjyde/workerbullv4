@@ -1,16 +1,13 @@
 <?php
 
-use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\User\AccountController;
-use App\Http\Controllers\Frontend\User\ProfileController;
 use App\Http\Controllers\Frontend\User\DashboardController;
+use App\Http\Controllers\Frontend\User\ProfileController;
 
 /*
  * Frontend Controllers
  * All route names are prefixed with 'frontend.'.
  */
-
 
 /*
  * These frontend controllers require the user to be logged in
@@ -35,5 +32,3 @@ Route::group(['middleware' => ['auth', 'password_expires']], function () {
         Route::patch('profile/update', [ProfileController::class, 'update'])->name('profile.update');
     });
 });
-
-

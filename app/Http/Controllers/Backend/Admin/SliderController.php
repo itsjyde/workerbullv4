@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\FileUploadTrait;
 use App\Models\Slider;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class SliderController extends Controller
 {
-
     use FileUploadTrait;
 
     /**
@@ -19,7 +18,7 @@ class SliderController extends Controller
      */
     public function index()
     {
-        $slides_list = Slider::OrderBy('sequence','asc')->get();
+        $slides_list = Slider::OrderBy('sequence', 'asc')->get();
 
         return view('backend.slider.index', compact('slides_list'));
     }
@@ -37,7 +36,6 @@ class SliderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -65,7 +63,7 @@ class SliderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -76,20 +74,20 @@ class SliderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $slide = Slider::findOrFail($id);
-        return view('backend.slider.edit',compact('slide'));
+
+        return view('backend.slider.edit', compact('slide'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -100,11 +98,11 @@ class SliderController extends Controller
 
         $request = $this->saveFiles($request);
         $slide = Slider::findOrFail($id);
-        if($request->image != ""){
+        if ($request->image != '') {
             $slide->bg_image = $request->image;
         }
         $slide->name = $request->name;
-        $slide->overlay = ($request->overlay == "") ? 0 : 1 ;
+        $slide->overlay = ($request->overlay == '') ? 0 : 1;
         $slide->content = $request->dataJson;
         $slide->save();
 
@@ -114,17 +112,16 @@ class SliderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $slide = Slider::findOrFail($id);
         $slide->delete();
+
         return back()->withFlashSuccess(trans('alerts.backend.general.deleted'));
-
     }
-
 
     public function status($id)
     {
@@ -146,25 +143,25 @@ class SliderController extends Controller
      */
     public function saveSequence(Request $request)
     {
-
         foreach ($request->list as $item) {
             $slide = Slider::find($item['id']);
-            $slide->sequence= $item['sequence'];
+            $slide->sequence = $item['sequence'];
             $slide->save();
         }
+
         return 'success';
     }
 
     /**
      * Update slider status
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      **/
     public function updateStatus()
     {
         $slide = Slider::findOrFail(request('id'));
-        $slide->status = $slide->status == 1? 0 : 1;
+        $slide->status = $slide->status == 1 ? 0 : 1;
         $slide->save();
     }
 }

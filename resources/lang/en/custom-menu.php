@@ -1,11 +1,12 @@
-<?php return array (
-  'nav-menu' => 
-  array (
-    'ai-blog' => 'AI Blog',
-    'courses' => 'Courses',
-    'bundles' => 'Bundles',
-    'forums' => 'Forums',
-    'contact' => 'Contact',
-    'about-us' => 'About Us',
-  ),
-);
+<?php
+
+return [
+    'nav-menu' => [
+        'ai-blog' => 'AI Blog',
+        'courses' => 'Courses',
+        'bundles' => 'Bundles',
+        'forums' => 'Forums',
+        'contact' => 'Contact',
+        'about-us' => 'About Us',
+    ],
+];

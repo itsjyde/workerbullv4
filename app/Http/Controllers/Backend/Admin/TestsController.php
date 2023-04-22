@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreTestsRequest;
+use App\Http\Requests\Admin\UpdateTestsRequest;
 use App\Models\Course;
 use App\Models\CourseTimeline;
 use App\Models\Test;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreTestsRequest;
-use App\Http\Requests\Admin\UpdateTestsRequest;
 use Yajra\DataTables\Facades\DataTables;
 
 class TestsController extends Controller
@@ -40,20 +40,18 @@ class TestsController extends Controller
         $has_view = false;
         $has_delete = false;
         $has_edit = false;
-        $tests = "";
+        $tests = '';
 
-
-        if ($request->course_id != "") {
+        if ($request->course_id != '') {
             $tests = Test::query()->where('course_id', '=', $request->course_id)->orderBy('created_at', 'desc');
         }
 
         if (request('show_deleted') == 1) {
-            if (!Gate::allows('test_delete')) {
+            if (! Gate::allows('test_delete')) {
                 return abort(401);
             }
             $tests = Test::query()->onlyTrashed();
         }
-
 
         if (auth()->user()->can('test_view')) {
             $has_view = true;
@@ -68,9 +66,9 @@ class TestsController extends Controller
         return DataTables::of($tests)
             ->addIndexColumn()
             ->addColumn('actions', function ($q) use ($has_view, $has_edit, $has_delete, $request) {
-                $view = "";
-                $edit = "";
-                $delete = "";
+                $view = '';
+                $edit = '';
+                $delete = '';
                 if ($request->show_deleted == 1) {
                     return view('backend.datatable.action-trashed')->with(['route_label' => 'admin.tests', 'label' => 'id', 'value' => $q->id]);
                 }
@@ -91,27 +89,29 @@ class TestsController extends Controller
                         ->render();
                     $view .= $delete;
                 }
+
                 return $view;
             })
             ->addColumn('questions', function ($q) {
                 if (count($q->questions) > 0) {
-                    return "<span>".count($q->questions)."</span><a class='btn btn-success float-right' href='".route('admin.questions.index', ['test_id'=>$q->id])."'><i class='fa fa-arrow-circle-o-right'></i></a> ";
+                    return '<span>'.count($q->questions)."</span><a class='btn btn-success float-right' href='".route('admin.questions.index', ['test_id' => $q->id])."'><i class='fa fa-arrow-circle-o-right'></i></a> ";
                 }
+
                 return count($q->questions);
             })
 
             ->addColumn('course', function ($q) {
-                return ($q->course) ? $q->course->title : "N/A";
+                return ($q->course) ? $q->course->title : 'N/A';
             })
 
             ->addColumn('lesson', function ($q) {
-                return ($q->lesson) ? $q->lesson->title : "N/A";
+                return ($q->lesson) ? $q->lesson->title : 'N/A';
             })
 
             ->editColumn('published', function ($q) {
-                return ($q->published == 1) ? "Yes" : "No";
+                return ($q->published == 1) ? 'Yes' : 'No';
             })
-            ->rawColumns(['actions','questions'])
+            ->rawColumns(['actions', 'questions'])
             ->make();
     }
 
@@ -144,14 +144,12 @@ class TestsController extends Controller
         $this->validate($request, [
             'course_id' => 'required',
             'title' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ], ['course_id.required' => 'The course field is required']);
 
         if (! Gate::allows('test_create')) {
             return abort(401);
         }
-
-
 
         $test = Test::create($request->all());
         $test->slug = str_slug($request->title);
@@ -177,11 +175,8 @@ class TestsController extends Controller
             $timeline->save();
         }
 
-
-
         return redirect()->route('admin.tests.index')->withFlashSuccess(trans('alerts.backend.general.created'));
     }
-
 
     /**
      * Show the form for editing Test.
@@ -221,7 +216,6 @@ class TestsController extends Controller
         $test->slug = str_slug($request->title);
         $test->save();
 
-
         $sequence = 1;
         if (count($test->course->courseTimeline) > 0) {
             $sequence = $test->course->courseTimeline->max('sequence');
@@ -242,10 +236,8 @@ class TestsController extends Controller
             $timeline->save();
         }
 
-
         return redirect()->route('admin.tests.index')->withFlashSuccess(trans('alerts.backend.general.updated'));
     }
-
 
     /**
      * Display Test.
@@ -262,7 +254,6 @@ class TestsController extends Controller
 
         return view('backend.tests.show', compact('test'));
     }
-
 
     /**
      * Remove Test from storage.
@@ -284,8 +275,6 @@ class TestsController extends Controller
 
     /**
      * Delete all selected Test at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
@@ -300,7 +289,6 @@ class TestsController extends Controller
             }
         }
     }
-
 
     /**
      * Restore Test from storage.

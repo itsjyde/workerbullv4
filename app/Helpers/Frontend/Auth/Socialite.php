@@ -21,7 +21,6 @@ class Socialite
             $socialite_enable[] = "<a href='".route('frontend.auth.social.login', 'facebook')."' class='btn btn-sm btn-info text-white  p-1 px-2  m-1 my-3'><i class='fab fa-facebook'></i></a>";
         }
 
-
         if (config('services.google.active')) {
             $socialite_enable[] = "<a href='".route('frontend.auth.social.login', 'google')."' class='btn btn-sm btn-info text-white   p-1 px-2  m-1 my-3'><i class='fab fa-google'></i></a>";
         }
@@ -34,16 +33,13 @@ class Socialite
             $socialite_enable[] = "<a href='".route('frontend.auth.social.login', 'linkedin')."' class='btn btn-sm btn-info text-white   p-1 px-2  m-1 my-3'><i class='fab fa-linkedin'></i></a>";
         }
 
-
         if (config('services.bitbucket.active')) {
             $socialite_enable[] = "<a href='".route('frontend.auth.social.login', 'bitbucket')."' class='btn btn-sm btn-info text-white  p-1 m-1 my-3'><i class='fab fa-bitbucket'></i></a>";
         }
 
-
         if (config('services.github.active')) {
             $socialite_enable[] = "<a href='".route('frontend.auth.social.login', 'github')."' class='btn btn-sm btn-info text-white   p-1 px-2  m-1 my-3'><i class='fab fa-github'></i></a>";
         }
-
 
         if ($count = count($socialite_enable)) {
             $socialite_links .= '<div class="alt-text text-center mb-0"><a href="#">SIGN IN WITH</a></div>';

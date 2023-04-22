@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,18 +26,18 @@ class UpdateTeachersRequest extends FormRequest
         return [
             'first_name' => 'required',
             'last_name' => 'required',
-//            'email' => 'required|email|unique:users,email,'.$this->route('teachers'),
-            'gender'              => ['required', 'in:male,female,other'],
-            'image'               => ['image'],
-            'facebook_link'       => ['nullable', 'url'],
-            'twitter_link'        => ['nullable', 'url'],
-            'linkedin_link'       => ['nullable', 'url'],
-            'payment_method'      => ['required'],
-            'bank_name'           => ['required_if:payment_method,bank'],
-            'ifsc_code'           => ['required_if:payment_method,bank'],
-            'account_number'      => ['required_if:payment_method,bank'],
-            'account_name'        => ['required_if:payment_method,bank'],
-            'paypal_email'        => ['required_if:payment_method,paypal'],
+            //            'email' => 'required|email|unique:users,email,'.$this->route('teachers'),
+            'gender' => ['required', 'in:male,female,other'],
+            'image' => ['image'],
+            'facebook_link' => ['nullable', 'url'],
+            'twitter_link' => ['nullable', 'url'],
+            'linkedin_link' => ['nullable', 'url'],
+            'payment_method' => ['required'],
+            'bank_name' => ['required_if:payment_method,bank'],
+            'ifsc_code' => ['required_if:payment_method,bank'],
+            'account_number' => ['required_if:payment_method,bank'],
+            'account_name' => ['required_if:payment_method,bank'],
+            'paypal_email' => ['required_if:payment_method,paypal'],
 
         ];
     }

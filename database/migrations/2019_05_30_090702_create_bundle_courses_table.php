@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateBundleCoursesTable extends Migration
 {
@@ -13,8 +13,7 @@ class CreateBundleCoursesTable extends Migration
      */
     public function up()
     {
-        if(! Schema::hasTable('bundle_courses')) {
-
+        if (! Schema::hasTable('bundle_courses')) {
             Schema::create('bundle_courses', function (Blueprint $table) {
                 $table->integer('bundle_id')->unsigned();
                 $table->foreign('bundle_id')->references('id')->on('bundles')->onDelete('cascade');

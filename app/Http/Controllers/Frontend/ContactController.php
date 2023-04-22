@@ -3,38 +3,35 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\Contact\SendContactRequest;
+use App\Mail\Frontend\Contact\SendContact;
 use App\Models\Contact;
+use Arcanedev\NoCaptcha\Rules\CaptchaRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Frontend\Contact\SendContact;
-use App\Http\Requests\Frontend\Contact\SendContactRequest;
 use Illuminate\Support\Facades\Session;
-use Arcanedev\NoCaptcha\Rules\CaptchaRule;
-
 
 /**
  * Class ContactController.
  */
 class ContactController extends Controller
 {
-
     private $path;
 
     public function __construct()
     {
         $path = 'frontend';
-        if(session()->has('display_type')){
-            if(session('display_type') == 'rtl'){
+        if (session()->has('display_type')) {
+            if (session('display_type') == 'rtl') {
                 $path = 'frontend-rtl';
-            }else{
+            } else {
                 $path = 'frontend';
             }
-        }else if(config('app.display_type') == 'rtl'){
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
     }
-
 
     /**
      * @return \Illuminate\View\View
@@ -45,19 +42,18 @@ class ContactController extends Controller
     }
 
     /**
-     * @param SendContactRequest $request
-     *
+     * @param  SendContactRequest  $request
      * @return mixed
      */
     public function send(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email',
             'message' => 'required',
-            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required',new CaptchaRule] : ''),
-        ],[
-            'g-recaptcha-response.required' => __('validation.attributes.frontend.captcha')
+            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required', new CaptchaRule] : ''),
+        ], [
+            'g-recaptcha-response.required' => __('validation.attributes.frontend.captcha'),
         ]);
 
         $contact = new Contact();
@@ -68,9 +64,7 @@ class ContactController extends Controller
         $contact->save();
 
         Mail::send(new SendContact($request));
-        Session::flash('alert','Response received successfully!');
-
-
+        Session::flash('alert', 'Response received successfully!');
 
         return redirect()->back();
     }

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Backend\Auth\User;
 
+use App\Events\Backend\Auth\User\UserDeleted;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
+use App\Http\Requests\Backend\Auth\User\StoreUserRequest;
+use App\Http\Requests\Backend\Auth\User\UpdateUserRequest;
 use App\Models\Auth\Role;
 use App\Models\Auth\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Events\Backend\Auth\User\UserDeleted;
+use App\Repositories\Backend\Auth\PermissionRepository;
 use App\Repositories\Backend\Auth\RoleRepository;
 use App\Repositories\Backend\Auth\UserRepository;
-use App\Repositories\Backend\Auth\PermissionRepository;
-use App\Http\Requests\Backend\Auth\User\StoreUserRequest;
-use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
-use App\Http\Requests\Backend\Auth\User\UpdateUserRequest;
+use Illuminate\Http\Request;
 
 /**
  * Class UserController.
@@ -26,8 +26,6 @@ class UserController extends Controller
 
     /**
      * UserController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -35,19 +33,16 @@ class UserController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(ManageUserRequest $request)
     {
-        if (!\Gate::allows('user_access')) {
+        if (! \Gate::allows('user_access')) {
             return abort(401);
         }
-        $roles = Role::select('id','name')->get();
+        $roles = Role::select('id', 'name')->get();
 
-
-        return view('backend.auth.user.index',compact('roles'))
+        return view('backend.auth.user.index', compact('roles'))
             ->withUsers($this->userRepository->getActivePaginated(25, 'id', 'asc'));
     }
 
@@ -58,48 +53,44 @@ class UserController extends Controller
      */
     public function getData(Request $request)
     {
-        if($request->role &&  $request->role != ""){
+        if ($request->role && $request->role != '') {
             $users = User::role($request->role)->with('roles', 'permissions', 'providers')
                 ->orderBy('users.created_at', 'desc');
-        }else{
+        } else {
             $users = User::with('roles', 'permissions', 'providers')
                 ->orderBy('users.created_at', 'desc');
         }
 
         return \DataTables::of($users)
             ->addIndexColumn()
-            ->addColumn('confirmed_label', function ($q)  {
+            ->addColumn('confirmed_label', function ($q) {
                 return $q->confirmed_label;
             })
-            ->addColumn('roles_label', function ($q)  {
-                return ($q->roles_label) ?? 'N/A';
+            ->addColumn('roles_label', function ($q) {
+                return $q->roles_label ?? 'N/A';
             })
-            ->addColumn('permissions_label', function ($q)  {
-                return ($q->permission_label) ?? 'N/A';
+            ->addColumn('permissions_label', function ($q) {
+                return $q->permission_label ?? 'N/A';
             })
-            ->addColumn('social_buttons', function ($q)  {
-                return ($q->social_buttons) ?? 'N/A';
+            ->addColumn('social_buttons', function ($q) {
+                return $q->social_buttons ?? 'N/A';
             })
-            ->addColumn('updated_at', function ($q)  {
+            ->addColumn('updated_at', function ($q) {
                 \Log::info($q);
 
                 return $q->updated_at->diffForHumans();
             })
-            ->addColumn('last_updated', function ($q)  {
+            ->addColumn('last_updated', function ($q) {
                 return $q->updated_at->diffForHumans();
             })
-            ->addColumn('actions', function ($q)  {
+            ->addColumn('actions', function ($q) {
                 return $q->action_buttons;
             })
-            ->rawColumns(['confirmed_label','roles_label','permissions_label','social_buttons','actions'])
+            ->rawColumns(['confirmed_label', 'roles_label', 'permissions_label', 'social_buttons', 'actions'])
             ->make();
     }
 
     /**
-     * @param ManageUserRequest    $request
-     * @param RoleRepository       $roleRepository
-     * @param PermissionRepository $permissionRepository
-     *
      * @return mixed
      */
     public function create(ManageUserRequest $request, RoleRepository $roleRepository, PermissionRepository $permissionRepository)
@@ -110,9 +101,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param StoreUserRequest $request
-     *
      * @return mixed
+     *
      * @throws \Throwable
      */
     public function store(StoreUserRequest $request)
@@ -133,9 +123,6 @@ class UserController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
      */
     public function show(ManageUserRequest $request, User $user)
@@ -145,11 +132,6 @@ class UserController extends Controller
     }
 
     /**
-     * @param ManageUserRequest    $request
-     * @param RoleRepository       $roleRepository
-     * @param PermissionRepository $permissionRepository
-     * @param User                 $user
-     *
      * @return mixed
      */
     public function edit(ManageUserRequest $request, RoleRepository $roleRepository, PermissionRepository $permissionRepository, User $user)
@@ -163,10 +145,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param UpdateUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      * @throws \Throwable
      */
@@ -184,10 +164,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function destroy(ManageUserRequest $request, User $user)

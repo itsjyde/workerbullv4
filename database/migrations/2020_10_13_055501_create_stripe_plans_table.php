@@ -26,7 +26,6 @@ class CreateStripePlansTable extends Migration
             $table->integer('bundle')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 

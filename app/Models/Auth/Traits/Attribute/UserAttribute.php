@@ -9,10 +9,7 @@ use Illuminate\Support\Facades\Hash;
  */
 trait UserAttribute
 {
-    /**
-     * @param $password
-     */
-    public function setPasswordAttribute($password) : void
+    public function setPasswordAttribute($password): void
     {
         // If password was accidentally passed in already hashed, try not to double hash it
         if (
@@ -49,7 +46,7 @@ trait UserAttribute
             if ($this->id != 1 && $this->id != auth()->id()) {
                 return '<a href="'.route(
                     'admin.auth.user.unconfirm',
-                        $this
+                    $this
                 ).'" data-toggle="tooltip" data-placement="top" title="'.__('buttons.backend.access.users.unconfirm').'" name="confirm_item"><span class="badge badge-success" style="cursor:pointer">'.__('labels.general.yes').'</span></a>';
             } else {
                 return '<span class="badge badge-success">'.__('labels.general.yes').'</span>';
@@ -127,7 +124,7 @@ trait UserAttribute
         foreach ($this->providers as $social) {
             $accounts[] = '<a href="'.route(
                 'admin.auth.user.social.unlink',
-                    [$this, $social]
+                [$this, $social]
             ).'" data-toggle="tooltip" data-placement="top" title="'.__('buttons.backend.access.users.unlink').'" data-method="delete"><i class="fab fa-'.$social->provider.'"></i></a>';
         }
 
@@ -147,7 +144,7 @@ trait UserAttribute
             if ($this->id != auth()->id()) {
                 return '<a href="'.route(
                     'admin.auth.user.login-as',
-                        $this
+                    $this
                 ).'" class="dropdown-item">'.__('buttons.backend.access.users.login_as', ['user' => e($this->full_name)]).'</a> ';
             }
         }
@@ -204,15 +201,15 @@ trait UserAttribute
             switch ($this->active) {
                 case 0:
                     return '<a href="'.route('admin.auth.user.mark', [
-                            $this,
-                            1,
-                        ]).'" class="dropdown-item">'.__('buttons.backend.access.users.activate').'</a> ';
+                        $this,
+                        1,
+                    ]).'" class="dropdown-item">'.__('buttons.backend.access.users.activate').'</a> ';
 
                 case 1:
                     return '<a href="'.route('admin.auth.user.mark', [
-                            $this,
-                            0,
-                        ]).'" class="dropdown-item">'.__('buttons.backend.access.users.deactivate').'</a> ';
+                        $this,
+                        0,
+                    ]).'" class="dropdown-item">'.__('buttons.backend.access.users.deactivate').'</a> ';
 
                 default:
                     return '';
@@ -239,12 +236,10 @@ trait UserAttribute
      */
     public function getDeleteButtonAttribute()
     {
-
         if ($this->id != auth()->id() && $this->id != 1) {
-
-           return    view('backend.datatable.action-delete')
-               ->with(['route' => route('admin.auth.user.destroy', $this),'class' => 'dropdown-item'] )
-               ->render();
+            return    view('backend.datatable.action-delete')
+                ->with(['route' => route('admin.auth.user.destroy', $this), 'class' => 'dropdown-item'])
+                ->render();
         }
 
         return '';

@@ -2,18 +2,18 @@
 
 namespace Tests\Feature\Frontend;
 
-use Tests\TestCase;
-use App\Models\Auth\Role;
-use App\Models\Auth\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Database\Eloquent\Model;
 use App\Events\Frontend\Auth\UserConfirmed;
 use App\Events\Frontend\Auth\UserRegistered;
-use Illuminate\Support\Facades\Notification;
-use App\Repositories\Backend\Auth\UserRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Auth\Role;
+use App\Models\Auth\User;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use App\Repositories\Backend\Auth\UserRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class UserRegistrationTest extends TestCase
 {
@@ -21,7 +21,8 @@ class UserRegistrationTest extends TestCase
 
     /**
      * Helper function for registering a user.
-     * @param array $userData
+     *
+     * @param  array  $userData
      * @return \Illuminate\Foundation\Testing\TestResponse
      */
     protected function registerUser($userData = [])

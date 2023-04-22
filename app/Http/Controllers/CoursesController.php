@@ -3,20 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
-use App\Models\Bundle;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\Review;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Stripe\Stripe;
-use Stripe\Charge;
-use Stripe\Customer;
-use Cart;
 
 class CoursesController extends Controller
 {
-
     private $path;
 
     public function __construct()
@@ -28,7 +21,7 @@ class CoursesController extends Controller
             } else {
                 $path = 'frontend';
             }
-        } else if (config('app.display_type') == 'rtl') {
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
@@ -38,18 +31,15 @@ class CoursesController extends Controller
     {
         if (request('type') == 'popular') {
             $courses = Course::withoutGlobalScope('filter')->canDisableCourse()->where('published', 1)->where('popular', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
-        } else if (request('type') == 'trending') {
+        } elseif (request('type') == 'trending') {
             $courses = Course::withoutGlobalScope('filter')->canDisableCourse()->where('published', 1)->where('trending', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
-        } else if (request('type') == 'featured') {
+        } elseif (request('type') == 'featured') {
             $courses = Course::withoutGlobalScope('filter')->canDisableCourse()->where('published', 1)->where('featured', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
         } else {
             $courses = Course::withoutGlobalScope('filter')->canDisableCourse()->where('published', 1)->orderBy('id', 'desc')->paginate(9);
         }
-        $purchased_courses = NULL;
-        $purchased_bundles = NULL;
+        $purchased_courses = null;
+        $purchased_bundles = null;
         $categories = Category::where('status', '=', 1)->get();
 
         if (\Auth::check()) {
@@ -64,12 +54,13 @@ class CoursesController extends Controller
             ->where('featured', '=', 1)->take(8)->get();
 
         $recent_news = Blog::orderBy('created_at', 'desc')->take(2)->get();
-        return view($this->path . '.courses.index', compact('courses', 'purchased_courses', 'recent_news', 'featured_courses', 'categories'));
+
+        return view($this->path.'.courses.index', compact('courses', 'purchased_courses', 'recent_news', 'featured_courses', 'categories'));
     }
 
     public function show($course_slug)
     {
-        $continue_course = NULL;
+        $continue_course = null;
         $recent_news = Blog::orderBy('created_at', 'desc')->take(2)->get();
         $course = Course::withoutGlobalScope('filter')->where('slug', $course_slug)->with('publishedLessons')->firstOrFail();
         $purchased_course = \Auth::check() && $course->students()->where('user_id', \Auth::id())->count() > 0;
@@ -78,19 +69,18 @@ class CoursesController extends Controller
         }
         $course_rating = 0;
         $total_ratings = 0;
-        $completed_lessons = "";
+        $completed_lessons = '';
         $is_reviewed = false;
         if (auth()->check() && $course->reviews()->where('user_id', '=', auth()->user()->id)->first()) {
             $is_reviewed = true;
         }
         if ($course->reviews->count() > 0) {
             $course_rating = $course->reviews->avg('rating');
-            $total_ratings = $course->reviews()->where('rating', '!=', "")->get()->count();
+            $total_ratings = $course->reviews()->where('rating', '!=', '')->get()->count();
         }
         $lessons = $course->courseTimeline()->orderby('sequence', 'asc')->get();
-        $checkSubcribePlan=[];
+        $checkSubcribePlan = [];
         if (\Auth::check()) {
-
             $completed_lessons = \Auth::user()->chapters()->where('course_id', $course->id)->get()->pluck('model_id')->toArray();
             $course_lessons = $course->lessons->pluck('id')->toArray();
             $continue_course = $course->courseTimeline()
@@ -105,10 +95,10 @@ class CoursesController extends Controller
             }
             $checkSubcribePlan = auth()->user()->checkPlanSubcribeUser();
         }
-        $courseInPlan = courseOrBundlePlanExits($course->id,'');
-        return view($this->path . '.courses.course', compact('course', 'purchased_course', 'recent_news', 'course_rating', 'completed_lessons', 'total_ratings', 'is_reviewed', 'lessons', 'continue_course', 'checkSubcribePlan','courseInPlan'));
-    }
+        $courseInPlan = courseOrBundlePlanExits($course->id, '');
 
+        return view($this->path.'.courses.course', compact('course', 'purchased_course', 'recent_news', 'course_rating', 'completed_lessons', 'total_ratings', 'is_reviewed', 'lessons', 'continue_course', 'checkSubcribePlan', 'courseInPlan'));
+    }
 
     public function rating($course_id, Request $request)
     {
@@ -125,34 +115,31 @@ class CoursesController extends Controller
             ->first();
         $categories = Category::where('status', '=', 1)->get();
 
-        if ($category != "") {
+        if ($category != '') {
             $recent_news = Blog::orderBy('created_at', 'desc')->take(2)->get();
             $featured_courses = Course::where('published', '=', 1)
                 ->where('featured', '=', 1)->take(8)->get();
 
             if (request('type') == 'popular') {
                 $courses = $category->courses()->withoutGlobalScope('filter')->where('published', 1)->where('popular', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
-            } else if (request('type') == 'trending') {
+            } elseif (request('type') == 'trending') {
                 $courses = $category->courses()->withoutGlobalScope('filter')->where('published', 1)->where('trending', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
-            } else if (request('type') == 'featured') {
+            } elseif (request('type') == 'featured') {
                 $courses = $category->courses()->withoutGlobalScope('filter')->where('published', 1)->where('featured', '=', 1)->orderBy('id', 'desc')->paginate(9);
-
             } else {
                 $courses = $category->courses()->withoutGlobalScope('filter')->where('published', 1)->orderBy('id', 'desc')->paginate(9);
             }
 
-
-            return view($this->path . '.courses.index', compact('courses', 'category', 'recent_news', 'featured_courses', 'categories'));
+            return view($this->path.'.courses.index', compact('courses', 'category', 'recent_news', 'featured_courses', 'categories'));
         }
+
         return abort(404);
     }
 
     public function addReview(Request $request)
     {
         $this->validate($request, [
-            'review' => 'required'
+            'review' => 'required',
         ]);
         $course = Course::findORFail($request->id);
         $review = new Review();
@@ -179,23 +166,21 @@ class CoursesController extends Controller
 
             if ($course->reviews->count() > 0) {
                 $course_rating = $course->reviews->avg('rating');
-                $total_ratings = $course->reviews()->where('rating', '!=', "")->get()->count();
+                $total_ratings = $course->reviews()->where('rating', '!=', '')->get()->count();
             }
             if (\Auth::check()) {
-
                 $completed_lessons = \Auth::user()->chapters()->where('course_id', $course->id)->get()->pluck('model_id')->toArray();
                 $continue_course = $course->courseTimeline()->orderby('sequence', 'asc')->whereNotIn('model_id', $completed_lessons)->first();
-                if ($continue_course == "") {
+                if ($continue_course == '') {
                     $continue_course = $course->courseTimeline()->orderby('sequence', 'asc')->first();
                 }
-
             }
-            return view($this->path . '.courses.course', compact('course', 'purchased_course', 'recent_news', 'completed_lessons', 'continue_course', 'course_rating', 'total_ratings', 'lessons', 'review'));
+
+            return view($this->path.'.courses.course', compact('course', 'purchased_course', 'recent_news', 'completed_lessons', 'continue_course', 'course_rating', 'total_ratings', 'lessons', 'review'));
         }
+
         return abort(404);
-
     }
-
 
     public function updateReview(Request $request)
     {
@@ -207,8 +192,8 @@ class CoursesController extends Controller
 
             return redirect()->route('courses.show', ['slug' => $review->reviewable->slug]);
         }
-        return abort(404);
 
+        return abort(404);
     }
 
     public function deleteReview(Request $request)
@@ -217,8 +202,10 @@ class CoursesController extends Controller
         if ($review) {
             $slug = $review->reviewable->slug;
             $review->delete();
+
             return redirect()->route('courses.show', ['slug' => $slug]);
         }
+
         return abort(404);
     }
 }

@@ -10,8 +10,8 @@ class Withdraw extends Model
     protected $guarded = [];
 
     /**
-    * Get the teacher profile that owns the user.
-    */
+     * Get the teacher profile that owns the user.
+     */
     public function teacher()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\File;
 class Page extends Model
 {
     use SoftDeletes;
-    protected $appends = ['page_image'];
-    protected $guarded = [];
 
+    protected $appends = ['page_image'];
+
+    protected $guarded = [];
 
     /**
      * Perform any actions required after the model boots.
@@ -21,24 +22,22 @@ class Page extends Model
      */
     protected static function booted()
     {
-
         static::deleting(function ($page) { // before delete() method call this
-            if ($page->isForceDeleting()) {
-                if (File::exists(public_path('/storage/uploads/' . $page->image))) {
-                    File::delete(public_path('/storage/uploads/' . $page->image));
-                }
+        if ($page->isForceDeleting()) {
+            if (File::exists(public_path('/storage/uploads/'.$page->image))) {
+                File::delete(public_path('/storage/uploads/'.$page->image));
             }
+        }
         });
-
     }
-
 
     public function getPageImageAttribute()
     {
         if ($this->image != null) {
-            return url('storage/uploads/' . $this->image);
+            return url('storage/uploads/'.$this->image);
         }
-        return NULL;
+
+        return null;
     }
 
     public function user()

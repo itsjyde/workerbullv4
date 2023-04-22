@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class Create1500441827CoursesTable extends Migration
 {
@@ -12,7 +12,7 @@ class Create1500441827CoursesTable extends Migration
      */
     public function up()
     {
-        if(! Schema::hasTable('courses')) {
+        if (! Schema::hasTable('courses')) {
             Schema::create('courses', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('category_id')->nullable();

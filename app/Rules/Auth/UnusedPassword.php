@@ -3,25 +3,21 @@
 namespace App\Rules\Auth;
 
 use App\Models\Auth\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Contracts\Validation\Rule;
 use App\Repositories\Backend\Auth\UserRepository as BackendUserRepository;
 use App\Repositories\Frontend\Auth\UserRepository as FrontendUserRepository;
+use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class UnusedPassword.
  */
 class UnusedPassword implements Rule
 {
-    /**
-     * @var
-     */
     protected $user;
 
     /**
      * Create a new rule instance.
      *
-     * @param $user
      * @return void
      */
     public function __construct($user)

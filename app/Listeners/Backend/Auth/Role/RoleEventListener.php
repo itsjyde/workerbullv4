@@ -7,25 +7,16 @@ namespace App\Listeners\Backend\Auth\Role;
  */
 class RoleEventListener
 {
-    /**
-     * @param $event
-     */
     public function onCreated($event)
     {
         \Log::info('Role Created');
     }
 
-    /**
-     * @param $event
-     */
     public function onUpdated($event)
     {
         \Log::info('Role Updated');
     }
 
-    /**
-     * @param $event
-     */
     public function onDeleted($event)
     {
         \Log::info('Role Deleted');
@@ -34,7 +25,7 @@ class RoleEventListener
     /**
      * Register the listeners for the subscriber.
      *
-     * @param \Illuminate\Events\Dispatcher $events
+     * @param  \Illuminate\Events\Dispatcher  $events
      */
     public function subscribe($events)
     {

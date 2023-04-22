@@ -15,12 +15,12 @@ class MenuImportSeeder extends Seeder
     {
         $menus = \Harimayco\Menu\Models\Menus::all();
         foreach ($menus as $menu) {
-            if ($menu != NULL) {
+            if ($menu != null) {
                 $menuItems = \Harimayco\Menu\Models\MenuItems::where('menu', '=', $menu->id)->get();
                 if ($menuItems != null) {
                     $allMenu = [];
                     foreach ($menuItems as $item) {
-                        if($item->parent == 0){
+                        if ($item->parent == 0) {
                             $item->parent = $item->id;
                             $item->save();
                         }
@@ -31,12 +31,11 @@ class MenuImportSeeder extends Seeder
                     if ($file !== false) {
                         ftruncate($file, 0);
                     }
-                    fwrite($file, '<?php return ' . var_export($main, true) . ';');
+                    fwrite($file, '<?php return '.var_export($main, true).';');
 
                     Artisan::call('menu:import');
                 }
             }
         }
-
     }
 }

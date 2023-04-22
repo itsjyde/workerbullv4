@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Models\Auth\User;
 use App\Models\stripe\UserCourses;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\File;
 /**
  * Class Course
  *
- * @package App
  * @property string $title
  * @property string $slug
  * @property text $description
@@ -27,12 +26,11 @@ class Course extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['category_id', 'title', 'slug', 'description', 'price', 'course_image','course_video', 'start_date', 'published', 'free','featured', 'trending', 'popular', 'meta_title', 'meta_description', 'meta_keywords', 'expire_at','strike'];
+    protected $fillable = ['category_id', 'title', 'slug', 'description', 'price', 'course_image', 'course_video', 'start_date', 'published', 'free', 'featured', 'trending', 'popular', 'meta_title', 'meta_description', 'meta_keywords', 'expire_at', 'strike'];
 
     protected $appends = ['image'];
 
 //    protected $dates = ['expire_at'];
-
 
     /**
      * Perform any actions required after the model boots.
@@ -52,24 +50,22 @@ class Course extends Model
         }
 
         static::deleting(function ($course) { // before delete() method call this
-            if ($course->isForceDeleting()) {
-                if (File::exists(public_path('/storage/uploads/' . $course->course_image))) {
-                    File::delete(public_path('/storage/uploads/' . $course->course_image));
-                    File::delete(public_path('/storage/uploads/thumb/' . $course->course_image));
-                }
+        if ($course->isForceDeleting()) {
+            if (File::exists(public_path('/storage/uploads/'.$course->course_image))) {
+                File::delete(public_path('/storage/uploads/'.$course->course_image));
+                File::delete(public_path('/storage/uploads/thumb/'.$course->course_image));
             }
+        }
         });
-
-
     }
-
 
     public function getImageAttribute()
     {
         if ($this->course_image != null) {
             return url('storage/uploads/'.$this->course_image);
         }
-        return NULL;
+
+        return null;
     }
 
     public function getPriceAttribute()
@@ -77,13 +73,12 @@ class Course extends Model
         if (($this->attributes['price'] == null)) {
             return round(0.00);
         }
+
         return $this->attributes['price'];
     }
 
-
     /**
      * Set attribute to money format
-     * @param $input
      */
     public function setPriceAttribute($input)
     {
@@ -92,7 +87,6 @@ class Course extends Model
 
     /**
      * Set attribute to date format
-     * @param $input
      */
     public function setStartDateAttribute($input)
     {
@@ -105,7 +99,6 @@ class Course extends Model
 
     /**
      * Get attribute from date format
-     * @param $input
      *
      * @return string
      */
@@ -142,11 +135,12 @@ class Course extends Model
 
     public function scopeOfTeacher($query)
     {
-        if (!Auth::user()->isAdmin()) {
+        if (! Auth::user()->isAdmin()) {
             return $query->whereHas('teachers', function ($q) {
                 $q->where('user_id', Auth::user()->id);
             });
         }
+
         return $query;
     }
 
@@ -175,13 +169,14 @@ class Course extends Model
         return $this->hasMany(CourseTimeline::class);
     }
 
-    public function getIsAddedToCart(){
-        if(auth()->check() && (auth()->user()->hasRole('student')) && (\Cart::session(auth()->user()->id)->get( $this->id))){
+    public function getIsAddedToCart()
+    {
+        if (auth()->check() && (auth()->user()->hasRole('student')) && (\Cart::session(auth()->user()->id)->get($this->id))) {
             return true;
         }
+
         return false;
     }
-
 
     public function reviews()
     {
@@ -190,7 +185,7 @@ class Course extends Model
 
     public function progress()
     {
-        $main_chapter_timeline = $this->lessons()->where('published',1)->pluck('id')->merge($this->tests()->pluck('id'));
+        $main_chapter_timeline = $this->lessons()->where('published', 1)->pluck('id')->merge($this->tests()->pluck('id'));
 
         $completed_lessons = auth()->user()->chapters()->where('course_id', $this->id)->pluck('model_id');
 
@@ -208,6 +203,7 @@ class Course extends Model
         if ($certified != null) {
             $status = true;
         }
+
         return $status;
     }
 
@@ -230,39 +226,40 @@ class Course extends Model
                 $chapters++;
             }
         }
+
         return $chapters;
     }
 
     public function mediaVideo()
     {
         $types = ['youtube', 'vimeo', 'upload', 'embed'];
+
         return $this->morphOne(Media::class, 'model')
             ->whereIn('type', $types);
-
     }
 
     // scope for disable course if course expire date is less than tomorrow date
     public function scopeCanDisableCourse($query)
     {
-        return $query->where(function($q){
-                $q->whereNull('expire_at')->orWhereDate('expire_at', '>=', Carbon::now()->format('Y-m-d'));
+        return $query->where(function ($q) {
+            $q->whereNull('expire_at')->orWhereDate('expire_at', '>=', Carbon::now()->format('Y-m-d'));
         });
     }
 
     public function getStrikePriceAttribute()
     {
-        if($this->strike) {
-            return '<strike class="text-secondary">' . getCurrency(config('app.currency'))['symbol'] . ' ' . $this->strike . '</strike>';
+        if ($this->strike) {
+            return '<strike class="text-secondary">'.getCurrency(config('app.currency'))['symbol'].' '.$this->strike.'</strike>';
         }
-        return;
+
     }
 
     public function getCoursePageStrikePriceAttribute()
     {
-        if($this->strike) {
-            return '<div class="h6">'.trans('labels.frontend.course.original_price').'<span> '.$this->strikePrice .'</span></div>';
+        if ($this->strike) {
+            return '<div class="h6">'.trans('labels.frontend.course.original_price').'<span> '.$this->strikePrice.'</span></div>';
         }
-        return ;
+
     }
 
     /**
@@ -275,9 +272,6 @@ class Course extends Model
 
     public function courseUser()
     {
-        return $this->hasOne(UserCourses::class,'course_id','id')->where('user_id',\Auth::id());
+        return $this->hasOne(UserCourses::class, 'course_id', 'id')->where('user_id', \Auth::id());
     }
-
-
-
 }

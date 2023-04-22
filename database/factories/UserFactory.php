@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\Auth\User;
 use Faker\Generator;
 use Webpatser\Uuid\Uuid;
-use App\Models\Auth\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +17,14 @@ use App\Models\Auth\User;
 
 $factory->define(User::class, function (Generator $faker) {
     return [
-        'uuid' 			    => Uuid::generate(4)->string,
-        'first_name'        => $faker->firstName,
-        'last_name'         => $faker->lastName,
-        'email'             => $faker->safeEmail,
+        'uuid' => Uuid::generate(4)->string,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email' => $faker->safeEmail,
         //'email_verified_at' => now(),
-        'password'          => 'secret',
+        'password' => 'secret',
         'password_changed_at' => null,
-        'remember_token'    => str_random(10),
+        'remember_token' => str_random(10),
         'confirmation_code' => md5(uniqid(mt_rand(), true)),
         'active' => 1,
         'confirmed' => 1,

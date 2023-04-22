@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Frontend;
 
-use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Auth\User;
-use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class PasswordExpirationTest extends TestCase
 {

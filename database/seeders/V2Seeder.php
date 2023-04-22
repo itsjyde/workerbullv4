@@ -20,34 +20,32 @@ class V2Seeder extends Seeder
             'bundle_create',
             'bundle_edit',
             'bundle_view',
-            'bundle_delete'
+            'bundle_delete',
         ];
         $permission_ids = [];
 
-
         foreach ($permissions as $item) {
-           Permission::findOrCreate($item);
+            Permission::findOrCreate($item);
         }
         Artisan::call('cache:clear');
 
         $admin = Role::findByName('administrator');
         $admin->givePermissionTo($permissions);
-        $teacher =Role::findByName('teacher');
+        $teacher = Role::findByName('teacher');
         $teacher->givePermissionTo($permissions);
 
-        $student =Role::findByName('student');
-        $student->givePermissionTo(['bundle_view','bundle_access']);
-
+        $student = Role::findByName('student');
+        $student->givePermissionTo(['bundle_view', 'bundle_access']);
 
         $menus = [
             [
                 'url' => 'bundles',
-                'name' => 'Bundles'
+                'name' => 'Bundles',
             ],
         ];
 
         $nav_menu = \Harimayco\Menu\Models\Menus::where('name', '=', 'nav-menu')->first();
-        if ($nav_menu == "") {
+        if ($nav_menu == '') {
             $nav_menu = new \Harimayco\Menu\Models\Menus();
         }
         $nav_menu->name = 'nav-menu';
@@ -56,7 +54,7 @@ class V2Seeder extends Seeder
             $key++;
             $menuItem = \Harimayco\Menu\Models\MenuItems::where('link', '=', $item['url'])
                 ->where('menu', '=', $nav_menu->id)->first();
-            if ($menuItem == "") {
+            if ($menuItem == '') {
                 $menuItem = new \Harimayco\Menu\Models\MenuItems();
                 $menuItem->label = $item['name'];
                 $menuItem->link = \Illuminate\Support\Arr::last(explode('/', $item['url']));
@@ -70,7 +68,6 @@ class V2Seeder extends Seeder
 
         //=========Order fix ===================//
 
-        \App\Models\OrderItem::where('item_type','=',NULL)->update(['item_type'=>"\App\Models\Course"]);
-
+        \App\Models\OrderItem::where('item_type', '=', null)->update(['item_type' => "\App\Models\Course"]);
     }
 }

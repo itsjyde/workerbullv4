@@ -10,24 +10,22 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-
     private $path;
 
     public function __construct()
     {
         $path = 'frontend';
-        if(session()->has('display_type')){
-            if(session('display_type') == 'rtl'){
+        if (session()->has('display_type')) {
+            if (session('display_type') == 'rtl') {
                 $path = 'frontend-rtl';
-            }else{
+            } else {
                 $path = 'frontend';
             }
-        }else if(config('app.display_type') == 'rtl'){
+        } elseif (config('app.display_type') == 'rtl') {
             $path = 'frontend-rtl';
         }
         $this->path = $path;
     }
-
 
     public function getByCategory(Request $request)
     {
@@ -35,10 +33,12 @@ class BlogController extends Controller
 
         $category = Category::where('slug', '=', str_slug($request->category))->first();
         $categories = Category::has('blogs')->where('status', '=', 1)->paginate(10);
-        if ($category != "") {
+        if ($category != '') {
             $blogs = $category->blogs()->paginate(6);
+
             return view($this->path.'.blogs.index', compact('category', 'blogs', 'popular_tags', 'categories'));
         }
+
         return abort(404);
     }
 
@@ -48,7 +48,7 @@ class BlogController extends Controller
         $categories = Category::has('blogs')->where('status', '=', 1)
             ->take(10)->get();
 
-        if ($request->slug != "") {
+        if ($request->slug != '') {
             $blog_id = array_last(explode('-', $request->slug));
             $blog = Blog::findOrFail($blog_id);
             // get previous user id
@@ -59,15 +59,15 @@ class BlogController extends Controller
             $next_id = Blog::where('id', '>', $blog_id)->min('id');
             $next = Blog::find($next_id);
 
-            $related_news = $blog->category->blogs()->where('id','!=',$blog->id)->take(2)->get();
+            $related_news = $blog->category->blogs()->where('id', '!=', $blog->id)->take(2)->get();
 
-            return view($this->path.'.blogs.blog-single', compact('blog','previous','next','popular_tags','categories','related_news'));
+            return view($this->path.'.blogs.blog-single', compact('blog', 'previous', 'next', 'popular_tags', 'categories', 'related_news'));
         }
 
+        $blogs = Blog::has('category')->OrderBy('created_at', 'desc')->paginate(6);
 
-        $blogs = Blog::has('category')->OrderBy('created_at','desc')->paginate(6);
         return view($this->path.'.blogs.index',
-            compact( 'blogs', 'categories', 'popular_tags'));
+            compact('blogs', 'categories', 'popular_tags'));
     }
 
     public function getByTag(Request $request)
@@ -75,10 +75,12 @@ class BlogController extends Controller
         $popular_tags = Tag::has('blogs', '>', 4)->get();
         $tag = Tag::where('slug', '=', str_slug($request->tag))->first();
         $categories = Category::has('blogs')->where('status', '=', 1)->paginate(10);
-        if ($tag != "") {
+        if ($tag != '') {
             $blogs = $tag->blogs()->paginate(6);
+
             return view($this->path.'.blogs.index', compact('tag', 'blogs', 'categories', 'popular_tags'));
         }
+
         return abort(404);
     }
 
@@ -95,16 +97,19 @@ class BlogController extends Controller
         $blogcooment->blog_id = $blog->id;
         $blogcooment->user_id = auth()->user()->id;
         $blogcooment->save();
+
         return back();
     }
 
-    public function deleteComment($id){
+    public function deleteComment($id)
+    {
         $comment = BlogComment::findOrFail($id);
-        if(auth()->user()->id == $comment->user_id){
+        if (auth()->user()->id == $comment->user_id) {
             $comment->delete();
+
             return back();
         }
+
         return abort(419);
     }
-
 }
