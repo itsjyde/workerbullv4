@@ -14,7 +14,7 @@ use App\Http\Controllers\Frontend\Auth\UpdatePasswordController;
  * Frontend Access Controllers
  * All route names are prefixed with 'frontend.auth'.
  */
-Route::namespace('Auth')->name('auth.')->group(function () {
+Route::name('auth.')->group(function () {
     /*
     * These routes require the user to be logged in
     */

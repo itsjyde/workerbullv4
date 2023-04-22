@@ -331,9 +331,9 @@
             $('.group-select').on('change', function () {
                 var group = $(this).val();
                 if (group) {
-                    window.location.href = '<?php echo action('\Barryvdh\TranslationManager\Controller@getView') ?>/' + $(this).val();
+                    window.location.href = '<?php echo action([\Barryvdh\TranslationManager\Controller::class, 'getView']) ?>/' + $(this).val();
                 } else {
-                    window.location.href = '<?php echo action('\Barryvdh\TranslationManager\Controller@getIndex') ?>';
+                    window.location.href = '<?php echo action([\Barryvdh\TranslationManager\Controller::class, 'getIndex']) ?>';
                 }
             });
 
@@ -423,7 +423,7 @@
 
                     @if(!isset($group))
                         <form class="form-import" method="POST"
-                              action="{{action('\Barryvdh\TranslationManager\Controller@postImport')}}"
+                              action="{{action([\Barryvdh\TranslationManager\Controller::class, 'postImport'])}}"
                               data-remote="true" role="form">
                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                             <div class="form-group">
@@ -451,19 +451,19 @@
                     @endif
                     @if(isset($group))
                         <form class="form-inline form-publish mb-4" method="POST"
-                              action="{{action('\Barryvdh\TranslationManager\Controller@postPublish', $group)}}"
+                              action="{{action([\Barryvdh\TranslationManager\Controller::class, 'postPublish'], $group)}}"
                               data-remote="true" role="form"
                               data-confirm="@lang('labels.backend.translations.translation_warning', ['group' => $group])">
                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                             <button type="submit" class="btn btn-success" data-disable-with="@lang('labels.backend.translations.publishing')"><i class="fa fa-save"></i>
                                 @lang('labels.backend.translations.publish_translations')
                             </button>
-                            <a href="{{action('\Barryvdh\TranslationManager\Controller@getIndex')}}"
+                            <a href="{{action([\Barryvdh\TranslationManager\Controller::class, 'getIndex'])}}"
                                class="btn btn-default border ml-3">@lang('labels.general.back')</a>
                         </form>
                     @endif
                     <form role="form" method="POST"
-                          action="{{action('\Barryvdh\TranslationManager\Controller@postAddGroup')}}">
+                          action="{{action([\Barryvdh\TranslationManager\Controller::class, 'postAddGroup'])}}">
                         <input type="hidden" name="_token" value="{{csrf_token()}}">
                         <div class="form-group">
                             <p>@lang('labels.backend.translations.choose_a_group')</p>
@@ -517,7 +517,7 @@
                                         @endforeach
                                         @if ($deleteEnabled)
                                             <td>
-                                                <a href="{{action('\Barryvdh\TranslationManager\Controller@postDelete', [$group, $key]) }}"
+                                                <a href="{{action([\Barryvdh\TranslationManager\Controller::class, 'postDelete'], [$group, $key]) }}"
                                                    class="delete-key"
                                                    data-confirm="Are you sure you want to delete the translations for '{{htmlentities($key, ENT_QUOTES, 'UTF-8', false) }}?"><span
                                                             class="glyphicon glyphicon-trash"></span></a>
@@ -558,7 +558,7 @@
 
                             </form>
                             <form class="form-add-locale" method="POST" role="form"
-                                  action="{{action('Backend\LangController@postAddLocale')}}">
+                                  action="{{action([\App\Http\Controllers\Backend\LangController::class, 'postAddLocale'])}}">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <div class="form-group">
                                     <p>
@@ -581,7 +581,7 @@
                         <fieldset>
                             <legend> @lang('labels.backend.translations.export_all_translations'):</legend>
                             <form class="form-inline form-publish-all" method="POST"
-                                  action="{{action('\Barryvdh\TranslationManager\Controller@postPublish', '*')}}"
+                                  action="{{action([\Barryvdh\TranslationManager\Controller::class, 'postPublish'], '*')}}"
                                   data-remote="true" role="form"
                                   data-confirm="@lang('labels.backend.translations.publish_all_warning')">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
