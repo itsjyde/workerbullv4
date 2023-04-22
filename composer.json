@@ -1,7 +1,11 @@
 {
     "name": "rappasoft/laravel-5-boilerplate",
     "description": "The Laravel Boilerplate Project.",
-    "keywords": ["framework", "laravel", "boilerplate"],
+    "keywords": [
+        "framework",
+        "laravel",
+        "boilerplate"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -38,7 +42,7 @@
         "laravel/ui": "^3.0",
         "laravelcollective/html": "6.2.0",
         "laravelium/sitemap": "8.0.1",
-        "league/flysystem-aws-s3-v3": "^1.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "league/omnipay": "^3",
         "lexxyungcarter/chatmessenger": "^1.3",
         "maatwebsite/excel": "^3.1",
