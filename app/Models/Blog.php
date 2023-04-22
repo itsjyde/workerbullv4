@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\File;
 
 class Blog extends Model
 {
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
     protected $appends = ['blog_category', 'blog_image', 'blog_author'];
 

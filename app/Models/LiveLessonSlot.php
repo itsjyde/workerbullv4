@@ -9,13 +9,8 @@ class LiveLessonSlot extends Model
 {
     use SoftDeletes;
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'start_at',
+    protected $casts = [
+        'start_at' => 'datetime',
     ];
 
     /**

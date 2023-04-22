@@ -10,8 +10,6 @@ class BlogComment extends Model
 {
     use SoftDeletes;
 
-    protected $dates = ['deleted_at'];
-
     protected $table = 'blog_comments';
 
     protected $guarded = ['id'];

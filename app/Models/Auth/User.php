@@ -95,8 +95,6 @@ class User extends Authenticatable
     /**
      * @var array
      */
-    protected $dates = ['last_login_at', 'deleted_at'];
-
     /**
      * The dynamic attributes from mutators that should be returned with the user object.
      *
@@ -110,6 +108,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'last_login_at' => 'datetime',
         'active' => 'boolean',
         'confirmed' => 'boolean',
     ];
