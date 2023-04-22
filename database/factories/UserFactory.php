@@ -18,9 +18,9 @@ use Webpatser\Uuid\Uuid;
 $factory->define(User::class, function (Generator $faker) {
     return [
         'uuid' => Uuid::generate(4)->string,
-        'first_name' => $faker->firstName,
-        'last_name' => $faker->lastName,
-        'email' => $faker->safeEmail,
+        'first_name' => $faker->firstName(),
+        'last_name' => $faker->lastName(),
+        'email' => $faker->safeEmail(),
         //'email_verified_at' => now(),
         'password' => 'secret',
         'password_changed_at' => null,

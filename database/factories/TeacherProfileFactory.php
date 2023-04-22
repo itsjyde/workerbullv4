@@ -7,9 +7,9 @@ $factory->define(App\Models\TeacherProfile::class, function (Faker $faker) {
 
     return [
         'user_id' => 2,
-        'facebook_link' => $faker->url,
-        'twitter_link' => $faker->url,
-        'linkedin_link' => $faker->url,
+        'facebook_link' => $faker->url(),
+        'twitter_link' => $faker->url(),
+        'linkedin_link' => $faker->url(),
         'payment_method' => 'paypal',
         'payment_details' => $paymentDetails,
     ];

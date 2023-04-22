@@ -13,7 +13,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Category::class, function (Faker\Generator $faker) {
-    $name = $faker->word;
+    $name = $faker->word();
     $icon = [
         'fab fa-accessible-icon',
         'fab fa-accusoft',

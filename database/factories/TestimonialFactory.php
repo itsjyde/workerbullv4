@@ -14,8 +14,8 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Testimonial::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'occupation' => $faker->jobTitle,
+        'name' => $faker->name(),
+        'occupation' => $faker->jobTitle(),
         'content' => $faker->text(200),
     ];
 });
