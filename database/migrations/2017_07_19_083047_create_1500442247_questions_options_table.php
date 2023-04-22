@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class Create1500442247QuestionsOptionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -37,4 +37,4 @@ class Create1500442247QuestionsOptionsTable extends Migration
     {
         Schema::dropIfExists('questions_options');
     }
-}
+};

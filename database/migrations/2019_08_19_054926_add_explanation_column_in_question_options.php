@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddExplanationColumnInQuestionOptions extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -29,4 +29,4 @@ class AddExplanationColumnInQuestionOptions extends Migration
             $table->dropColumn('explanation');
         });
     }
-}
+};

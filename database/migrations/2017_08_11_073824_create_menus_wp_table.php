@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMenusWpTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -29,4 +29,4 @@ class CreateMenusWpTable extends Migration
     {
         Schema::dropIfExists(config('menu.table_prefix').config('menu.table_name_menus'));
     }
-}
+};

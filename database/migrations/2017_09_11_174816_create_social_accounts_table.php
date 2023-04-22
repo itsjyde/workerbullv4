@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Class CreateSocialAccountsTable.
  */
-class CreateSocialAccountsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -37,4 +37,4 @@ class CreateSocialAccountsTable extends Migration
     {
         Schema::dropIfExists('social_accounts');
     }
-}
+};

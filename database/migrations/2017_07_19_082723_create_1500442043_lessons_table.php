@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class Create1500442043LessonsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -43,4 +43,4 @@ class Create1500442043LessonsTable extends Migration
     {
         Schema::dropIfExists('lessons');
     }
-}
+};

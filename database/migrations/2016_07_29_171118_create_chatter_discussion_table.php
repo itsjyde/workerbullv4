@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateChatterDiscussionTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -23,4 +23,4 @@ class CreateChatterDiscussionTable extends Migration
     {
         Schema::drop('chatter_discussion');
     }
-}
+};
