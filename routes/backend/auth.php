@@ -12,16 +12,11 @@ use App\Http\Controllers\Backend\Auth\User\UserStatusController;
 /*
  * All route names are prefixed with 'admin.auth'.
  */
-Route::group([
-    'prefix' => 'auth',
-    'as' => 'auth.',
-    'namespace' => 'Auth',
-    'middleware' => 'role:'.config('access.users.admin_role'),
-], function () {
+Route::prefix('auth')->name('auth.')->namespace('Auth')->middleware('role:' . config('access.users.admin_role'))->group(function () {
     /*
      * User Management
      */
-    Route::group(['namespace' => 'User'], function () {
+    Route::namespace('User')->group(function () {
         /*
          * User Status'
          */
@@ -39,7 +34,7 @@ Route::group([
         /*
          * Specific User
          */
-        Route::group(['prefix' => 'user/{user}'], function () {
+        Route::prefix('user/{user}')->group(function () {
             // User
             Route::get('/', [UserController::class, 'show'])->name('user.show');
             Route::get('edit', [UserController::class, 'edit'])->name('user.edit');
@@ -78,12 +73,12 @@ Route::group([
     /*
      * Role Management
      */
-    Route::group(['namespace' => 'Role'], function () {
+    Route::namespace('Role')->group(function () {
         Route::get('role', [RoleController::class, 'index'])->name('role.index');
         Route::get('role/create', [RoleController::class, 'create'])->name('role.create');
         Route::post('role', [RoleController::class, 'store'])->name('role.store');
 
-        Route::group(['prefix' => 'role/{role}'], function () {
+        Route::prefix('role/{role}')->group(function () {
             Route::get('edit', [RoleController::class, 'edit'])->name('role.edit');
             Route::patch('/', [RoleController::class, 'update'])->name('role.update');
             Route::delete('/', [RoleController::class, 'destroy'])->name('role.destroy');

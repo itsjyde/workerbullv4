@@ -17,22 +17,18 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-Route::group(['prefix' => 'v1', 'namespace' => 'v1'], function () {
-    Route::group([
-        'prefix' => 'auth',
-    ], function () {
+Route::prefix('v1')->namespace('v1')->group(function () {
+    Route::prefix('auth')->group(function () {
 //    Route::post('login', 'ApiController@login');
         Route::post('signup-form', 'ApiController@signupForm');
         Route::post('signup-save', 'ApiController@signup');
 
-        Route::group([
-            'middleware' => 'auth:api',
-        ], function () {
+        Route::middleware('auth:api')->group(function () {
             Route::post('logout', 'ApiController@logout');
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::middleware('auth:api')->group(function () {
         Route::post('courses', 'ApiController@getCourses');
         Route::post('bundles', 'ApiController@getBundles');
         Route::post('search', 'ApiController@search');

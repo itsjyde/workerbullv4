@@ -34,7 +34,7 @@ Route::get('reset-demo', function () {
  * Frontend Routes
  * Namespaces indicate folder structure
  */
-Route::group(['namespace' => 'Frontend', 'as' => 'frontend.'], function () {
+Route::namespace('Frontend')->name('frontend.')->group(function () {
     include_route_files(__DIR__.'/frontend/');
 });
 
@@ -42,7 +42,7 @@ Route::group(['namespace' => 'Frontend', 'as' => 'frontend.'], function () {
  * Backend Routes
  * Namespaces indicate folder structure
  */
-Route::group(['namespace' => 'Backend', 'prefix' => 'user', 'as' => 'admin.', 'middleware' => 'admin'], function () {
+Route::namespace('Backend')->prefix('user')->name('admin.')->middleware('admin')->group(function () {
     /*
      * These routes need view-backend permission
      * (good if you want to allow more than one group in the backend,
@@ -54,12 +54,12 @@ Route::group(['namespace' => 'Backend', 'prefix' => 'user', 'as' => 'admin.', 'm
     include_route_files(__DIR__.'/backend/');
 });
 
-Route::group(['namespace' => 'Backend', 'prefix' => 'user', 'as' => 'admin.', 'middleware' => 'auth'], function () {
+Route::namespace('Backend')->prefix('user')->name('admin.')->middleware('auth')->group(function () {
     //==== Messages Routes =====//
-    Route::get('messages', ['uses' => 'MessagesController@index', 'as' => 'messages']);
-    Route::post('messages/unread', ['uses' => 'MessagesController@getUnreadMessages', 'as' => 'messages.unread']);
-    Route::post('messages/send', ['uses' => 'MessagesController@send', 'as' => 'messages.send']);
-    Route::post('messages/reply', ['uses' => 'MessagesController@reply', 'as' => 'messages.reply']);
+    Route::get('messages', 'MessagesController@index')->name('messages');
+    Route::post('messages/unread', 'MessagesController@getUnreadMessages')->name('messages.unread');
+    Route::post('messages/send', 'MessagesController@send')->name('messages.send');
+    Route::post('messages/reply', 'MessagesController@reply')->name('messages.reply');
 });
 
 Route::get('category/{category}/blogs', 'BlogController@getByCategory')->name('blogs.category');
@@ -74,31 +74,31 @@ Route::get('teachers/{id}/show', 'Frontend\HomeController@showTeacher')->name('t
 Route::post('newsletter/subscribe', 'Frontend\HomeController@subscribe')->name('subscribe');
 
 //============Course Routes=================//
-Route::get('courses', ['uses' => 'CoursesController@all', 'as' => 'courses.all']);
-Route::get('course/{slug}', ['uses' => 'CoursesController@show', 'as' => 'courses.show'])->middleware('subscribed');
+Route::get('courses', 'CoursesController@all')->name('courses.all');
+Route::get('course/{slug}', 'CoursesController@show')->name('courses.show')->middleware('subscribed');
 //Route::post('course/payment', ['uses' => 'CoursesController@payment', 'as' => 'courses.payment']);
-Route::post('course/{course_id}/rating', ['uses' => 'CoursesController@rating', 'as' => 'courses.rating']);
-Route::get('category/{category}/courses', ['uses' => 'CoursesController@getByCategory', 'as' => 'courses.category']);
-Route::post('courses/{id}/review', ['uses' => 'CoursesController@addReview', 'as' => 'courses.review']);
-Route::get('courses/review/{id}/edit', ['uses' => 'CoursesController@editReview', 'as' => 'courses.review.edit']);
-Route::post('courses/review/{id}/edit', ['uses' => 'CoursesController@updateReview', 'as' => 'courses.review.update']);
-Route::get('courses/review/{id}/delete', ['uses' => 'CoursesController@deleteReview', 'as' => 'courses.review.delete']);
+Route::post('course/{course_id}/rating', 'CoursesController@rating')->name('courses.rating');
+Route::get('category/{category}/courses', 'CoursesController@getByCategory')->name('courses.category');
+Route::post('courses/{id}/review', 'CoursesController@addReview')->name('courses.review');
+Route::get('courses/review/{id}/edit', 'CoursesController@editReview')->name('courses.review.edit');
+Route::post('courses/review/{id}/edit', 'CoursesController@updateReview')->name('courses.review.update');
+Route::get('courses/review/{id}/delete', 'CoursesController@deleteReview')->name('courses.review.delete');
 
 //============Bundle Routes=================//
-Route::get('bundles', ['uses' => 'BundlesController@all', 'as' => 'bundles.all']);
-Route::get('bundle/{slug}', ['uses' => 'BundlesController@show', 'as' => 'bundles.show']);
+Route::get('bundles', 'BundlesController@all')->name('bundles.all');
+Route::get('bundle/{slug}', 'BundlesController@show')->name('bundles.show');
 //Route::post('course/payment', ['uses' => 'CoursesController@payment', 'as' => 'courses.payment']);
-Route::post('bundle/{bundle_id}/rating', ['uses' => 'BundlesController@rating', 'as' => 'bundles.rating']);
-Route::get('category/{category}/bundles', ['uses' => 'BundlesController@getByCategory', 'as' => 'bundles.category']);
-Route::post('bundles/{id}/review', ['uses' => 'BundlesController@addReview', 'as' => 'bundles.review']);
-Route::get('bundles/review/{id}/edit', ['uses' => 'BundlesController@editReview', 'as' => 'bundles.review.edit']);
-Route::post('bundles/review/{id}/edit', ['uses' => 'BundlesController@updateReview', 'as' => 'bundles.review.update']);
-Route::get('bundles/review/{id}/delete', ['uses' => 'BundlesController@deleteReview', 'as' => 'bundles.review.delete']);
+Route::post('bundle/{bundle_id}/rating', 'BundlesController@rating')->name('bundles.rating');
+Route::get('category/{category}/bundles', 'BundlesController@getByCategory')->name('bundles.category');
+Route::post('bundles/{id}/review', 'BundlesController@addReview')->name('bundles.review');
+Route::get('bundles/review/{id}/edit', 'BundlesController@editReview')->name('bundles.review.edit');
+Route::post('bundles/review/{id}/edit', 'BundlesController@updateReview')->name('bundles.review.update');
+Route::get('bundles/review/{id}/delete', 'BundlesController@deleteReview')->name('bundles.review.delete');
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('lesson/{course_id}/{slug}/', ['uses' => 'LessonsController@show', 'as' => 'lessons.show']);
-    Route::post('lesson/{slug}/test', ['uses' => 'LessonsController@test', 'as' => 'lessons.test']);
-    Route::post('lesson/{slug}/retest', ['uses' => 'LessonsController@retest', 'as' => 'lessons.retest']);
+Route::middleware('auth')->group(function () {
+    Route::get('lesson/{course_id}/{slug}/', 'LessonsController@show')->name('lessons.show');
+    Route::post('lesson/{slug}/test', 'LessonsController@test')->name('lessons.test');
+    Route::post('lesson/{slug}/retest', 'LessonsController@retest')->name('lessons.retest');
     Route::post('video/progress', 'LessonsController@videoProgress')->name('update.videos.progress');
     Route::post('lesson/progress', 'LessonsController@courseProgress')->name('update.course.progress');
     Route::post('lesson/book-slot', 'LessonsController@bookSlot')->name('lessons.course.book-slot');
@@ -116,44 +116,44 @@ Route::get('/faqs', 'Frontend\HomeController@getFaqs')->name('faqs');
 Route::get('contact', 'Frontend\ContactController@index')->name('contact');
 Route::post('contact/send', 'Frontend\ContactController@send')->name('contact.send');
 
-Route::get('download', ['uses' => 'Frontend\HomeController@getDownload', 'as' => 'download']);
+Route::get('download', 'Frontend\HomeController@getDownload')->name('download');
 
-Route::group(['middleware' => 'auth'], function () {
-    Route::post('cart/checkout', ['uses' => 'CartController@checkout', 'as' => 'cart.checkout']);
-    Route::post('cart/add', ['uses' => 'CartController@addToCart', 'as' => 'cart.addToCart']);
-    Route::get('cart', ['uses' => 'CartController@index', 'as' => 'cart.index']);
-    Route::get('cart/clear', ['uses' => 'CartController@clear', 'as' => 'cart.clear']);
-    Route::get('cart/remove', ['uses' => 'CartController@remove', 'as' => 'cart.remove']);
-    Route::post('cart/apply-coupon', ['uses' => 'CartController@applyCoupon', 'as' => 'cart.applyCoupon']);
-    Route::post('cart/remove-coupon', ['uses' => 'CartController@removeCoupon', 'as' => 'cart.removeCoupon']);
-    Route::post('cart/stripe-payment', ['uses' => 'CartController@stripePayment', 'as' => 'cart.stripe.payment']);
-    Route::post('cart/paypal-payment', ['uses' => 'CartController@paypalPayment', 'as' => 'cart.paypal.payment']);
-    Route::get('cart/paypal-payment/status', ['uses' => 'CartController@getPaymentStatus'])->name('cart.paypal.status');
+Route::middleware('auth')->group(function () {
+    Route::post('cart/checkout', 'CartController@checkout')->name('cart.checkout');
+    Route::post('cart/add', 'CartController@addToCart')->name('cart.addToCart');
+    Route::get('cart', 'CartController@index')->name('cart.index');
+    Route::get('cart/clear', 'CartController@clear')->name('cart.clear');
+    Route::get('cart/remove', 'CartController@remove')->name('cart.remove');
+    Route::post('cart/apply-coupon', 'CartController@applyCoupon')->name('cart.applyCoupon');
+    Route::post('cart/remove-coupon', 'CartController@removeCoupon')->name('cart.removeCoupon');
+    Route::post('cart/stripe-payment', 'CartController@stripePayment')->name('cart.stripe.payment');
+    Route::post('cart/paypal-payment', 'CartController@paypalPayment')->name('cart.paypal.payment');
+    Route::get('cart/paypal-payment/status', 'CartController@getPaymentStatus')->name('cart.paypal.status');
 
-    Route::post('cart/instamojo-payment', ['uses' => 'CartController@instamojoPayment', 'as' => 'cart.instamojo.payment']);
-    Route::get('cart/instamojo-payment/status', ['uses' => 'CartController@getInstamojoStatus'])->name('cart.instamojo.status');
+    Route::post('cart/instamojo-payment', 'CartController@instamojoPayment')->name('cart.instamojo.payment');
+    Route::get('cart/instamojo-payment/status', 'CartController@getInstamojoStatus')->name('cart.instamojo.status');
 
-    Route::post('cart/razorpay-payment', ['uses' => 'CartController@razorpayPayment', 'as' => 'cart.razorpay.payment']);
-    Route::post('cart/razorpay-payment/status', ['uses' => 'CartController@getRazorpayStatus'])->name('cart.razorpay.status');
+    Route::post('cart/razorpay-payment', 'CartController@razorpayPayment')->name('cart.razorpay.payment');
+    Route::post('cart/razorpay-payment/status', 'CartController@getRazorpayStatus')->name('cart.razorpay.status');
 
-    Route::post('cart/cashfree-payment', ['uses' => 'CartController@cashfreeFreePayment', 'as' => 'cart.cashfree.payment']);
-    Route::post('cart/cashfree-payment/status', ['uses' => 'CartController@getCashFreeStatus'])->name('cart.cashfree.status');
+    Route::post('cart/cashfree-payment', 'CartController@cashfreeFreePayment')->name('cart.cashfree.payment');
+    Route::post('cart/cashfree-payment/status', 'CartController@getCashFreeStatus')->name('cart.cashfree.status');
 
-    Route::post('cart/payu-payment', ['uses' => 'CartController@payuPayment', 'as' => 'cart.payu.payment']);
-    Route::post('cart/payu-payment/status', ['uses' => 'CartController@getPayUStatus'])->name('cart.pauy.status');
+    Route::post('cart/payu-payment', 'CartController@payuPayment')->name('cart.payu.payment');
+    Route::post('cart/payu-payment/status', 'CartController@getPayUStatus')->name('cart.pauy.status');
 
     Route::match(['GET', 'POST'], 'cart/flutter-payment', ['uses' => 'CartController@flatterPayment', 'as' => 'cart.flutter.payment']);
-    Route::get('cart/flutter-payment/status', ['uses' => 'CartController@getFlatterStatus', 'as' => 'cart.flutter.status']);
+    Route::get('cart/flutter-payment/status', 'CartController@getFlatterStatus')->name('cart.flutter.status');
 
     Route::get('status', function () {
         return view('frontend.cart.status');
     })->name('status');
-    Route::post('cart/offline-payment', ['uses' => 'CartController@offlinePayment', 'as' => 'cart.offline.payment']);
-    Route::post('cart/getnow', ['uses' => 'CartController@getNow', 'as' => 'cart.getnow']);
+    Route::post('cart/offline-payment', 'CartController@offlinePayment')->name('cart.offline.payment');
+    Route::post('cart/getnow', 'CartController@getNow')->name('cart.getnow');
 });
 
 //============= Menu  Manager Routes ===============//
-Route::group(['namespace' => 'Backend', 'prefix' => 'admin', 'middleware' => config('menu.middleware')], function () {
+Route::namespace('Backend')->prefix('admin')->middleware(config('menu.middleware'))->group(function () {
     //Route::get('wmenuindex', array('uses'=>'\Harimayco\Menu\Controllers\MenuController@wmenuindex'));
     Route::post('add-custom-menu', 'MenuController@addcustommenu')->name('haddcustommenu');
     Route::post('delete-item-menu', 'MenuController@deleteitemmenu')->name('hdeleteitemmenu');
@@ -167,17 +167,17 @@ Route::group(['namespace' => 'Backend', 'prefix' => 'admin', 'middleware' => con
 
 Route::get('certificate-verification', 'Backend\CertificateController@getVerificationForm')->name('frontend.certificates.getVerificationForm');
 Route::post('certificate-verification', 'Backend\CertificateController@verifyCertificate')->name('frontend.certificates.verify');
-Route::get('certificates/download', ['uses' => 'Backend\CertificateController@download', 'as' => 'certificates.download']);
+Route::get('certificates/download', 'Backend\CertificateController@download')->name('certificates.download');
 
 if (config('show_offers') == 1) {
-    Route::get('offers', ['uses' => 'CartController@getOffers', 'as' => 'frontend.offers']);
+    Route::get('offers', 'CartController@getOffers')->name('frontend.offers');
 }
 
-Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth', 'role:teacher|administrator']], function () {
+Route::prefix('laravel-filemanager')->middleware('web', 'auth', 'role:teacher|administrator')->group(function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
 
-Route::group(['prefix' => 'subscription'], function () {
+Route::prefix('subscription')->group(function () {
     Route::get('plans', 'SubscriptionController@plans')->name('subscription.plans');
     Route::get('/{plan}/{name}', 'SubscriptionController@showForm')->name('subscription.form');
     Route::post('subscribe/{plan}', 'SubscriptionController@subscribe')->name('subscription.subscribe');
@@ -189,6 +189,6 @@ Route::group(['prefix' => 'subscription'], function () {
 // wishlist
 Route::post('add-to-wishlist', 'Backend\WishlistController@store')->name('add-to-wishlist');
 
-Route::group(['namespace' => 'Frontend', 'as' => 'frontend.'], function () {
+Route::namespace('Frontend')->name('frontend.')->group(function () {
     Route::get('/{page?}', [HomeController::class, 'index'])->name('index');
 });

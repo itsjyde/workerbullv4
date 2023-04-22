@@ -14,8 +14,8 @@ use App\Http\Controllers\Frontend\User\ProfileController;
  * All route names are prefixed with 'frontend.'
  * These routes can not be hit if the password is expired
  */
-Route::group(['middleware' => ['auth', 'password_expires']], function () {
-    Route::group(['namespace' => 'User', 'as' => 'user.'], function () {
+Route::middleware('auth', 'password_expires')->group(function () {
+    Route::namespace('User')->name('user.')->group(function () {
         /*
          * User Dashboard Specific
          */
