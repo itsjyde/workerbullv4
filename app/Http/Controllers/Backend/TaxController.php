@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Tax;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class TaxController extends Controller
 {
@@ -17,7 +17,8 @@ class TaxController extends Controller
     {
         $tax = Tax::orderBy('created_at', 'desc')
             ->get();
-        return view('backend.tax.index',compact('tax'));
+
+        return view('backend.tax.index', compact('tax'));
     }
 
     /**
@@ -33,7 +34,6 @@ class TaxController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -43,8 +43,8 @@ class TaxController extends Controller
             'rate' => 'required',
         ]);
 
-        $tax = Tax::where('name','=',$request->name)->first();
-        if($tax == null){
+        $tax = Tax::where('name', '=', $request->name)->first();
+        if ($tax == null) {
             $tax = new Tax();
             $tax->name = $request->name;
             $tax->rate = $request->rate;
@@ -57,7 +57,7 @@ class TaxController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -68,20 +68,20 @@ class TaxController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $tax = Tax::findOrFail($id);
-        return view('backend.tax.edit',compact('tax'));
+
+        return view('backend.tax.edit', compact('tax'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -92,31 +92,30 @@ class TaxController extends Controller
         ]);
 
         $tax = Tax::findOrFail($id);
-        if($tax != null){
+        if ($tax != null) {
             $tax->name = $request->name;
             $tax->rate = $request->rate;
             $tax->save();
+
             return redirect()->route('admin.tax.index')->withFlashSuccess(trans('alerts.backend.general.updated'));
         }
+
         return abort(404);
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $tax = Tax::findOrFail($id);
         $tax->delete();
+
         return back()->withFlashSuccess(trans('alerts.backend.general.deleted'));
-
     }
-
 
     public function status($id)
     {
@@ -134,13 +133,13 @@ class TaxController extends Controller
     /**
      * Update tax status
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      **/
     public function updateStatus()
     {
         $tax = Tax::findOrFail(request('id'));
-        $tax->status = $tax->status == 1? 0 : 1;
+        $tax->status = $tax->status == 1 ? 0 : 1;
         $tax->save();
     }
 }

@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Frontend\Auth;
 
+use App\Helpers\Frontend\Auth\Socialite;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
-use App\Helpers\Frontend\Auth\Socialite;
-use App\Events\Frontend\Auth\UserRegistered;
 use App\Mail\Frontend\Auth\AdminRegistered;
 use App\Models\Auth\User;
+use App\Repositories\Frontend\Auth\UserRepository;
 use Arcanedev\NoCaptcha\Rules\CaptchaRule;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Repositories\Frontend\Auth\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ClosureValidationRule;
 
 /**
  * Class RegisterController.
@@ -31,8 +29,6 @@ class RegisterController extends Controller
 
     /**
      * RegisterController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -63,29 +59,28 @@ class RegisterController extends Controller
     }
 
     /**
-     * @param RegisterRequest $request
-     *
+     * @param  RegisterRequest  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
      * @throws \Throwable
      */
     public function register(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required',new CaptchaRule] : ''),
-        ],[
+            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required', new CaptchaRule] : ''),
+        ], [
             'g-recaptcha-response.required' => __('validation.attributes.frontend.captcha'),
         ]);
 
         if ($validator->passes()) {
             // Store your user in database
             event(new Registered($user = $this->create($request->all())));
-            return response(['success' => true]);
 
+            return response(['success' => true]);
         }
 
         return response(['errors' => $validator->errors()]);
@@ -94,7 +89,6 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $data
      * @return \App\Models\User
      */
     protected function create(array $data)
@@ -105,22 +99,22 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-                $user->dob = isset($data['dob']) ? $data['dob'] : NULL ;
-                $user->phone = isset($data['phone']) ? $data['phone'] : NULL ;
-                $user->gender = isset($data['gender']) ? $data['gender'] : NULL;
-                $user->address = isset($data['address']) ? $data['address'] : NULL;
-                $user->city =  isset($data['city']) ? $data['city'] : NULL;
-                $user->pincode = isset($data['pincode']) ? $data['pincode'] : NULL;
-                $user->state = isset($data['state']) ? $data['state'] : NULL;
-                $user->country = isset($data['country']) ? $data['country'] : NULL;
-                $user->save();
+        $user->dob = isset($data['dob']) ? $data['dob'] : null;
+        $user->phone = isset($data['phone']) ? $data['phone'] : null;
+        $user->gender = isset($data['gender']) ? $data['gender'] : null;
+        $user->address = isset($data['address']) ? $data['address'] : null;
+        $user->city = isset($data['city']) ? $data['city'] : null;
+        $user->pincode = isset($data['pincode']) ? $data['pincode'] : null;
+        $user->state = isset($data['state']) ? $data['state'] : null;
+        $user->country = isset($data['country']) ? $data['country'] : null;
+        $user->save();
 
         $userForRole = User::find($user->id);
         $userForRole->confirmed = 1;
         $userForRole->save();
         $userForRole->assignRole('student');
 
-        if(config('access.users.registration_mail')) {
+        if (config('access.users.registration_mail')) {
             $this->sendAdminMail($user);
         }
 
@@ -131,11 +125,8 @@ class RegisterController extends Controller
     {
         $admins = User::role('administrator')->get();
 
-        foreach ($admins as $admin){
+        foreach ($admins as $admin) {
             \Mail::to($admin->email)->send(new AdminRegistered($user));
         }
     }
-
-
-
 }

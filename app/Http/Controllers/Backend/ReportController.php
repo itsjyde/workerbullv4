@@ -20,12 +20,12 @@ class ReportController extends Controller
 
         //  bundle query
         $bundle_earnings = Order::query()->with('items')->where('status', '=', 1);
-        if($request->get('bundle')){
+        if ($request->get('bundle')) {
             $bundle_earnings->whereHas('items', function ($q) use ($request) {
                 $q->where('item_type', '=', Bundle::class)
                     ->where('item_id', $request->get('bundle'));
             });
-        }else {
+        } else {
             $bundle_earnings->whereHas('items', function ($q) use ($bundles) {
                 $q->where('item_type', '=', Bundle::class)
                     ->whereIn('item_id', $bundles);
@@ -34,32 +34,31 @@ class ReportController extends Controller
 
         //  course query
         $course_earnings = Order::query()->with('items')->where('status', '=', 1);
-        if($request->get('course')){
+        if ($request->get('course')) {
             $course_earnings->whereHas('items', function ($q) use ($request) {
                 $q->where('item_type', '=', Course::class)
                     ->where('item_id', $request->get('course'));
             });
-        }else{
+        } else {
             $course_earnings->whereHas('items', function ($q) use ($courses) {
                 $q->where('item_type', '=', Course::class)
                     ->whereIn('item_id', $courses);
             });
         }
 
-
-        if($request->get('student')){
-            $bundle_earnings->whereHas('user', function (Builder $query) use($request){
+        if ($request->get('student')) {
+            $bundle_earnings->whereHas('user', function (Builder $query) use ($request) {
                 $query->where('id', '=', $request->get('student'));
             });
 
-            $course_earnings->whereHas('user', function (Builder $query) use($request){
+            $course_earnings->whereHas('user', function (Builder $query) use ($request) {
                 $query->where('id', '=', $request->get('student'));
             });
         }
 
-        $bundle_earnings =  $this->dateFilter($bundle_earnings);
+        $bundle_earnings = $this->dateFilter($bundle_earnings);
 
-        $course_earnings =  $this->dateFilter($course_earnings);
+        $course_earnings = $this->dateFilter($course_earnings);
 
         // bundle sales and amount count
         $bundle_sales = $bundle_earnings->count();
@@ -81,14 +80,14 @@ class ReportController extends Controller
         $subscribe = Order::query()->with(['plan', 'user'])->where('status', '=', 1)->where('plan_id', '!=', 0)->get();
         // bundle sales and amount count
         $subscribe_sales = $subscribe->count();
-        $subscribe_earnings=0;
-        if($subscribe){
-            foreach ($subscribe as $sub){
+        $subscribe_earnings = 0;
+        if ($subscribe) {
+            foreach ($subscribe as $sub) {
                 $subscribe_earnings += $sub->plan->amount;
             }
         }
 
-        return view('backend.reports.sales', compact('total_earnings', 'total_sales', 'students', 'courses', 'bundles','subscribe_sales','subscribe_earnings'));
+        return view('backend.reports.sales', compact('total_earnings', 'total_sales', 'students', 'courses', 'bundles', 'subscribe_sales', 'subscribe_earnings'));
     }
 
     public function getStudentsReport()
@@ -105,36 +104,38 @@ class ReportController extends Controller
             $q->where('plan_id', '=', 0);
         });
 
-        if($request->get('course')){
+        if ($request->get('course')) {
             $course_orders->whereHasMorph(
                 'item',
-                'App\Models\Course',
+                \App\Models\Course::class,
                 function (Builder $query) use ($request) {
                     $query->where('id', $request->get('course'));
                 }
             );
-        }else {
+        } else {
             $course_orders->whereHasMorph(
                 'item',
-                'App\Models\Course',
+                \App\Models\Course::class,
                 function (Builder $query) use ($courses) {
                     $query->whereIn('id', $courses);
                 }
             );
         }
 
-        if($request->get('student')){
-            $course_orders->whereHas('order.user', function (Builder $query) use($request){
+        if ($request->get('student')) {
+            $course_orders->whereHas('order.user', function (Builder $query) use ($request) {
                 $query->where('id', '=', $request->get('student'));
             });
         }
 
-        $course_orders =  $this->dateFilter($course_orders);
+        $course_orders = $this->dateFilter($course_orders);
+
         return \DataTables::of($course_orders)
             ->addColumn('course', function ($query) {
                 $course_name = $query->item->title;
                 $course_slug = $query->item->slug;
-                $link = "<a href='" . route('courses.show', [$course_slug]) . "' target='_blank'>" . $course_name . "</a>";
+                $link = "<a href='".route('courses.show', [$course_slug])."' target='_blank'>".$course_name.'</a>';
+
                 return $link;
             })
             ->addColumn('title', function ($query) {
@@ -150,7 +151,6 @@ class ReportController extends Controller
                 if ($query->order->transaction_id) {
                     return $query->order->transaction_id;
                 }
-                return;
             })
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-y H:i:s A');
@@ -169,38 +169,39 @@ class ReportController extends Controller
             $q->where('plan_id', '=', 0);
         });
 
-        if($request->get('bundle')){
+        if ($request->get('bundle')) {
             $bundle_orders->whereHasMorph(
                 'item',
-                'App\Models\Bundle',
+                \App\Models\Bundle::class,
                 function (Builder $query) use ($request) {
                     $query->where('id', $request->get('bundle'));
                 }
             );
-        }else {
+        } else {
             $bundle_orders->whereHasMorph(
                 'item',
-                'App\Models\Bundle',
+                \App\Models\Bundle::class,
                 function (Builder $query) use ($bundles) {
                     $query->whereIn('id', $bundles);
                 }
             );
         }
 
-        if($request->get('student')){
-            $bundle_orders->whereHas('order.user', function (Builder $query) use($request){
+        if ($request->get('student')) {
+            $bundle_orders->whereHas('order.user', function (Builder $query) use ($request) {
                 $query->where('id', '=', $request->get('student'));
             });
         }
 
-        $bundle_orders =  $this->dateFilter($bundle_orders);
+        $bundle_orders = $this->dateFilter($bundle_orders);
 
         return \DataTables::of($bundle_orders)
             ->addIndexColumn()
             ->addColumn('bundle', function ($q) {
                 $bundle_name = $q->item->title;
                 $bundle_slug = $q->item->slug;
-                $link = "<a href='" . route('bundles.show', [$bundle_slug]) . "' target='_blank'>" . $bundle_name . "</a>";
+                $link = "<a href='".route('bundles.show', [$bundle_slug])."' target='_blank'>".$bundle_name.'</a>';
+
                 return $link;
             })
             ->addColumn('title', function ($query) {
@@ -216,7 +217,6 @@ class ReportController extends Controller
                 if ($query->order->transaction_id) {
                     return $query->order->transaction_id;
                 }
-                return;
             })
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-y H:i:s A');
@@ -225,6 +225,7 @@ class ReportController extends Controller
             ->rawColumns(['bundle'])
             ->make();
     }
+
     public function getSubscibeData(Request $request)
     {
         $orders = Order::query()->with(['plan', 'user'])->where('status', '=', 1)->where('plan_id', '!=', 0)->get();
@@ -243,10 +244,10 @@ class ReportController extends Controller
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-y H:i:s A');
             })
-            ->rawColumns(['student','title'])
+            ->rawColumns(['student', 'title'])
             ->make();
-
     }
+
     public function getStudentsData(Request $request)
     {
         $courses = Course::ofTeacher()->has('students', '>', 0)->withCount('students')->get();
@@ -266,23 +267,23 @@ class ReportController extends Controller
                         }
                     }
                 }
-                return $count;
 
+                return $count;
             })
             ->make();
     }
 
     private function dateFilter($query)
     {
-
-        if(request()->get('applyDate')){
-            if(request()->get('date')) {
+        if (request()->get('applyDate')) {
+            if (request()->get('date')) {
                 $date = explode(' / ', request()->get('date'));
                 $start = $date[0];
                 $end = $date[1];
-                $query->whereDate('created_at','<=', $end)->whereDate('created_at', '>=', $start);
+                $query->whereDate('created_at', '<=', $end)->whereDate('created_at', '>=', $start);
             }
         }
+
         return $query;
     }
 }

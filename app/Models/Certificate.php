@@ -7,21 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Certificate extends Model
 {
-    protected $guarded =[];
+    protected $guarded = [];
+
     protected $appends = ['certificate_link'];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo(Course::class);
     }
 
-    public function getCertificateLinkAttribute(){
+    public function getCertificateLinkAttribute()
+    {
         if ($this->url != null) {
             return url('storage/certificates/'.$this->url);
         }
-        return NULL;
+
+        return null;
     }
 }

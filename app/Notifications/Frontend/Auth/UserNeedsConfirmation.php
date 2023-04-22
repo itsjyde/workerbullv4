@@ -3,8 +3,8 @@
 namespace App\Notifications\Frontend\Auth;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 /**
  * Class UserNeedsConfirmation.
@@ -13,15 +13,10 @@ class UserNeedsConfirmation extends Notification
 {
     use Queueable;
 
-    /**
-     * @var
-     */
     protected $confirmation_code;
 
     /**
      * UserNeedsConfirmation constructor.
-     *
-     * @param $confirmation_code
      */
     public function __construct($confirmation_code)
     {
@@ -31,8 +26,7 @@ class UserNeedsConfirmation extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
-     *
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -43,8 +37,7 @@ class UserNeedsConfirmation extends Notification
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable
-     *
+     * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)

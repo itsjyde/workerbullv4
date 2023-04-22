@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
-use Spatie\Permission\Models\Permission;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StorePermissionsRequest;
 use App\Http\Requests\Admin\UpdatePermissionsRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
 {
@@ -22,8 +22,7 @@ class PermissionsController extends Controller
             return abort(401);
         }
 
-
-                $permissions = Permission::all();
+        $permissions = Permission::all();
 
         return view('backend.permissions.index', compact('permissions'));
     }
@@ -38,6 +37,7 @@ class PermissionsController extends Controller
         if (! Gate::allows('permission_create')) {
             return abort(401);
         }
+
         return view('backend.permissions.create');
     }
 
@@ -54,11 +54,8 @@ class PermissionsController extends Controller
         }
         $permission = Permission::create($request->all());
 
-
-
         return redirect()->route('admin.permissions.index');
     }
-
 
     /**
      * Show the form for editing Permission.
@@ -91,11 +88,8 @@ class PermissionsController extends Controller
         $permission = Permission::findOrFail($id);
         $permission->update($request->all());
 
-
-
         return redirect()->route('admin.permissions.index');
     }
-
 
     /**
      * Display Permission.
@@ -109,15 +103,14 @@ class PermissionsController extends Controller
             return abort(401);
         }
         $roles = \App\Role::whereHas('permission',
-                    function ($query) use ($id) {
-                        $query->where('id', $id);
-                    })->get();
+            function ($query) use ($id) {
+                $query->where('id', $id);
+            })->get();
 
         $permission = Permission::findOrFail($id);
 
         return view('backend.permissions.show', compact('permission', 'roles'));
     }
-
 
     /**
      * Remove Permission from storage.
@@ -138,8 +131,6 @@ class PermissionsController extends Controller
 
     /**
      * Delete all selected Permission at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
@@ -154,5 +145,4 @@ class PermissionsController extends Controller
             }
         }
     }
-
 }

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Validation\Rule;
 
 class CouponController extends Controller
 {
@@ -18,7 +17,8 @@ class CouponController extends Controller
     {
         $coupons = Coupon::orderBy('created_at', 'desc')
             ->get();
-        return view('backend.coupons.index',compact('coupons'));
+
+        return view('backend.coupons.index', compact('coupons'));
     }
 
     /**
@@ -34,7 +34,6 @@ class CouponController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -47,8 +46,8 @@ class CouponController extends Controller
             'per_user_limit' => 'required',
         ]);
 
-        $coupon = Coupon::where('name','=',$request->name)->first();
-        if($coupon == null){
+        $coupon = Coupon::where('name', '=', $request->name)->first();
+        if ($coupon == null) {
             $coupon = new Coupon();
             $coupon->name = $request->name;
             $coupon->description = $request->description;
@@ -67,32 +66,33 @@ class CouponController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('backend.coupons.show',compact('coupon'));
+
+        return view('backend.coupons.show', compact('coupon'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('backend.coupons.edit',compact('coupon'));
+
+        return view('backend.coupons.edit', compact('coupon'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -107,7 +107,7 @@ class CouponController extends Controller
         ]);
 
         $coupon = Coupon::findOrFail($id);
-        if($coupon != null){
+        if ($coupon != null) {
             $coupon->name = $request->name;
             $coupon->description = $request->description;
             $coupon->code = $request->code;
@@ -117,27 +117,26 @@ class CouponController extends Controller
             $coupon->min_price = $request->min_price;
             $coupon->per_user_limit = $request->per_user_limit;
             $coupon->save();
+
             return redirect()->route('admin.coupons.index')->withFlashSuccess(trans('alerts.backend.general.updated'));
         }
+
         return abort(404);
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $coupon = Coupon::findOrFail($id);
         $coupon->delete();
+
         return back()->withFlashSuccess(trans('alerts.backend.general.deleted'));
-
     }
-
 
     public function status($id)
     {
@@ -155,7 +154,7 @@ class CouponController extends Controller
     public function updateStatus()
     {
         $coupon = Coupon::find(request('id'));
-        $coupon->status = $coupon->status == 1? 0 : 1;
+        $coupon->status = $coupon->status == 1 ? 0 : 1;
         $coupon->save();
     }
 }

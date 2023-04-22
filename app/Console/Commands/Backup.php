@@ -42,36 +42,32 @@ class Backup extends Command
             $artisan_command = '';
 
             switch (config('backup.content')) {
-                case 'db': {
+                case 'db':
                     $artisan_command = 'backup:run & --only-db';
                     break;
-                }
-                case 'db_storage': {
+
+                case 'db_storage':
                     config(['backup.source.files.include' => 'storage/public']);
                     $artisan_command = 'backup:run';
                     break;
-                }
-                case 'all': {
+
+                case 'all':
                     config(['backup.source.files.include' => base_path()]);
                     $artisan_command = 'backup:run';
                     break;
-                }
             }
 
             $command = explode('&', $artisan_command);
             try {
                 if (count($command) > 1) {
                     \Artisan::call(trim($command[0]), [trim($command[1]) => true]);
-
                 } else {
                     \Artisan::call(array_first($command));
                 }
                 Log::info('Backup completed successfully!');
-
             } catch (\Exception $e) {
-                \Log::info('backup update failed - ' . $e->getMessage());
+                \Log::info('backup update failed - '.$e->getMessage());
             }
-
         }
     }
 }

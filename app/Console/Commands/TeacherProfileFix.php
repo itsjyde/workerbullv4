@@ -40,7 +40,7 @@ class TeacherProfileFix extends Command
     {
         $teachers = \App\Models\Auth\User::role('teacher')->get();
         foreach ($teachers as $teacher) {
-            if (!$teacher->teacherProfile) {
+            if (! $teacher->teacherProfile) {
                 $profile = new TeacherProfile();
                 $profile->user_id = $teacher->id;
                 $profile->payment_method = 'paypal';

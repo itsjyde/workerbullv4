@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\FileUploadTrait;
+use App\Http\Requests\Admin\StoreQuestionsRequest;
+use App\Http\Requests\Admin\UpdateQuestionsRequest;
 use App\Models\Question;
 use App\Models\QuestionsOption;
 use App\Models\Test;
-use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreQuestionsRequest;
-use App\Http\Requests\Admin\UpdateQuestionsRequest;
-use App\Http\Controllers\Traits\FileUploadTrait;
 use Yajra\DataTables\Facades\DataTables;
 
 class QuestionsController extends Controller
@@ -25,7 +24,7 @@ class QuestionsController extends Controller
      */
     public function index()
     {
-        if (!Gate::allows('question_access')) {
+        if (! Gate::allows('question_access')) {
             return abort(401);
         }
 
@@ -33,7 +32,6 @@ class QuestionsController extends Controller
 
         return view('backend.questions.index', compact('tests'));
     }
-
 
     /**
      * Display a listing of Questions via ajax DataTable.
@@ -49,24 +47,23 @@ class QuestionsController extends Controller
         /*TODO:: Show All questions if Admin, Show related if  Teacher*/
         $questions = Question::orderBy('created_at', 'desc');
 
-        if ($request->test_id != "") {
+        if ($request->test_id != '') {
             $test_id = $request->test_id;
             $questions = Question::query()->whereHas('tests', function ($q) use ($test_id) {
                 $q->where('test_id', $test_id);
             })->orderBy('created_at', 'desc');
         }
 
-        if (!auth()->user()->role('administrator')) {
+        if (! auth()->user()->role('administrator')) {
             $questions->where('user_id', '=', auth()->user()->id);
         }
 
         if ($request->show_deleted == 1) {
-            if (!Gate::allows('question_delete')) {
+            if (! Gate::allows('question_delete')) {
                 return abort(401);
             }
             $questions->onlyTrashed()->get();
         }
-
 
         if (auth()->user()->can('question_view')) {
             $has_view = true;
@@ -81,9 +78,9 @@ class QuestionsController extends Controller
         return DataTables::of($questions)
             ->addIndexColumn()
             ->addColumn('actions', function ($q) use ($has_view, $has_edit, $has_delete, $request) {
-                $view = "";
-                $edit = "";
-                $delete = "";
+                $view = '';
+                $edit = '';
+                $delete = '';
                 if ($request->show_deleted == 1) {
                     return view('backend.datatable.action-trashed')->with(['route_label' => 'admin.questions', 'label' => 'id', 'value' => $q->id]);
                 }
@@ -100,14 +97,15 @@ class QuestionsController extends Controller
 
                 if ($has_delete) {
                     $delete = view('backend.datatable.action-delete')
-                        ->with(['route' => route('admin.questions.destroy', ['question' => $q->id, 'test_id' => $request->test_id??''])])
+                        ->with(['route' => route('admin.questions.destroy', ['question' => $q->id, 'test_id' => $request->test_id ?? ''])])
                         ->render();
                     $view .= $delete;
                 }
+
                 return $view;
             })
             ->editColumn('question_image', function ($q) {
-                return ($q->question_image != null) ? '<img height="50px" src="' . asset('storage/uploads/' . $q->question_image) . '">' : 'N/A';
+                return ($q->question_image != null) ? '<img height="50px" src="'.asset('storage/uploads/'.$q->question_image).'">' : 'N/A';
             })
             ->rawColumns(['question_image', 'actions'])
             ->make();
@@ -120,39 +118,40 @@ class QuestionsController extends Controller
      */
     public function create()
     {
-        if (!Gate::allows('question_create')) {
+        if (! Gate::allows('question_create')) {
             return abort(401);
         }
         $tests = \App\Models\Test::get()->pluck('title', 'id');
+
         return view('backend.questions.create', compact('tests'));
     }
 
     /**
      * Store a newly created Question in storage.
      *
-     * @param  \App\Http\Requests\StoreQuestionsRequest $request
+     * @param  \App\Http\Requests\StoreQuestionsRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreQuestionsRequest $request)
     {
-        if (!Gate::allows('question_create')) {
+        if (! Gate::allows('question_create')) {
             return abort(401);
         }
         $request = $this->saveFiles($request);
         $question = Question::create($request->all());
         $question->user_id = auth()->user()->id;
         $question->save();
-        $question->tests()->sync(array_filter((array)$request->input('tests')));
+        $question->tests()->sync(array_filter((array) $request->input('tests')));
 
         for ($q = 1; $q <= 4; $q++) {
-            $option = $request->input('option_text_' . $q, '');
-            $explanation = $request->input('explanation_' . $q, '');
+            $option = $request->input('option_text_'.$q, '');
+            $explanation = $request->input('explanation_'.$q, '');
             if ($option != '') {
                 QuestionsOption::create([
                     'question_id' => $question->id,
                     'option_text' => $option,
                     'explanation' => $explanation,
-                    'correct' => $request->input('correct_' . $q)
+                    'correct' => $request->input('correct_'.$q),
                 ]);
             }
         }
@@ -160,16 +159,15 @@ class QuestionsController extends Controller
         return redirect()->route('admin.questions.index')->withFlashSuccess(trans('alerts.backend.general.created'));
     }
 
-
     /**
      * Show the form for editing Question.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        if (!Gate::allows('question_edit')) {
+        if (! Gate::allows('question_edit')) {
             return abort(401);
         }
         $question = Question::findOrFail($id);
@@ -181,13 +179,13 @@ class QuestionsController extends Controller
     /**
      * Update Question in storage.
      *
-     * @param  \App\Http\Requests\UpdateQuestionsRequest $request
-     * @param  int $id
+     * @param  \App\Http\Requests\UpdateQuestionsRequest  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateQuestionsRequest $request, $id)
     {
-        if (!Gate::allows('question_edit')) {
+        if (! Gate::allows('question_edit')) {
             return abort(401);
         }
         $request = $this->saveFiles($request);
@@ -195,15 +193,14 @@ class QuestionsController extends Controller
         $question->update($request->all());
         $question->user_id = auth()->user()->id;
         $question->save();
-        $question->tests()->sync(array_filter((array)$request->input('tests')));
+        $question->tests()->sync(array_filter((array) $request->input('tests')));
 
-        if($request->input('options_available')) {
-
+        if ($request->input('options_available')) {
             for ($q = 1; $q <= 4; $q++) {
-                $option = $request->input('option_text_' . $q, '');
-                $explanation = $request->input('explanation_' . $q, '');
-                $option_id = $request->input('option_id_' . $q, '');
-                $correct = ($request->input('correct_' . $q) == 1) ? 1 : 0;
+                $option = $request->input('option_text_'.$q, '');
+                $explanation = $request->input('explanation_'.$q, '');
+                $option_id = $request->input('option_id_'.$q, '');
+                $correct = ($request->input('correct_'.$q) == 1) ? 1 : 0;
                 if ($option != '') {
                     $option_data = QuestionsOption::find($option_id);
                     if ($option_data) {
@@ -215,16 +212,16 @@ class QuestionsController extends Controller
                     }
                 }
             }
-        }else{
+        } else {
             for ($nq = 1; $nq <= 4; $nq++) {
-                $option = $request->input('option_text_' . $nq, '');
-                $explanation = $request->input('explanation_' . $nq, '');
+                $option = $request->input('option_text_'.$nq, '');
+                $explanation = $request->input('explanation_'.$nq, '');
                 if ($option != '') {
                     QuestionsOption::create([
                         'question_id' => $question->id,
                         'option_text' => $option,
                         'explanation' => $explanation,
-                        'correct' => $request->input('correct_' . $nq)
+                        'correct' => $request->input('correct_'.$nq),
                     ]);
                 }
             }
@@ -233,16 +230,15 @@ class QuestionsController extends Controller
         return redirect()->route('admin.questions.index')->withFlashSuccess(trans('alerts.backend.general.updated'));
     }
 
-
     /**
      * Display Question.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        if (!Gate::allows('question_view')) {
+        if (! Gate::allows('question_view')) {
             return abort(401);
         }
         $questions_options = \App\Models\QuestionsOption::where('question_id', $id)->get();
@@ -258,16 +254,15 @@ class QuestionsController extends Controller
         return view('backend.questions.show', compact('question', 'questions_options', 'tests'));
     }
 
-
     /**
      * Remove Question from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        if (!Gate::allows('question_delete')) {
+        if (! Gate::allows('question_delete')) {
             return abort(401);
         }
         $question = Question::findOrFail($id);
@@ -284,12 +279,10 @@ class QuestionsController extends Controller
 
     /**
      * Delete all selected Question at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
-        if (!Gate::allows('question_delete')) {
+        if (! Gate::allows('question_delete')) {
             return abort(401);
         }
         if ($request->input('ids')) {
@@ -301,16 +294,15 @@ class QuestionsController extends Controller
         }
     }
 
-
     /**
      * Restore Question from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function restore($id)
     {
-        if (!Gate::allows('question_delete')) {
+        if (! Gate::allows('question_delete')) {
             return abort(401);
         }
         $question = Question::onlyTrashed()->findOrFail($id);
@@ -322,12 +314,12 @@ class QuestionsController extends Controller
     /**
      * Permanently delete Question from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function perma_del($id)
     {
-        if (!Gate::allows('question_delete')) {
+        if (! Gate::allows('question_delete')) {
             return abort(401);
         }
         $question = Question::onlyTrashed()->findOrFail($id);

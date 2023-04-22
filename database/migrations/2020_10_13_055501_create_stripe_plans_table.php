@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStripePlansTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -26,7 +26,6 @@ class CreateStripePlansTable extends Migration
             $table->integer('bundle')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
@@ -39,4 +38,4 @@ class CreateStripePlansTable extends Migration
     {
         Schema::dropIfExists('stripe_plans');
     }
-}
+};

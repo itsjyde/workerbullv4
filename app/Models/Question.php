@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\File;
 /**
  * Class Question
  *
- * @package App
  * @property text $question
  * @property string $question_image
- * @property integer $score
+ * @property int $score
  */
 class Question extends Model
 {
@@ -40,18 +39,16 @@ class Question extends Model
         }
 
         static::deleting(function ($question) { // before delete() method call this
-            if ($question->isForceDeleting()) {
-                if (File::exists(public_path('/storage/uploads/' . $question->question_image))) {
-                    File::delete(public_path('/storage/uploads/' . $question->question_image));
-                }
+        if ($question->isForceDeleting()) {
+            if (File::exists(public_path('/storage/uploads/'.$question->question_image))) {
+                File::delete(public_path('/storage/uploads/'.$question->question_image));
             }
+        }
         });
-
     }
 
     /**
      * Set attribute to money format
-     * @param $input
      */
     public function setScoreAttribute($input)
     {
@@ -60,16 +57,18 @@ class Question extends Model
 
     public function options()
     {
-        return $this->hasMany('App\Models\QuestionsOption');
+        return $this->hasMany(\App\Models\QuestionsOption::class);
     }
 
-    public function isAttempted($result_id){
+    public function isAttempted($result_id)
+    {
         $result = TestsResultsAnswer::where('tests_result_id', '=', $result_id)
             ->where('question_id', '=', $this->id)
             ->first();
-        if($result != null){
+        if ($result != null) {
             return true;
         }
+
         return false;
     }
 
@@ -77,6 +76,4 @@ class Question extends Model
     {
         return $this->belongsToMany(Test::class, 'question_test');
     }
-
-
 }

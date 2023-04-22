@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
-use App\Models\Auth\Role;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRolesRequest;
 use App\Http\Requests\Admin\UpdateRolesRequest;
+use App\Models\Auth\Role;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 
 class RolesController extends Controller
@@ -23,8 +23,7 @@ class RolesController extends Controller
             return abort(401);
         }
 
-
-                $roles = Role::all();
+        $roles = Role::all();
 
         return view('backend..roles.index', compact('roles'));
     }
@@ -56,13 +55,10 @@ class RolesController extends Controller
             return abort(401);
         }
         $role = Role::create($request->all());
-        $role->permission()->sync(array_filter((array)$request->input('permission')));
-
-
+        $role->permission()->sync(array_filter((array) $request->input('permission')));
 
         return redirect()->route('admin.roles.index');
     }
-
 
     /**
      * Show the form for editing Role.
@@ -96,13 +92,10 @@ class RolesController extends Controller
         }
         $role = Role::findOrFail($id);
         $role->update($request->all());
-        $role->permission()->sync(array_filter((array)$request->input('permission')));
-
-
+        $role->permission()->sync(array_filter((array) $request->input('permission')));
 
         return redirect()->route('admin.roles.index');
     }
-
 
     /**
      * Display Role.
@@ -115,16 +108,16 @@ class RolesController extends Controller
         if (! Gate::allows('role_view')) {
             return abort(401);
         }
-        $permissions = Permission::get()->pluck('title', 'id');$users = \App\Models\Auth\User::whereHas('role',
-                    function ($query) use ($id) {
-                        $query->where('id', $id);
-                    })->get();
+        $permissions = Permission::get()->pluck('title', 'id');
+        $users = \App\Models\Auth\User::whereHas('role',
+            function ($query) use ($id) {
+                $query->where('id', $id);
+            })->get();
 
         $role = Role::findOrFail($id);
 
         return view('backend..roles.show', compact('role', 'users'));
     }
-
 
     /**
      * Remove Role from storage.
@@ -145,8 +138,6 @@ class RolesController extends Controller
 
     /**
      * Delete all selected Role at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
@@ -161,5 +152,4 @@ class RolesController extends Controller
             }
         }
     }
-
 }

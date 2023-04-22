@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
-use Barryvdh\TranslationManager\Controller as Controller;
+
 use App\Models\Locale;
+use Barryvdh\TranslationManager\Controller as Controller;
 use Illuminate\Http\Request;
 
 class LangController extends Controller
@@ -11,39 +12,36 @@ class LangController extends Controller
     {
         $locales = $this->manager->getLocales();
         $newLocale = str_replace([], '-', trim($request->input('new-locale')));
-        if (!$newLocale || in_array($newLocale, $locales)) {
+        if (! $newLocale || in_array($newLocale, $locales)) {
             return redirect()->back();
         }
         $this->manager->addLocale($newLocale);
         $locale_data = Locale::where('short_name', '=', $newLocale)->first();
-        if (!$locale_data) {
+        if (! $locale_data) {
             $locale = new Locale();
             $locale->short_name = $newLocale;
             $locale->display_type = 'ltr';
             $locale->save();
         }
+
         return redirect()->back();
     }
 
     public function postRemoveLocaleFolder(Request $request)
     {
         $locale = $request->delete_locale;
-        if($locale){
+        if ($locale) {
             Locale::where('short_name', '=', $locale)->delete();
             $this->manager->removeLocale($locale);
-            try{
-
-              \Storage::disk('lang')->deleteDirectory($locale);
-
-
-            }catch (\Exception $e){
+            try {
+                \Storage::disk('lang')->deleteDirectory($locale);
+            } catch (\Exception $e) {
                 \Log::info($e->getMessage().' - Error while deleting locale "'.$locale.'"');
             }
+
             return redirect()->back();
-        }else{
+        } else {
             abort(404);
         }
-
     }
-
 }

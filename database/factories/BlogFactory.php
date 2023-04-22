@@ -12,13 +12,14 @@
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\Models\Blog::class, function (Faker\Generator $faker,$cat) {
+$factory->define(App\Models\Blog::class, function (Faker\Generator $faker, $cat) {
     $name = $faker->text(50);
+
     return [
         'title' => $name,
         'slug' => str_slug($name),
         'content' => $faker->text(1000),
-        'category_id' => rand(1,10),
+        'category_id' => rand(1, 10),
         'user_id' => 1,
     ];
 });

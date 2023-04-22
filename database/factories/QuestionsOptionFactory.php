@@ -14,7 +14,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\QuestionsOption::class, function (Faker\Generator $faker) {
     return [
-        'option_text' => $faker->text(50) . '?',
+        'option_text' => $faker->text(50).'?',
         'correct' => rand(0, 1),
     ];
 });

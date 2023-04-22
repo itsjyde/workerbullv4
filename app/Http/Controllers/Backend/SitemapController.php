@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Models\Config;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class SitemapController extends Controller
 {
-    public function getIndex(){
+    public function getIndex()
+    {
         return view('backend.sitemap.index');
     }
 
-    public function saveSitemapConfig(Request $request){
-
+    public function saveSitemapConfig(Request $request)
+    {
         $this->validate($request, [
             'sitemap__schedule' => 'required',
         ]);
@@ -29,16 +29,18 @@ class SitemapController extends Controller
                 $config->save();
             }
         }
-        return back()->withFlashSuccess(__('alerts.backend.general.updated'));
 
+        return back()->withFlashSuccess(__('alerts.backend.general.updated'));
     }
 
-    public function generateSitemap(){
+    public function generateSitemap()
+    {
         ini_set('memory_limit', '-1');
-        unlink(base_path() . '/bootstrap/cache/packages.php');
-        unlink(base_path() . '/bootstrap/cache/services.php');
+        unlink(base_path().'/bootstrap/cache/packages.php');
+        unlink(base_path().'/bootstrap/cache/services.php');
         $chunk = (config('sitemap.chunk') ? config('sitemap.chunk') : 100);
         \Illuminate\Support\Facades\Artisan::call('generate:sitemap', ['--chunk' => $chunk]);
+
         return back()->withFlashSuccess(trans('labels.backend.sitemap.generated'));
     }
 }

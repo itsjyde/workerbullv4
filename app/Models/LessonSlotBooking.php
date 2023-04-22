@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Models\Auth\User;
-use App\Models\Lesson;
-use App\Models\LiveLessonSlot;
 use Illuminate\Database\Eloquent\Model;
 
 class LessonSlotBooking extends Model
@@ -14,8 +12,7 @@ class LessonSlotBooking extends Model
      *
      * @var array
      */
-    protected $fillable = ['live_lesson_slot_id', 'user_id','lesson_id'];
-
+    protected $fillable = ['live_lesson_slot_id', 'user_id', 'lesson_id'];
 
     public function liveLessonSlot()
     {

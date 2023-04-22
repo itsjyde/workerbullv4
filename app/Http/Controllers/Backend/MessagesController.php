@@ -2,31 +2,26 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Auth\User;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Jenssegers\Agent\Agent;
 use Lexx\ChatMessenger\Models\Message;
 use Lexx\ChatMessenger\Models\Participant;
 use Lexx\ChatMessenger\Models\Thread;
-use Messenger;
 
 class MessagesController extends Controller
 {
     public function index(Request $request)
     {
-        $thread="";
-
+        $thread = '';
 
         $teachers = User::role('teacher')->get()
             ->where('id', '!=', auth()->user()->id)
             ->pluck('name', 'id');
 
-
         auth()->user()->load('threads.messages.user');
-
 
         $threads = auth()->user()->threads;
 
@@ -38,7 +33,7 @@ class MessagesController extends Controller
 
                 //Read Thread
                 $thread->markAsRead(auth()->user()->id);
-            } elseif ($thread == "") {
+            } elseif ($thread == '') {
                 abort(404);
             }
         }
@@ -50,21 +45,22 @@ class MessagesController extends Controller
         } else {
             $view = 'backend.messages.index-desktop';
         }
+
         return view($view, [
             'threads' => $threads,
             'teachers' => $teachers,
-            'thread' => $thread
+            'thread' => $thread,
         ]);
     }
 
     public function send(Request $request)
     {
         $this->validate($request, [
-           'recipients' => 'required',
-           'message' => 'required'
+            'recipients' => 'required',
+            'message' => 'required',
         ], [
-           'recipients.required' => 'Please select at least one recipient',
-           'message.required' => 'Please input your message'
+            'recipients.required' => 'Please select at least one recipient',
+            'message.required' => 'Please input your message',
         ]);
 
         $thread = Thread::create();
@@ -83,9 +79,8 @@ class MessagesController extends Controller
         $participant->save();
 
         if ($request->has('recipients')) {
-            $thread->addParticipant($request ->recipients);
+            $thread->addParticipant($request->recipients);
         }
-
 
         return redirect(route('admin.messages').'?thread='.$thread->id);
     }
@@ -93,9 +88,9 @@ class MessagesController extends Controller
     public function reply(Request $request)
     {
         $this->validate($request, [
-            'message' => 'required'
+            'message' => 'required',
         ], [
-            'message.required' => 'Please input your message'
+            'message.required' => 'Please input your message',
         ]);
 
         $message = Message::create([
@@ -121,14 +116,15 @@ class MessagesController extends Controller
         foreach (auth()->user()->threads as $item) {
             if ($item->userUnreadMessagesCount(auth()->user()->id)) {
                 $data = [
-                  'thread_id' => $item->id,
-                  'message' => str_limit($item->messages()->orderBy('id', 'desc')->first()->body, 35),
-                  'unreadMessagesCount' => $item->userUnreadMessagesCount(auth()->user()->id),
-                  'title' => $item->participants()->with('user')->where('user_id', '<>', auth()->user()->id)->first()->user->name
+                    'thread_id' => $item->id,
+                    'message' => str_limit($item->messages()->orderBy('id', 'desc')->first()->body, 35),
+                    'unreadMessagesCount' => $item->userUnreadMessagesCount(auth()->user()->id),
+                    'title' => $item->participants()->with('user')->where('user_id', '<>', auth()->user()->id)->first()->user->name,
                 ];
                 $unreadThreads[] = $data;
             }
         }
-        return ['unreadMessageCount' =>$unreadMessageCount,'threads' => $unreadThreads];
+
+        return ['unreadMessageCount' => $unreadMessageCount, 'threads' => $unreadThreads];
     }
 }

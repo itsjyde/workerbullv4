@@ -2,18 +2,18 @@
 
 namespace App\Repositories\Frontend\Auth;
 
-use Carbon\Carbon;
-use App\Models\Auth\User;
-use Illuminate\Http\UploadedFile;
-use App\Models\Auth\SocialAccount;
-use Illuminate\Support\Facades\DB;
-use App\Exceptions\GeneralException;
-use App\Repositories\BaseRepository;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use App\Events\Frontend\Auth\UserConfirmed;
 use App\Events\Frontend\Auth\UserProviderRegistered;
+use App\Exceptions\GeneralException;
+use App\Models\Auth\SocialAccount;
+use App\Models\Auth\User;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use App\Repositories\BaseRepository;
+use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class UserRepository.
@@ -29,8 +29,6 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param $token
-     *
      * @return bool|\Illuminate\Database\Eloquent\Model
      */
     public function findByPasswordResetToken($token)
@@ -45,9 +43,8 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param $uuid
-     *
      * @return mixed
+     *
      * @throws GeneralException
      */
     public function findByUuid($uuid)
@@ -64,9 +61,8 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param $code
-     *
      * @return mixed
+     *
      * @throws GeneralException
      */
     public function findByConfirmationCode($code)
@@ -83,9 +79,8 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param array $data
-     *
      * @return \Illuminate\Database\Eloquent\Model|mixed
+     *
      * @throws \Exception
      * @throws \Throwable
      */
@@ -93,14 +88,14 @@ class UserRepository extends BaseRepository
     {
         return DB::transaction(function () use ($data) {
             $user = parent::create([
-                'first_name'        => $data['first_name'],
-                'last_name'         => $data['last_name'],
-                'email'             => $data['email'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
                 'confirmation_code' => md5(uniqid(mt_rand(), true)),
-                'active'            => 1,
-                'password'          => $data['password'],
-                                    // If users require approval or needs to confirm email
-                'confirmed'         => config('access.users.requires_approval') || config('access.users.confirm_email') ? 0 : 1,
+                'active' => 1,
+                'password' => $data['password'],
+                // If users require approval or needs to confirm email
+                'confirmed' => config('access.users.requires_approval') || config('access.users.confirm_email') ? 0 : 1,
             ]);
 
 //            if ($user) {
@@ -130,11 +125,9 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param       $id
-     * @param array $input
-     * @param bool|UploadedFile  $image
-     *
+     * @param  bool|UploadedFile  $image
      * @return array|bool
+     *
      * @throws GeneralException
      */
     public function update($id, array $input, $image = false)
@@ -143,14 +136,14 @@ class UserRepository extends BaseRepository
         $user->first_name = $input['first_name'];
         $user->last_name = $input['last_name'];
         $user->avatar_type = $input['avatar_type'];
-        $user->dob = isset($input['dob']) ? $input['dob'] : NULL ;
-        $user->phone = isset($input['phone']) ? $input['phone'] : NULL ;
-        $user->gender = isset($input['gender']) ? $input['gender'] : NULL;
-        $user->address = isset($input['address']) ? $input['address'] : NULL;
-        $user->city =  isset($input['city']) ? $input['city'] : NULL;
-        $user->pincode = isset($input['pincode']) ? $input['pincode'] : NULL;
-        $user->state = isset($input['state']) ? $input['state'] : NULL;
-        $user->country = isset($input['country']) ? $input['country'] : NULL;
+        $user->dob = isset($input['dob']) ? $input['dob'] : null;
+        $user->phone = isset($input['phone']) ? $input['phone'] : null;
+        $user->gender = isset($input['gender']) ? $input['gender'] : null;
+        $user->address = isset($input['address']) ? $input['address'] : null;
+        $user->city = isset($input['city']) ? $input['city'] : null;
+        $user->pincode = isset($input['pincode']) ? $input['pincode'] : null;
+        $user->state = isset($input['state']) ? $input['state'] : null;
+        $user->country = isset($input['country']) ? $input['country'] : null;
         $user->save();
 
         // Upload profile image if necessary
@@ -203,10 +196,9 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param      $input
-     * @param bool $expired
-     *
+     * @param  bool  $expired
      * @return bool
+     *
      * @throws GeneralException
      */
     public function updatePassword($input, $expired = false)
@@ -225,9 +217,8 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param $code
-     *
      * @return bool
+     *
      * @throws GeneralException
      */
     public function confirm($code)
@@ -250,10 +241,8 @@ class UserRepository extends BaseRepository
     }
 
     /**
-     * @param $data
-     * @param $provider
-     *
      * @return mixed
+     *
      * @throws GeneralException
      */
     public function findOrCreateProvider($data, $provider)
@@ -279,8 +268,8 @@ class UserRepository extends BaseRepository
             $nameParts = $this->getNameParts($data->getName());
 
             $user = parent::create([
-                'first_name'  => $nameParts['first_name'],
-                'last_name'  => $nameParts['last_name'],
+                'first_name' => $nameParts['first_name'],
+                'last_name' => $nameParts['last_name'],
                 'email' => $user_email,
                 'active' => 1,
                 'confirmed' => 1,
@@ -289,7 +278,6 @@ class UserRepository extends BaseRepository
             ]);
             $user->assignRole(config('access.users.default_role'));
 
-
             event(new UserProviderRegistered($user));
         }
 
@@ -297,31 +285,27 @@ class UserRepository extends BaseRepository
         if (! $user->hasProvider($provider)) {
             // Gather the provider data for saving and associate it with the user
             $user->providers()->save(new SocialAccount([
-                'provider'    => $provider,
+                'provider' => $provider,
                 'provider_id' => $data->id,
-                'token'       => $data->token,
-                'avatar'      => $data->avatar,
+                'token' => $data->token,
+                'avatar' => $data->avatar,
             ]));
         } else {
             // Update the users information, token and avatar can be updated.
             $user->providers()->update([
-                'token'       => $data->token,
-                'avatar'      => $data->avatar,
+                'token' => $data->token,
+                'avatar' => $data->avatar,
             ]);
 
             $user->avatar_type = $provider;
             $user->update();
-
         }
-
 
         // Return the user object
         return $user;
     }
 
     /**
-     * @param $fullName
-     *
      * @return array
      */
     protected function getNameParts($fullName)

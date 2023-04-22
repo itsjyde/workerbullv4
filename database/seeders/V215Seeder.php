@@ -15,24 +15,24 @@ class V215Seeder extends Seeder
     {
         ini_set('memory_limit', '-1');
 
-        $configData = \App\Models\Config::where('key','=','sitemap.chunk')->first();
-        if($configData == null){
+        $configData = \App\Models\Config::where('key', '=', 'sitemap.chunk')->first();
+        if ($configData == null) {
             $configData = new \App\Models\Config();
         }
         $configData->key = 'sitemap.chunk';
         $configData->value = 100;
         $configData->save();
 
-        $configData = \App\Models\Config::where('key','=','sitemap.schedule')->first();
-        if($configData == null){
+        $configData = \App\Models\Config::where('key', '=', 'sitemap.schedule')->first();
+        if ($configData == null) {
             $configData = new \App\Models\Config();
         }
         $configData->key = 'sitemap.schedule';
         $configData->value = 3;
         $configData->save();
 
-        $configData = \App\Models\Config::where('key','=','show_offers')->first();
-        if($configData == null){
+        $configData = \App\Models\Config::where('key', '=', 'show_offers')->first();
+        if ($configData == null) {
             $configData = new \App\Models\Config();
         }
         $configData->key = 'show_offers';

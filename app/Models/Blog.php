@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\File;
 
 class Blog extends Model
 {
-    protected $dates = ['deleted_at'];
+    protected $casts = [
+        'deleted_at' => 'datetime',
+    ];
 
-    protected $appends = ['blog_category','blog_image','blog_author'];
-
+    protected $appends = ['blog_category', 'blog_image', 'blog_author'];
 
     public function getBlogAuthorAttribute()
     {
@@ -25,14 +26,12 @@ class Blog extends Model
      */
     protected static function booted()
     {
-
         static::deleting(function ($blog) { // before delete() method call this
-            if (File::exists(public_path('/storage/uploads/' . $blog->image))) {
-                File::delete(public_path('/storage/uploads/' . $blog->image));
-            }
+        if (File::exists(public_path('/storage/uploads/'.$blog->image))) {
+            File::delete(public_path('/storage/uploads/'.$blog->image));
+        }
         });
     }
-
 
     /**
      * Return the sluggable configuration array for this model.
@@ -43,8 +42,8 @@ class Blog extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'
-            ]
+                'source' => 'title',
+            ],
         ];
     }
 
@@ -67,12 +66,10 @@ class Blog extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
     }
-
 
     public function getBlogCategoryAttribute()
     {
@@ -83,5 +80,4 @@ class Blog extends Model
     {
         return url('storage/uploads/'.$this->image);
     }
-
 }

@@ -14,15 +14,14 @@ class SponsorSeeder extends Seeder
     public function run()
     {
         $sponsors = [];
-        for($i=1; $i<=6; $i++){
+        for ($i = 1; $i <= 6; $i++) {
             $sponsor = [
                 'name' => 'Dummy '.$i,
                 'logo' => 's-1.jpg',
-                'link' => '#'
+                'link' => '#',
             ];
             $sponsors[] = $sponsor;
         }
         \App\Models\Sponsor::insert($sponsors);
-
     }
 }

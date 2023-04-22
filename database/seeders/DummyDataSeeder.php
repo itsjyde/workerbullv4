@@ -21,6 +21,5 @@ class DummyDataSeeder extends Seeder
         $this->call(FaqSeeder::class);
         $this->call(ReasonSeeder::class);
         $this->call(ChatterTableSeeder::class);
-
     }
 }

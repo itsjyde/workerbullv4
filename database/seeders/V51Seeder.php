@@ -25,7 +25,7 @@ class V51Seeder extends Seeder
             'live_lesson_slot_create',
             'live_lesson_slot_edit',
             'live_lesson_slot_view',
-            'live_lesson_slot_delete'
+            'live_lesson_slot_delete',
         ];
 
         foreach ($permissions as $item) {
@@ -35,7 +35,7 @@ class V51Seeder extends Seeder
 
         $admin = Role::findByName('administrator');
         $admin->givePermissionTo($permissions);
-        $teacher =Role::findByName('teacher');
+        $teacher = Role::findByName('teacher');
         $teacher->givePermissionTo($permissions);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Backend\Auth\User;
 
-use App\Models\Auth\User;
 use App\Http\Controllers\Controller;
-use App\Repositories\Backend\Auth\UserRepository;
 use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
+use App\Models\Auth\User;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use App\Repositories\Backend\Auth\UserRepository;
 
 /**
  * Class UserConfirmationController.
@@ -18,18 +18,12 @@ class UserConfirmationController extends Controller
      */
     protected $userRepository;
 
-    /**
-     * @param UserRepository $userRepository
-     */
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
      */
     public function sendConfirmationEmail(ManageUserRequest $request, User $user)
@@ -49,10 +43,8 @@ class UserConfirmationController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function confirm(ManageUserRequest $request, User $user)
@@ -63,10 +55,8 @@ class UserConfirmationController extends Controller
     }
 
     /**
-     * @param ManageUserRequest $request
-     * @param User              $user
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function unconfirm(ManageUserRequest $request, User $user)

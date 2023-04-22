@@ -8,7 +8,7 @@ return [
          * The name of this application. You can use this name to monitor
          * the backups.
          */
-        'status' => env('BACKUP_STATUS',0),
+        'status' => env('BACKUP_STATUS', 0),
         'name' => env('APP_NAME'),
 
         'source' => [
@@ -28,8 +28,8 @@ return [
                  * Directories used by the backup process will automatically be excluded.
                  */
                 'exclude' => [
-//                    base_path('vendor'),
-//                    base_path('node_modules'),
+                    //                    base_path('vendor'),
+                    //                    base_path('node_modules'),
                 ],
 
                 /*
@@ -154,15 +154,14 @@ return [
             ],
         ],
 
-
-//        [
-//            'name' => 'name of the second app',
-//            'disks' => ['local', 's3'],
-//            'health_checks' => [
-//                \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumAgeInDays::class => 1,
-//                \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumStorageInMegabytes::class => 5000,
-//            ],
-//        ],
+        //        [
+        //            'name' => 'name of the second app',
+        //            'disks' => ['local', 's3'],
+        //            'health_checks' => [
+        //                \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumAgeInDays::class => 1,
+        //                \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumStorageInMegabytes::class => 5000,
+        //            ],
+        //        ],
 
     ],
 

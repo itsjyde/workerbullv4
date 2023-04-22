@@ -80,7 +80,6 @@ return [
          */
         'password_history' => env('PASSWORD_HISTORY', 3),
 
-
         /*
          * When new user register then admin can receive  mail or not
          */

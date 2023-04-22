@@ -22,7 +22,7 @@ return [
     | to perform all the calculations.
     */
 
-   'decimals' => 2,
+    'decimals' => 2,
 
     /*
     |--------------------------------------------------------------------------
@@ -47,9 +47,9 @@ return [
     | the fixed type simply adds a fixed ammount to the total price
     */
 
-   'tax_type' => 'percentage',
+    'tax_type' => 'percentage',
 
-   /*
+    /*
    |--------------------------------------------------------------------------
    | Default Invoice Logo
    |--------------------------------------------------------------------------
@@ -58,9 +58,9 @@ return [
    | You can change it on each invoice individually.
    */
 
-  'logo' => config('logo_b_image'),
+    'logo' => config('logo_b_image'),
 
-  /*
+    /*
   |--------------------------------------------------------------------------
   | Default Invoice Logo Height
   |--------------------------------------------------------------------------
@@ -69,9 +69,9 @@ return [
   | You can change it on each invoice individually.
   */
 
- 'logo_height' => 60,
+    'logo_height' => 60,
 
-  /*
+    /*
   |--------------------------------------------------------------------------
   | Default Invoice Buissness Details
   |--------------------------------------------------------------------------
@@ -80,18 +80,17 @@ return [
   | the customer model.
   */
 
+    'business_details' => [
+        'name' => env('APP_NAME'),
+        'id' => '',
+        'phone' => '+34 123 456 789',
+        'location' => 'Main Street 1st',
+        'zip' => '08241',
+        'city' => 'Barcelona',
+        'country' => 'Spain',
+    ],
 
-  'business_details' => [
-      'name'        => env('APP_NAME'),
-      'id'          => '',
-      'phone'       => '+34 123 456 789',
-      'location'    => 'Main Street 1st',
-      'zip'         => '08241',
-      'city'        => 'Barcelona',
-      'country'     => 'Spain',
-  ],
-
-  /*
+    /*
   |--------------------------------------------------------------------------
   | Default Invoice Footnote
   |--------------------------------------------------------------------------
@@ -100,6 +99,6 @@ return [
   | some copyright message or simple legal terms.
   */
 
-  'footnote' => '',
+    'footnote' => '',
 
 ];

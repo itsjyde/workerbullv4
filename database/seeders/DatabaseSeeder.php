@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Artisan;
 use Database\Seeders\Traits\TruncateTable;
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {

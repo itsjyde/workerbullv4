@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 class Sponsor extends Model
 {
     protected $guarded = [];
+
     protected $appends = ['image'];
 
     /**
@@ -17,11 +18,10 @@ class Sponsor extends Model
      */
     protected static function booted()
     {
-
         static::deleting(function ($sponsor) { // before delete() method call this
-            if (File::exists(public_path('/storage/uploads/' . $sponsor->logo))) {
-                File::delete(public_path('/storage/uploads/' . $sponsor->logo));
-            }
+        if (File::exists(public_path('/storage/uploads/'.$sponsor->logo))) {
+            File::delete(public_path('/storage/uploads/'.$sponsor->logo));
+        }
         });
     }
 
@@ -30,7 +30,7 @@ class Sponsor extends Model
         if ($this->logo != null) {
             return url('storage/uploads/'.$this->logo);
         }
-        return NULL;
-    }
 
+        return null;
+    }
 }

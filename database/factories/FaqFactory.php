@@ -13,11 +13,12 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Faq::class, function (Faker\Generator $faker) {
-    $question = $faker->sentence($nbWords = 6, $variableNbWords = true) . '?';
+    $question = $faker->sentence($nbWords = 6, $variableNbWords = true).'?';
     $answer = $faker->paragraph($nbSentences = 3, $variableNbSentences = true);
+
     return [
         'category_id' => rand(1, 6),
         'question' => $question,
-        'answer' => $answer
+        'answer' => $answer,
     ];
 });

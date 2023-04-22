@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Backend\User;
 
-use Tests\TestCase;
-use App\Models\Auth\User;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Notification;
 use App\Events\Backend\Auth\User\UserCreated;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Auth\User;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class CreateUserTest extends TestCase
 {
@@ -42,17 +42,17 @@ class CreateUserTest extends TestCase
         factory(User::class)->create(['email' => 'john@example.com']);
 
         $response = $this->post('/admin/auth/user', [
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'email' => 'john@example.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
-                'active' => '1',
-                'confirmed' => '0',
-                'timezone' => 'UTC',
-                'confirmation_email' => '1',
-                'roles' => [1 => 'executive', 2 => 'user'],
-            ]);
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'email' => 'john@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'active' => '1',
+            'confirmed' => '0',
+            'timezone' => 'UTC',
+            'confirmation_email' => '1',
+            'roles' => [1 => 'executive', 2 => 'user'],
+        ]);
 
         $response->assertSessionHasErrors('email');
     }

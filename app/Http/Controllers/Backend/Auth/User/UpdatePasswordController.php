@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\User\UpdatePasswordRequest;
 use App\Repositories\Frontend\Auth\UserRepository;
 
-
 /**
  * Class UpdatePasswordController.
  */
@@ -19,8 +18,6 @@ class UpdatePasswordController extends Controller
 
     /**
      * ChangePasswordController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -28,9 +25,8 @@ class UpdatePasswordController extends Controller
     }
 
     /**
-     * @param UpdatePasswordRequest $request
-     *
      * @return mixed
+     *
      * @throws \App\Exceptions\GeneralException
      */
     public function update(UpdatePasswordRequest $request)

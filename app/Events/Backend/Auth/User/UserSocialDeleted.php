@@ -11,21 +11,12 @@ class UserSocialDeleted
 {
     use SerializesModels;
 
-    /**
-     * @var
-     */
     public $user;
 
-    /**
-     * @var
-     */
     public $social;
 
     /**
      * UserSocialDeleted constructor.
-     *
-     * @param $user
-     * @param $social
      */
     public function __construct($user, $social)
     {

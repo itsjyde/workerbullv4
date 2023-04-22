@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddRemarksInOrdersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddRemarksInOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-           $table->string('transaction_id')->after('status')->nullable();
-           $table->string('remarks')->after('transaction_id')->nullable();
+            $table->string('transaction_id')->after('status')->nullable();
+            $table->string('remarks')->after('transaction_id')->nullable();
         });
     }
 
@@ -27,7 +27,7 @@ class AddRemarksInOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn(['transaction_id','remarks']);
+            $table->dropColumn(['transaction_id', 'remarks']);
         });
     }
-}
+};

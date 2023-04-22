@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Frontend\Auth;
 
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Password;
+use App\Http\Requests\Frontend\Auth\ResetPasswordRequest;
+use App\Repositories\Frontend\Auth\UserRepository;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use App\Repositories\Frontend\Auth\UserRepository;
-use App\Http\Requests\Frontend\Auth\ResetPasswordRequest;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 /**
  * Class ResetPasswordController.
@@ -24,8 +24,6 @@ class ResetPasswordController extends Controller
 
     /**
      * ChangePasswordController constructor.
-     *
-     * @param UserRepository $userRepository
      */
     public function __construct(UserRepository $userRepository)
     {
@@ -37,8 +35,7 @@ class ResetPasswordController extends Controller
      *
      * If no token is present, display the link request form.
      *
-     * @param string|null $token
-     *
+     * @param  string|null  $token
      * @return \Illuminate\Http\Response
      */
     public function showResetForm($token = null)
@@ -62,12 +59,10 @@ class ResetPasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  ResetPasswordRequest  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function reset(ResetPasswordRequest $request)
     {
-
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class QuestionsOption
  *
- * @package App
  * @property string $question
  * @property text $option_text
  * @property tinyInteger $correct
@@ -19,10 +18,8 @@ class QuestionsOption extends Model
 
     protected $fillable = ['option_text', 'correct', 'explanation', 'question_id'];
 
-
     /**
      * Set to null if empty
-     * @param $input
      */
     public function setQuestionIdAttribute($input)
     {
@@ -43,11 +40,11 @@ class QuestionsOption extends Model
         if ($result) {
             if ($result->correct == 1) {
                 return 1;
-            } elseif($result->correct == 0){
+            } elseif ($result->correct == 0) {
                 return 2;
             }
         }
+
         return 0;
     }
-
 }

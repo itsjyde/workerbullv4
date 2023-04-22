@@ -9,14 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppClient extends Model
 {
-
-    public function client(){
-        return $this->belongsTo(OauthClient::class,'client_id');
+    public function client()
+    {
+        return $this->belongsTo(OauthClient::class, 'client_id');
     }
+
     protected static function boot()
     {
         parent::boot();
 
-        static::addGlobalScope(new AppScope( new AppResolver()));
+        static::addGlobalScope(new AppScope(new AppResolver()));
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnStrikePriceCoursesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColumnStrikePriceCoursesTable extends Migration
     public function up()
     {
         Schema::table('courses', function (Blueprint $table) {
-            $table->decimal('strike',15,2)->nullable()->after('price');
+            $table->decimal('strike', 15, 2)->nullable()->after('price');
         });
     }
 
@@ -29,4 +29,4 @@ class AddColumnStrikePriceCoursesTable extends Migration
             $table->dropColumn('strike');
         });
     }
-}
+};

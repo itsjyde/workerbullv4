@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class Create1500442169QuestionsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class Create1500442169QuestionsTable extends Migration
      */
     public function up()
     {
-        if(! Schema::hasTable('questions')) {
+        if (! Schema::hasTable('questions')) {
             Schema::create('questions', function (Blueprint $table) {
                 $table->increments('id');
                 $table->text('question');
@@ -37,4 +37,4 @@ class Create1500442169QuestionsTable extends Migration
     {
         Schema::dropIfExists('questions');
     }
-}
+};

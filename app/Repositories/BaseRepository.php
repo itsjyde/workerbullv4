@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Exceptions\GeneralException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BaseRepository.
@@ -84,6 +84,7 @@ abstract class BaseRepository implements RepositoryContract
 
     /**
      * @return Model|mixed
+     *
      * @throws GeneralException
      */
     public function makeModel()
@@ -100,7 +101,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Get all the model records in the database.
      *
-     * @param array $columns
      *
      * @return Collection|static[]
      */
@@ -117,10 +117,8 @@ abstract class BaseRepository implements RepositoryContract
 
     /**
      * Count the number of specified model records in the database.
-     *
-     * @return int
      */
-    public function count() : int
+    public function count(): int
     {
         return $this->get()->count();
     }
@@ -128,7 +126,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Create a new model record in the database.
      *
-     * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -142,7 +139,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Create one or more new model records in the database.
      *
-     * @param array $data
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -176,12 +172,12 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Delete the specified model record from the database.
      *
-     * @param $id
      *
      * @return bool|null
+     *
      * @throws \Exception
      */
-    public function deleteById($id) : bool
+    public function deleteById($id): bool
     {
         $this->unsetClauses();
 
@@ -190,12 +186,8 @@ abstract class BaseRepository implements RepositoryContract
 
     /**
      * Delete multiple records.
-     *
-     * @param array $ids
-     *
-     * @return int
      */
-    public function deleteMultipleById(array $ids) : int
+    public function deleteMultipleById(array $ids): int
     {
         return $this->model->destroy($ids);
     }
@@ -203,7 +195,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Get the first specified model record from the database.
      *
-     * @param array $columns
      *
      * @return Model|static
      */
@@ -221,7 +212,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Get all the specified model records in the database.
      *
-     * @param array $columns
      *
      * @return Collection|static[]
      */
@@ -239,8 +229,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Get the specified model record from the database.
      *
-     * @param       $id
-     * @param array $columns
      *
      * @return Collection|Model
      */
@@ -254,10 +242,6 @@ abstract class BaseRepository implements RepositoryContract
     }
 
     /**
-     * @param       $item
-     * @param       $column
-     * @param array $columns
-     *
      * @return Model|null|static
      */
     public function getByColumn($item, $column, array $columns = ['*'])
@@ -270,11 +254,9 @@ abstract class BaseRepository implements RepositoryContract
     }
 
     /**
-     * @param int    $limit
-     * @param array  $columns
-     * @param string $pageName
-     * @param null   $page
-     *
+     * @param  int  $limit
+     * @param  string  $pageName
+     * @param  null  $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($limit = 25, array $columns = ['*'], $pageName = 'page', $page = null)
@@ -291,9 +273,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Update the specified model record in the database.
      *
-     * @param       $id
-     * @param array $data
-     * @param array $options
      *
      * @return Collection|Model
      */
@@ -311,8 +290,7 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Set the query limit.
      *
-     * @param int $limit
-     *
+     * @param  int  $limit
      * @return $this
      */
     public function limit($limit)
@@ -325,8 +303,8 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Set an ORDER BY clause.
      *
-     * @param string $column
-     * @param string $direction
+     * @param  string  $column
+     * @param  string  $direction
      * @return $this
      */
     public function orderBy($column, $direction = 'asc')
@@ -339,10 +317,9 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Add a simple where clause to the query.
      *
-     * @param string $column
-     * @param string $value
-     * @param string $operator
-     *
+     * @param  string  $column
+     * @param  string  $value
+     * @param  string  $operator
      * @return $this
      */
     public function where($column, $value, $operator = '=')
@@ -355,9 +332,8 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Add a simple where in clause to the query.
      *
-     * @param string $column
-     * @param mixed  $values
-     *
+     * @param  string  $column
+     * @param  mixed  $values
      * @return $this
      */
     public function whereIn($column, $values)
@@ -372,7 +348,6 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Set Eloquent relationships to eager load.
      *
-     * @param $relations
      *
      * @return $this
      */
@@ -471,9 +446,8 @@ abstract class BaseRepository implements RepositoryContract
     /**
      * Add the given query scope.
      *
-     * @param string $scope
-     * @param array $args
-     *
+     * @param  string  $scope
+     * @param  array  $args
      * @return $this
      */
     public function __call($scope, $args)

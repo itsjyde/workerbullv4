@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateForeignKeys extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -36,4 +36,4 @@ class CreateForeignKeys extends Migration
             $table->dropForeign('chatter_post_user_id_foreign');
         });
     }
-}
+};

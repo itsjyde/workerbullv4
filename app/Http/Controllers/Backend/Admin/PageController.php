@@ -11,24 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Yajra\DataTables\DataTables;
 
-
 class PageController extends Controller
 {
     use FileUploadTrait;
+
     private $tags;
 
     public function index()
     {
-        if (!Gate::allows('page_access')) {
+        if (! Gate::allows('page_access')) {
             return abort(401);
         }
         // Grab all the pages
         $pages = Page::all();
         // Show the page
         return view('backend.pages.index', compact('pages'));
-
     }
-
 
     /**
      * Display a listing of Lessons via ajax DataTable.
@@ -40,19 +38,16 @@ class PageController extends Controller
         $has_view = false;
         $has_delete = false;
         $has_edit = false;
-        $pages = "";
+        $pages = '';
 
         if (request('show_deleted') == 1) {
-            if (!Gate::allows('page_delete')) {
+            if (! Gate::allows('page_delete')) {
                 return abort(401);
             }
             $pages = Page::onlyTrashed()->orderBy('created_at', 'desc')->get();
-
         } else {
             $pages = Page::orderBy('created_at', 'desc')->get();
-
         }
-
 
         if (auth()->user()->can('page_view')) {
             $has_view = true;
@@ -67,9 +62,9 @@ class PageController extends Controller
         return DataTables::of($pages)
             ->addIndexColumn()
             ->addColumn('actions', function ($q) use ($has_view, $has_edit, $has_delete, $request) {
-                $view = "";
-                $edit = "";
-                $delete = "";
+                $view = '';
+                $edit = '';
+                $delete = '';
                 if ($request->show_deleted == 1) {
                     return view('backend.datatable.action-trashed')->with(['route_label' => 'admin.pages', 'label' => 'id', 'value' => $q->id]);
                 }
@@ -92,22 +87,21 @@ class PageController extends Controller
                 }
 
                 return $view;
-
             })
 
             ->editColumn('image', function ($q) {
-                return ($q->image != null) ? '<img height="50px" src="' . asset('storage/uploads/' . $q->image) . '">' : 'N/A';
+                return ($q->image != null) ? '<img height="50px" src="'.asset('storage/uploads/'.$q->image).'">' : 'N/A';
             })
             ->addColumn('status', function ($q) {
-                $text = "";
-                $text = ($q->published == 1) ? "<p class='text-white mb-1 font-weight-bold text-center bg-primary p-1 mr-1' >".trans('labels.backend.pages.fields.published')."</p>" : "<p class='text-dark mb-1 font-weight-bold text-center bg-light p-1 mr-1' >".trans('labels.backend.pages.fields.drafted')."</p>";
+                $text = '';
+                $text = ($q->published == 1) ? "<p class='text-white mb-1 font-weight-bold text-center bg-primary p-1 mr-1' >".trans('labels.backend.pages.fields.published').'</p>' : "<p class='text-dark mb-1 font-weight-bold text-center bg-light p-1 mr-1' >".trans('labels.backend.pages.fields.drafted').'</p>';
 
                 return $text;
             })
             ->addColumn('created', function ($q) {
                 return $q->created_at->diffforhumans();
             })
-            ->rawColumns(['image', 'actions','status'])
+            ->rawColumns(['image', 'actions', 'status'])
             ->make();
     }
 
@@ -118,13 +112,12 @@ class PageController extends Controller
      */
     public function create()
     {
-        if (!Gate::allows('page_create')) {
+        if (! Gate::allows('page_create')) {
             return abort(401);
         }
+
         return view('backend.pages.create');
-
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -134,25 +127,24 @@ class PageController extends Controller
     public function store(StorePagesRequest $request)
     {
         ini_set('memory_limit', '-1');
-        if (!Gate::allows('page_create')) {
+        if (! Gate::allows('page_create')) {
             return abort(401);
         }
 
         $page = new Page();
         $page->title = $request->title;
-        if($request->slug == ""){
+        if ($request->slug == '') {
             $page->slug = str_slug($request->title);
-        }else{
+        } else {
             $page->slug = $request->slug;
         }
         $message = $request->get('content');
         $dom = new \DOMDocument();
-        $dom->loadHtml(mb_convert_encoding($message,  'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $dom->loadHtml(mb_convert_encoding($message, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getElementsByTagName('img');
 
         // foreach <img> in the submitted message
         foreach ($images as $img) {
-
             $src = $img->getAttribute('src');
             // if the img source is 'data-url'
             if (preg_match('/data:image/', $src)) {
@@ -187,72 +179,69 @@ class PageController extends Controller
         $page->sidebar = $request->sidebar;
         $page->save();
 
-
-
         if ($page->id) {
             return redirect()->route('admin.pages.index')->withFlashSuccess(__('alerts.backend.general.created'));
         } else {
             return redirect()->route('admin.pages.index')->withFlashDanger(__('alerts.backend.general.error'));
-
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  Page $page
+     * @param  Page  $page
      * @return view
      */
     public function show($id)
     {
-        if (!Gate::allows('page_view')) {
+        if (! Gate::allows('page_view')) {
             return abort(401);
         }
         $page = Page::findOrFail($id);
-        return view('backend.pages.show', compact('page'));
 
+        return view('backend.pages.show', compact('page'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Page $page
+     * @param  Page  $page
      * @return view
      */
     public function edit($id)
     {
-        if (!Gate::allows('page_edit')) {
+        if (! Gate::allows('page_edit')) {
             return abort(401);
         }
         $page = Page::where('id', '=', $id)->first();
-        return view('backend.pages.edit', compact('page'));
 
+        return view('backend.pages.edit', compact('page'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  Page $page
+     * @param  Page  $page
      * @return Response
      */
-    public function update(UpdatePagesRequest $request,$id)
+    public function update(UpdatePagesRequest $request, $id)
     {
         ini_set('memory_limit', '-1');
-        if (!Gate::allows('page_edit')) {
+        if (! Gate::allows('page_edit')) {
             return abort(401);
         }
         $page = Page::findOrFail($id);
         $page->title = $request->title;
-        if($request->slug == ""){
+        if ($request->slug == '') {
             $page->slug = str_slug($request->title);
-        }else{
+        } else {
             $page->slug = $request->slug;
         }
 
         $message = $request->get('content');
         libxml_use_internal_errors(true);
         $dom = new \DOMDocument();
-        $dom->loadHtml(mb_convert_encoding($message,  'HTML-ENTITIES', 'UTF-8'));
+        $dom->loadHtml(mb_convert_encoding($message, 'HTML-ENTITIES', 'UTF-8'));
         $images = $dom->getElementsByTagName('img');
         // foreach <img> in the submited message
         foreach ($images as $img) {
@@ -281,7 +270,7 @@ class PageController extends Controller
         //-
         $page->content = $dom->saveHTML();
 
-        if($request->featured_image != ""){
+        if ($request->featured_image != '') {
             $request = $this->saveFiles($request);
             $page->image = $request->featured_image;
         }
@@ -293,37 +282,31 @@ class PageController extends Controller
         $page->save();
 
         return redirect()->route('admin.pages.index')->withFlashSuccess(__('alerts.backend.general.updated'));
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Page $page
+     * @param  Page  $page
      * @return Response
      */
     public function destroy($id)
     {
-        if (!Gate::allows('page_delete')) {
+        if (! Gate::allows('page_delete')) {
             return abort(401);
         }
         $page = Page::findOrfail($id);
         $page->delete();
+
         return redirect()->route('admin.pages.index')->withFlashSuccess(__('alerts.backend.general.deleted'));
-
     }
-
-
 
     /**
      * Delete all selected Page at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
-        if (!Gate::allows('page_delete')) {
+        if (! Gate::allows('page_delete')) {
             return abort(401);
         }
         if ($request->input('ids')) {
@@ -335,16 +318,15 @@ class PageController extends Controller
         }
     }
 
-
     /**
      * Restore Page from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function restore($id)
     {
-        if (!Gate::allows('page_delete')) {
+        if (! Gate::allows('page_delete')) {
             return abort(401);
         }
         $page = Page::onlyTrashed()->findOrFail($id);
@@ -356,12 +338,12 @@ class PageController extends Controller
     /**
      * Permanently delete Page from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function perma_del($id)
     {
-        if (!Gate::allows('page_delete')) {
+        if (! Gate::allows('page_delete')) {
             return abort(401);
         }
         $page = Page::onlyTrashed()->findOrFail($id);
@@ -369,7 +351,4 @@ class PageController extends Controller
 
         return redirect()->route('admin.pages.index')->withFlashSuccess(trans('alerts.backend.general.deleted'));
     }
-
-
-
 }

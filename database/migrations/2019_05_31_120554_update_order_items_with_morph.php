@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class UpdateOrderItemsWithMorph extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class UpdateOrderItemsWithMorph extends Migration
      */
     public function up()
     {
-
         Schema::table('order_items', function (Blueprint $table) {
-            $table->renameColumn('course_id','item_id');
+            $table->renameColumn('course_id', 'item_id');
             $table->string('item_type')->nullable()->after('order_id');
-
         });
     }
 
@@ -29,8 +27,8 @@ class UpdateOrderItemsWithMorph extends Migration
     public function down()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            $table->renameColumn('item_id','course_id');
+            $table->renameColumn('item_id', 'course_id');
             $table->dropColumn('item_type');
         });
     }
-}
+};

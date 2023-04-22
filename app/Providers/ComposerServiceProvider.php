@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\View;
-use App\Http\Composers\GlobalComposer;
-use Illuminate\Support\ServiceProvider;
 use App\Http\Composers\Backend\SidebarComposer;
+use App\Http\Composers\GlobalComposer;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Class ComposerServiceProvider.
@@ -23,7 +23,7 @@ class ComposerServiceProvider extends ServiceProvider
          * Global
          */
         View::composer(
-        // This class binds the $logged_in_user variable to every view
+            // This class binds the $logged_in_user variable to every view
             '*',
             GlobalComposer::class
         );
@@ -36,7 +36,7 @@ class ComposerServiceProvider extends ServiceProvider
          * Backend
          */
         View::composer(
-        // This binds items like number of users pending approval when account approval is set to true
+            // This binds items like number of users pending approval when account approval is set to true
             'backend.includes.sidebar',
             SidebarComposer::class
         );

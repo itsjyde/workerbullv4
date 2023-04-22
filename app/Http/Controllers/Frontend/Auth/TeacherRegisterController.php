@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\Auth;
 
-use App\Models\Auth\User;
-use Illuminate\Http\Request;
-use App\Models\TeacherProfile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Auth\TeacherRegisterRequest;
+use App\Models\Auth\User;
+use App\Models\TeacherProfile;
 
 class TeacherRegisterController extends Controller
 {
@@ -23,7 +22,7 @@ class TeacherRegisterController extends Controller
     /**
      * Register new teacher
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      **/
     public function register(TeacherRegisterRequest $request)
@@ -51,10 +50,10 @@ class TeacherRegisterController extends Controller
             'linkedin_link' => request()->linkedin_link,
             'payment_method' => request()->payment_method,
             'payment_details' => json_encode($payment_details),
-            'description'       => request()->description,
+            'description' => request()->description,
         ];
         TeacherProfile::create($data);
+
         return redirect()->route('frontend.index')->withFlashSuccess(trans('labels.frontend.modal.registration_message'))->with(['openModel' => true]);
     }
-
 }

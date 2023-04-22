@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class Create1500442356TestsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class Create1500442356TestsTable extends Migration
      */
     public function up()
     {
-        if(! Schema::hasTable('tests')) {
+        if (! Schema::hasTable('tests')) {
             Schema::create('tests', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('course_id')->unsigned()->nullable();
@@ -40,4 +40,4 @@ class Create1500442356TestsTable extends Migration
     {
         Schema::dropIfExists('tests');
     }
-}
+};

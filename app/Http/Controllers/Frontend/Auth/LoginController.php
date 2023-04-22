@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Frontend\Auth;
 
-use App\Helpers\Auth\Auth;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use App\Exceptions\GeneralException;
-use App\Http\Controllers\Controller;
-use App\Helpers\Frontend\Auth\Socialite;
 use App\Events\Frontend\Auth\UserLoggedIn;
 use App\Events\Frontend\Auth\UserLoggedOut;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Exceptions\GeneralException;
+use App\Helpers\Auth\Auth;
+use App\Helpers\Frontend\Auth\Socialite;
+use App\Http\Controllers\Controller;
 use App\Repositories\Frontend\Auth\UserSessionRepository;
+use Arcanedev\NoCaptcha\Rules\CaptchaRule;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
-use Arcanedev\NoCaptcha\Rules\CaptchaRule;
-
 
 /**
  * Class LoginController.
@@ -39,7 +38,7 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        if(request()->ajax()){
+        if (request()->ajax()) {
             return ['socialLinks' => (new Socialite)->getSocialLinks()];
         }
 
@@ -56,73 +55,63 @@ class LoginController extends Controller
         return config('access.users.username');
     }
 
-
-
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255',
             'password' => 'required|min:6',
-            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required',new CaptchaRule] : ''),
-        ],[
+            'g-recaptcha-response' => (config('access.captcha.registration') ? ['required', new CaptchaRule] : ''),
+        ], [
             'g-recaptcha-response.required' => __('validation.attributes.frontend.captcha'),
         ]);
 
-        if($validator->passes()){
+        if ($validator->passes()) {
             $credentials = $request->only($this->username(), 'password');
             $authSuccess = \Illuminate\Support\Facades\Auth::attempt($credentials, $request->has('remember'));
-            if($authSuccess) {
+            if ($authSuccess) {
                 $request->session()->regenerate();
-                if(auth()->user()->active > 0){
-                    if(auth()->user()->isAdmin()){
+                if (auth()->user()->active > 0) {
+                    if (auth()->user()->isAdmin()) {
                         $redirect = 'dashboard';
-                    }else{
+                    } else {
                         $redirect = 'back';
                     }
                     auth()->user()->update([
                         'last_login_at' => Carbon::now()->toDateTimeString(),
-                        'last_login_ip' => $request->getClientIp()
+                        'last_login_ip' => $request->getClientIp(),
                     ]);
-                    if($request->ajax()){
-                        return response(['success' => true,'redirect' => $redirect], Response::HTTP_OK);
-                    }else{
+                    if ($request->ajax()) {
+                        return response(['success' => true, 'redirect' => $redirect], Response::HTTP_OK);
+                    } else {
                         return redirect('/user/dashboard');
                     }
-                }else{
+                } else {
                     \Illuminate\Support\Facades\Auth::logout();
 
                     return
                         response([
                             'success' => false,
-                            'message' => 'Login failed. Account is not active'
+                            'message' => 'Login failed. Account is not active',
                         ], Response::HTTP_FORBIDDEN);
                 }
-            }else{
+            } else {
                 return
                     response([
                         'success' => false,
-                        'message' => 'Login failed. Account not found'
+                        'message' => 'Login failed. Account not found',
                     ], Response::HTTP_FORBIDDEN);
             }
-
         }
 
-
-        return response(['success'=>false,'errors' => $validator->errors()]);
-
+        return response(['success' => false, 'errors' => $validator->errors()]);
     }
-
-
-
-
 
     /**
      * The user has been authenticated.
      *
-     * @param Request $request
-     * @param         $user
      *
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws GeneralException
      */
     protected function authenticated(Request $request, $user)
@@ -159,7 +148,6 @@ class LoginController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @param Request $request
      *
      * @return \Illuminate\Http\Response
      */

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Frontend\Auth;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TeacherRegisterRequest extends FormRequest
 {
@@ -25,20 +25,20 @@ class TeacherRegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'first_name'           => ['required', 'string', 'max:191'],
-            'last_name'           => ['required', 'string', 'max:191'],
-            'email'               => ['required', 'string', 'email', 'max:191', Rule::unique('users')],
-            'password'            => ['required', 'string', 'min:6', 'confirmed'],
-            'gender'              => ['required', 'in:male,female,other'],
-            'facebook_link'       => ['nullable', 'url'],
-            'twitter_link'        => ['nullable', 'url'],
-            'linkedin_link'       => ['nullable', 'url'],
-            'payment_method'        => ['required'],
-            'bank_name'           => ['required_if:payment_method,bank'],
-            'ifsc_code'           => ['required_if:payment_method,bank'],
-            'account_number'      => ['required_if:payment_method,bank'],
-            'account_name'        => ['required_if:payment_method,bank'],
-            'paypal_email'        => ['required_if:payment_method,paypal'],
+            'first_name' => ['required', 'string', 'max:191'],
+            'last_name' => ['required', 'string', 'max:191'],
+            'email' => ['required', 'string', 'email', 'max:191', Rule::unique('users')],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'gender' => ['required', 'in:male,female,other'],
+            'facebook_link' => ['nullable', 'url'],
+            'twitter_link' => ['nullable', 'url'],
+            'linkedin_link' => ['nullable', 'url'],
+            'payment_method' => ['required'],
+            'bank_name' => ['required_if:payment_method,bank'],
+            'ifsc_code' => ['required_if:payment_method,bank'],
+            'account_number' => ['required_if:payment_method,bank'],
+            'account_name' => ['required_if:payment_method,bank'],
+            'paypal_email' => ['required_if:payment_method,paypal'],
 
             // 'g-recaptcha-response' => ['required_if:captcha_status,true', new CaptchaRule()],
         ];

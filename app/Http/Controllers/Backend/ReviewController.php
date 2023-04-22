@@ -26,13 +26,12 @@ class ReviewController extends Controller
      */
     public function getData(Request $request)
     {
-        $reviews = "";
+        $reviews = '';
         $courses_id = auth()->user()->courses()->has('reviews')->pluck('id')->toArray();
-        $reviews = Review::where('reviewable_type','=','App\Models\Course')
-            ->whereIn('reviewable_id',$courses_id)
+        $reviews = Review::where('reviewable_type', '=', \App\Models\Course::class)
+            ->whereIn('reviewable_id', $courses_id)
             ->orderBy('created_at', 'desc')
             ->get();
-
 
         return DataTables::of($reviews)
             ->addIndexColumn()
@@ -40,12 +39,13 @@ class ReviewController extends Controller
                 return $q->created_at->format('d M, Y | H:i A');
             })
             ->addColumn('course', function ($q) {
-               $course_name = $q->reviewable->title;
-               $course_slug = $q->reviewable->slug;
-               $link = "<a href='".route('courses.show', [$course_slug])."' target='_blank'>".$course_name."</a>";
-               return $link;
+                $course_name = $q->reviewable->title;
+                $course_slug = $q->reviewable->slug;
+                $link = "<a href='".route('courses.show', [$course_slug])."' target='_blank'>".$course_name.'</a>';
+
+                return $link;
             })
-            ->addColumn('user',function ($q){
+            ->addColumn('user', function ($q) {
                 return $q->user->full_name;
             })
             ->rawColumns(['course'])

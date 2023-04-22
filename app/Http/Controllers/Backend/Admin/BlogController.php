@@ -6,37 +6,34 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\FileUploadTrait;
 use App\Http\Requests\Admin\StoreBlogsRequest;
 use App\Http\Requests\Admin\UpdateBlogsRequest;
+use App\Models\Auth\User;
 use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\Category;
 use App\Models\Tag;
-use App\Models\Auth\User;
-use Carbon\Carbon;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Redirect;
 use Intervention\Image\Facades\Image;
 use Yajra\DataTables\DataTables;
 
 class BlogController extends Controller
 {
     use FileUploadTrait;
+
     private $tags;
 
     public function index()
     {
-        if (!Gate::allows('blog_access')) {
+        if (! Gate::allows('blog_access')) {
             return abort(401);
         }
         // Grab all the blogs
         $blogs = Blog::all();
         // Show the page
         return view('backend.blogs.index', compact('blogs'));
-
     }
-
 
     /**
      * Display a listing of Lessons via ajax DataTable.
@@ -48,11 +45,9 @@ class BlogController extends Controller
         $has_view = false;
         $has_delete = false;
         $has_edit = false;
-        $blogs = "";
-
+        $blogs = '';
 
         $blogs = Blog::query()->whereHas('category')->orderBy('created_at', 'desc');
-
 
         if (auth()->user()->can('blog_view')) {
             $has_view = true;
@@ -67,9 +62,9 @@ class BlogController extends Controller
         return DataTables::of($blogs)
             ->addIndexColumn()
             ->addColumn('actions', function ($q) use ($has_view, $has_edit, $has_delete, $request) {
-                $view = "";
-                $edit = "";
-                $delete = "";
+                $view = '';
+                $edit = '';
+                $delete = '';
                 if ($request->show_deleted == 1) {
                     return view('backend.datatable.action-trashed')->with(['route_label' => 'admin.blogs', 'label' => 'blog', 'value' => $q->id]);
                 }
@@ -92,13 +87,12 @@ class BlogController extends Controller
                 }
 
                 return $view;
-
             })
             ->editColumn('course', function ($q) {
                 return ($q->course) ? $q->course->title : 'N/A';
             })
             ->editColumn('image', function ($q) {
-                return ($q->image != null) ? '<img height="50px" src="' . asset('storage/uploads/' . $q->image) . '">' : 'N/A';
+                return ($q->image != null) ? '<img height="50px" src="'.asset('storage/uploads/'.$q->image).'">' : 'N/A';
             })
             ->addColumn('created', function ($q) {
                 return $q->created_at->diffforhumans();
@@ -110,7 +104,6 @@ class BlogController extends Controller
             ->make();
     }
 
-
     /**
      * Show the form for creating a new resource.
      *
@@ -118,12 +111,12 @@ class BlogController extends Controller
      */
     public function create()
     {
-        if (!Gate::allows('blog_create')) {
+        if (! Gate::allows('blog_create')) {
             return abort(401);
         }
-        $category = Category::pluck('name','id')->prepend('Please select', '');
-        return view('backend.blogs.create', compact('category'));
+        $category = Category::pluck('name', 'id')->prepend('Please select', '');
 
+        return view('backend.blogs.create', compact('category'));
     }
 
     /**
@@ -133,26 +126,25 @@ class BlogController extends Controller
      */
     public function store(StoreBlogsRequest $request)
     {
-        if (!Gate::allows('blog_create')) {
+        if (! Gate::allows('blog_create')) {
             return abort(401);
         }
 
         $blog = new Blog();
         $blog->title = $request->title;
-        if($request->slug == ""){
+        if ($request->slug == '') {
             $blog->slug = str_slug($request->title);
-        }else{
+        } else {
             $blog->slug = $request->slug;
         }
         $blog->category_id = $request->category;
         $message = $request->get('content');
         $dom = new \DOMDocument();
-        $dom->loadHtml(mb_convert_encoding($message,  'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $dom->loadHtml(mb_convert_encoding($message, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getElementsByTagName('img');
 
         // foreach <img> in the submited message
         foreach ($images as $img) {
-
             $src = $img->getAttribute('src');
             // if the img source is 'data-url'
             if (preg_match('/data:image/', $src)) {
@@ -208,67 +200,65 @@ class BlogController extends Controller
             return redirect()->route('admin.blogs.index')->withFlashSuccess(__('alerts.backend.general.created'));
         } else {
             return redirect()->route('admin.blogs.index')->withFlashDanger(__('alerts.backend.general.error'));
-
         }
     }
-
 
     /**
      * Display the specified resource.
      *
-     * @param  Blog $blog
+     * @param  Blog  $blog
      * @return view
      */
     public function show($id)
     {
-        if (!Gate::allows('blog_view')) {
+        if (! Gate::allows('blog_view')) {
             return abort(401);
         }
         $blog = Blog::findOrFail($id);
         $comments = $blog->comments;
         $tags = $blog->tags()->pluck('name')->implode(', ');
-        return view('backend.blogs.show', compact('blog', 'comments', 'tags'));
 
+        return view('backend.blogs.show', compact('blog', 'comments', 'tags'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  Blog $blog
+     * @param  Blog  $blog
      * @return view
      */
     public function edit($id)
     {
-        if (!Gate::allows('blog_edit')) {
+        if (! Gate::allows('blog_edit')) {
             return abort(401);
         }
         $blog = Blog::where('id', '=', $id)->first();
-        $category = Category::pluck('name','id')->prepend('Please select', '');
+        $category = Category::pluck('name', 'id')->prepend('Please select', '');
         if (count($blog->tags) > 0) {
             $tags = $blog->tags()->pluck('name')->implode(', ');
         } else {
             $tags = '';
         }
-        return view('backend.blogs.edit', compact('blog', 'category', 'tags'));
 
+        return view('backend.blogs.edit', compact('blog', 'category', 'tags'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  Blog $blog
+     * @param  Blog  $blog
      * @return Response
      */
-    public function update(UpdateBlogsRequest $request,$id)
+    public function update(UpdateBlogsRequest $request, $id)
     {
-        if (!Gate::allows('blog_edit')) {
+        if (! Gate::allows('blog_edit')) {
             return abort(401);
         }
         $blog = Blog::findOrFail($id);
         $blog->title = $request->title;
-        if($request->slug == ""){
+        if ($request->slug == '') {
             $blog->slug = str_slug($request->title);
-        }else{
+        } else {
             $blog->slug = $request->slug;
         }
         $blog->category_id = $request->category;
@@ -278,7 +268,7 @@ class BlogController extends Controller
         $dom = new \DOMDocument();
 //        $dom->loadHtml(mb_convert_encoding($message,  'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-        $dom->loadHtml(mb_convert_encoding($message,  'HTML-ENTITIES', 'UTF-8'));
+        $dom->loadHtml(mb_convert_encoding($message, 'HTML-ENTITIES', 'UTF-8'));
         $images = $dom->getElementsByTagName('img');
         // foreach <img> in the submited message
         foreach ($images as $img) {
@@ -307,7 +297,7 @@ class BlogController extends Controller
         //-
         $blog->content = $dom->saveHTML();
 
-        if($request->featured_image != ""){
+        if ($request->featured_image != '') {
             $request = $this->saveFiles($request);
             $blog->image = $request->featured_image;
         }
@@ -335,35 +325,31 @@ class BlogController extends Controller
             }
         }
 
-
         return redirect()->route('admin.blogs.index')->withFlashSuccess(__('alerts.backend.general.updated'));
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Blog $blog
+     * @param  Blog  $blog
      * @return Response
      */
     public function destroy($id)
     {
-        if (!Gate::allows('blog_delete')) {
+        if (! Gate::allows('blog_delete')) {
             return abort(401);
         }
         $blog = Blog::findOrfail($id);
         $blog->delete();
-        return redirect()->route('admin.blogs.index')->withFlashSuccess(__('alerts.backend.general.deleted'));
 
+        return redirect()->route('admin.blogs.index')->withFlashSuccess(__('alerts.backend.general.deleted'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param BlogCommentRequest $request
-     * @param Blog $blog
-     *
+     * @param  BlogCommentRequest  $request
+     * @param  Blog  $blog
      * @return Response
      */
     public function storeComment(Request $request)
@@ -377,17 +363,16 @@ class BlogController extends Controller
         $blogcooment = new BlogComment($request->all());
         $blogcooment->blog_id = $blog->id;
         $blogcooment->save();
-        return redirect('/blog/view/' . $blog->id);
+
+        return redirect('/blog/view/'.$blog->id);
     }
 
     /**
      * Delete all selected Lesson at once.
-     *
-     * @param Request $request
      */
     public function massDestroy(Request $request)
     {
-        if (!Gate::allows('blog_delete')) {
+        if (! Gate::allows('blog_delete')) {
             return abort(401);
         }
         if ($request->input('ids')) {
@@ -399,43 +384,41 @@ class BlogController extends Controller
         }
     }
 
-
-
     /**
      * Get list of blogs in client side.
+     *
      * @return Response
      */
     public function getBlogList()
     {
         $blogs = Blog::paginate(10);
+
         return view('blog.frontend.blog-list', compact('blogs'));
     }
 
     /**
      * Get list of blogs in client side.
-     * @param $slug
+     *
      * @return Response
      */
-
     public function getBlog($slug)
     {
         $blog = Blog::where('slug', '=', $slug)->first();
         if ($blog != null) {
             $comments = $blog->comments;
             $tags = $blog->tags()->pluck('name')->implode(', ');
+
             return view('blog.frontend.show', compact('blog', 'comments', 'tags'));
         } else {
             return response(view(404), 404);
         }
     }
 
-
     /**
      * Get list of blogs belongs to a category.
-     * @param $slug
+     *
      * @return Response
      */
-
     public function getCategoryBlog($slug)
     {
         $category = Category::where('slug', '=', $slug)->first();
@@ -449,15 +432,15 @@ class BlogController extends Controller
 
     /**
      * Get list of blogs belongs to a tag.
-     * @param $slug
+     *
      * @return Response
      */
-
     public function getTagBlog($slug)
     {
         $tag = Tag::where('slug', '=', $slug)->first();
         if ($tag != null) {
             $blogs = $tag->blogs()->paginate(10);
+
             return view('blog.frontend.tag-blogs', compact('blogs', 'tag'));
         } else {
             return response(view(404), 404);
@@ -469,11 +452,10 @@ class BlogController extends Controller
         $author = User::findOrfail($id);
         if ($author != null) {
             $blogs = $author->blogs()->paginate(10);
+
             return view('blog.frontend.author-blogs', compact('blogs', 'author'));
         } else {
             return response(view(404), 404);
         }
     }
-
-
 }

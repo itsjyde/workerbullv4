@@ -16,11 +16,10 @@ class Slider extends Model
      */
     protected static function booted()
     {
-
         static::deleting(function ($slider) { // before delete() method call this
-            if (File::exists(public_path('/storage/uploads/' . $slider->bg_image))) {
-                File::delete(public_path('/storage/uploads/' . $slider->bg_image));
-            }
+        if (File::exists(public_path('/storage/uploads/'.$slider->bg_image))) {
+            File::delete(public_path('/storage/uploads/'.$slider->bg_image));
+        }
         });
     }
 }
