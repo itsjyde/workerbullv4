@@ -103,7 +103,7 @@ Route::group(['middleware' => 'role:administrator'], function () {
     Route::post('delete-locale', function () {
         \Barryvdh\TranslationManager\Models\Translation::where('locale', request('locale'))->delete();
 
-        \Illuminate\Support\Facades\File::deleteDirectory(public_path('../resources/lang/'.request('locale')));
+        \Illuminate\Support\Facades\File::deleteDirectory(public_path('../lang/'.request('locale')));
     })->name('delete-locale');
 
     //==== Update Theme Routes ====//

@@ -230,7 +230,7 @@ class MenuController extends Controller
                         $allMenu[str_slug($item['label'])] = $item['label'];
                     }
                     $main[str_slug($menu->name)] = $allMenu;
-                    $file = fopen(public_path('../resources/lang/en/custom-menu.php'), 'w');
+                    $file = fopen(public_path('../lang/en/custom-menu.php'), 'w');
                     if ($file !== false) {
                         ftruncate($file, 0);
                     }

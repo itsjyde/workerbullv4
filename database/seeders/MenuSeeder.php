@@ -80,7 +80,7 @@ class MenuSeeder extends Seeder
                         $allMenu[str_slug($item['label'])] = $item['label'];
                     }
                     $main[str_slug($menu->name)] = $allMenu;
-                    $file = fopen(public_path('../resources/lang/en/custom-menu.php'), 'a');
+                    $file = fopen(public_path('../lang/en/custom-menu.php'), 'a');
                     if ($file !== false) {
                         ftruncate($file, 0);
                     }

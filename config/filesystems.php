@@ -50,7 +50,7 @@ return [
 
         'lang' => [
             'driver' => 'local',
-            'root' => base_path('resources/lang'),
+            'root' => base_path('lang'),
         ],
 
         'public' => [
