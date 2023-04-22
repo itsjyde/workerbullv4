@@ -251,7 +251,6 @@ class Course extends Model
         if ($this->strike) {
             return '<strike class="text-secondary">'.getCurrency(config('app.currency'))['symbol'].' '.$this->strike.'</strike>';
         }
-
     }
 
     public function getCoursePageStrikePriceAttribute()
@@ -259,7 +258,6 @@ class Course extends Model
         if ($this->strike) {
             return '<div class="h6">'.trans('labels.frontend.course.original_price').'<span> '.$this->strikePrice.'</span></div>';
         }
-
     }
 
     /**

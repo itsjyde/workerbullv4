@@ -12,7 +12,7 @@ use App\Http\Controllers\Backend\Auth\User\UserStatusController;
 /*
  * All route names are prefixed with 'admin.auth'.
  */
-Route::prefix('auth')->name('auth.')->middleware('role:' . config('access.users.admin_role'))->group(function () {
+Route::prefix('auth')->name('auth.')->middleware('role:'.config('access.users.admin_role'))->group(function () {
     /*
      * User Management
      */

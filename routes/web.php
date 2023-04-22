@@ -6,12 +6,12 @@ use App\Http\Controllers\BundlesController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\Frontend;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\LessonsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Frontend\HomeController;
-use App\Http\Controllers\LanguageController;
 
 /*
  * Global Routes

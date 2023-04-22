@@ -1,12 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin;
 use App\Http\Controllers\Backend\Admin;
+use App\Http\Controllers\Backend\Auth\User\AccountController;
+use App\Http\Controllers\Backend\Auth\User\ProfileController;
+use App\Http\Controllers\Backend\Auth\User\UserPasswordController;
 use App\Http\Controllers\Backend\CouponController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\LiveLessonSlotController;
 use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Backend\TaxController;
 use App\Http\Controllers\Backend\WishlistController;
-use App\Http\Controllers\Admin;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ContactController;
@@ -25,10 +29,6 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UpdateController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Backend\Auth\User\AccountController;
-use App\Http\Controllers\Backend\Auth\User\ProfileController;
-use App\Http\Controllers\Backend\Auth\User\UserPasswordController;
-use App\Http\Controllers\Backend\DashboardController;
 
 /*
  * All route names are prefixed with 'admin.'.

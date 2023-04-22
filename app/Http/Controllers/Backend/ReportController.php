@@ -151,7 +151,6 @@ class ReportController extends Controller
                 if ($query->order->transaction_id) {
                     return $query->order->transaction_id;
                 }
-
             })
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-y H:i:s A');
@@ -218,7 +217,6 @@ class ReportController extends Controller
                 if ($query->order->transaction_id) {
                     return $query->order->transaction_id;
                 }
-
             })
             ->editColumn('created_at', function ($query) {
                 return $query->created_at->format('d-m-y H:i:s A');
